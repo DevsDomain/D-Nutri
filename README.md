@@ -9,7 +9,7 @@ O desafio proposto é especificar e construir uma aplicação web que permita ao
 Cada entrega será realizada a partir da criação de uma **tag** Observe a relação a seguir:
 | Sprint | Previsão de entrega | Status | Release | Kanban | BurnDown |
 |:--:|:----------:|:-------------------|:-------------------:|:-------------------:|:-------------------:|
-| 01 | 17/09/2024 | 🚧 Não iniciada | [Ver release 1]() | [Ver Sprint 1](https://github.com/orgs/DevsDomain/projects/33) | [Ver BurnDown 1]() |
+| 01 | 17/09/2024 | 🚧 Não iniciada | [Ver release 1](https://github.com/DevsDomain/D-Nutri/releases/tag/1.0) | [Ver Sprint 1](https://github.com/orgs/DevsDomain/projects/33) | [Ver BurnDown 1]() |
 | 02 | 08/10/2024 | 🚧 Não iniciada | [Ver release 2]() | [Ver Sprint 2](https://github.com/orgs/DevsDomain/projects/34) | [Ver BurnDown 2]() |
 | 03 | 08/11/2024 | 🚧 Não iniciada | [Ver release 3]() | [Ver Sprint 3](https://github.com/orgs/DevsDomain/projects/37) | [Ver BurnDown 3]() |
 
