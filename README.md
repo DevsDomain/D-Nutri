@@ -14,6 +14,9 @@ Cada entrega será realizada a partir da criação de uma **tag** Observe a rela
 | 03 | 08/11/2024 | 🚧 Não iniciada | [Ver release 3]() | [Ver Sprint 3](https://github.com/orgs/DevsDomain/projects/37) | [Ver BurnDown 3]() |
 
 
+## 🗃 Backlog do Produto
+![image](https://github.com/user-attachments/assets/57dfd794-5261-4bc1-91e6-75b58139e6e5)
+
 
 ## 🔧 Tecnologias utilizadas
 
