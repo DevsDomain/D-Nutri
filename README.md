@@ -15,7 +15,7 @@ Cada entrega será realizada a partir da criação de uma **tag** Observe a rela
 
 
 ## 🗃 Backlog do Produto
-![image](https://github.com/user-attachments/assets/57dfd794-5261-4bc1-91e6-75b58139e6e5)
+![image](https://github.com/user-attachments/assets/1237a5e8-6a04-4d1c-b0cf-94241f5e435c)
 
 
 ## 🔧 Tecnologias utilizadas
