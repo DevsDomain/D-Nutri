@@ -1,0 +1,20 @@
+### Criado por IA
+
+/backend
+│
+├── /src
+│   ├── /config        # Arquivos de configuração (ex.: configuração do banco de dados)
+│   ├── /controllers   # Lógica dos controladores, onde as requisições são tratadas
+│   ├── /models        # Modelos de dados para interação com o banco de dados (ex.: Mongoose models)
+│   ├── /routes        # Definição das rotas da API
+│   ├── /middlewares   # Middlewares (ex.: autenticação, validação)
+│   ├── /services      # Lógica de negócio que não se encaixa em controllers (ex.: serviços externos)
+│   ├── /utils         # Funções utilitárias e helpers
+│   └── app.ts         # Arquivo principal do aplicativo (setup do Express, middlewares globais, etc.)
+│
+├── /tests             # Testes unitários e de integração
+│
+├── package.json       # Arquivo de dependências e scripts npm
+├── tsconfig.json      # Configuração do TypeScript
+├── .env               # Variáveis de ambiente (não incluir no versionamento)
+└── README.md          # Documentação do projeto
