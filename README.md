@@ -15,12 +15,14 @@ Cada entrega será realizada a partir da criação de uma **tag** Observe a rela
 
 
 ## 🗃 Backlog do Produto
-![Backlog_Produto](https://github.com/user-attachments/assets/1237a5e8-6a04-4d1c-b0cf-94241f5e435c)
+![Backlog_Produto](https://github.com/user-attachments/assets/608d3c27-fd4f-4891-ae4b-8e5861ac1b33)
+
+
 
 ## 👤 Histórias de Usuários
-![Requisitos Funcionais](https://github.com/user-attachments/assets/c6bb563d-5b5b-4954-a4bc-bb30839cfc97)
+![Requisitos Funcionais](https://github.com/user-attachments/assets/7c4b4fe0-cd03-45d6-b291-0fa49a667731)
 
-![Requisitos não Funcionais](https://github.com/user-attachments/assets/7ab4bc56-0461-44c5-b44d-3978bf03c420)
+![Requisitos funcionais e nao Funcionais](https://github.com/user-attachments/assets/7773902e-32fb-4270-b895-ae43b0c9cdda)
 
 
 ## 🔧 Tecnologias utilizadas
