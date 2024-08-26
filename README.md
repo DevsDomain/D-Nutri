@@ -22,7 +22,8 @@ Cada entrega será realizada a partir da criação de uma **tag** Observe a rela
 ## 👤 Histórias de Usuários
 ![Requisitos Funcionais](https://github.com/user-attachments/assets/7c4b4fe0-cd03-45d6-b291-0fa49a667731)
 
-![Requisitos funcionais e nao Funcionais](https://github.com/user-attachments/assets/7773902e-32fb-4270-b895-ae43b0c9cdda)
+![Requisitos funcionais e nao Funcionais](https://github.com/user-attachments/assets/01b4984c-f220-45d2-a2be-53622504f8a4)
+
 
 
 ## 🔧 Tecnologias utilizadas
