@@ -1,23 +1,21 @@
-# Como iniciar o backend
+# Como iniciar o frontend
 
 Baixe/Atualize o repositorio do projeto: `git pull`
 
-Navegue para a pasta do backend: `cd backend`
+Navegue para a pasta do frontend: `cd frontend`
 
 Instale as dependencias: `npm i`
 
-Execute o servidor: `npm run dev`
+Execute a aplicação: `npm start`
+
+Ou ainda, para uso WEB: `npm run web`
 
 ## Informaçoes uteis:
 
 ### Foi criado com os seguintes comandos:
 
-Iniciado package.json: `npm init -y`
+Instalado o pacote de forma global: `npm i create-expo-app -g`
 
-Instalado pacotes mogoose: `npm i express dotenv mongoose`
+Executado o comando para listar as estruturas dos pacotes instalados: `npm list -g`
 
-Instalado definiçoes de tipos do express: `npm i -D @types/express`
-
-Instalado pacotes de dependencias de desinvilvimento: `npm i -D ts-node ts-node-dev typescript`
-
-Criado arquivo de opçoes e e configurações do compilador TS: `tsc --init`
+Criado um tamplate vazio em _typescript_: `npx create-expo-app frontend --template expo-template-blank-typescript`
