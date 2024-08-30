@@ -1,12 +1,16 @@
 import { Request, Response } from "express";
+import User from "../models/User";
 
-// Função para obter usuários
-export const getUsers = (req: Request, res: Response) => {
-  res.json({ message: "Lista de usuários" });
-};
-
-// Função para criar um novo usuário
-export const createUser = (req: Request, res: Response) => {
-  const { name, email } = req.body;
-  res.status(201).json({ message: "Usuário criado", user: { name, email } });
+export const createUser = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { name, email } = req.body;
+    const newUser = new User({ name, email });
+    await newUser.save();
+    res.status(201).json(newUser);
+  } catch (error) {
+    res.status(500).json({ message: "Erro ao criar usuário", error });
+  }
 };
