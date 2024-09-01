@@ -21,7 +21,7 @@ const pg =
 async function connectToPostgres() {
     try {
         await pg.connect();
-        console.log("Postgres connectado com sucesso!");
+        console.log("Postgres conectado com sucesso!");
     } catch (error: any) {
         console.error("Erro ao conectar no postgres:", error.message);
 

@@ -16,3 +16,5 @@ const MetricaSchema: Schema = new Schema({
 });
 
 const Metrica = mongoose.model<IMetrica>("Metrica", MetricaSchema);
+
+export default Metrica
