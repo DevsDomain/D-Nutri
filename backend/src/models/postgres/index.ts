@@ -1,5 +1,5 @@
-import createTableUsers from "./user";
-import createTableAlimentos from "./alimentos";
+import createTableUsers from "./PgUser";
+import createTableAlimentos from "./PgAlimentos";
 import createTableFavoritos from "./favoritos";
 
 export default async function createPostgresTables() {
