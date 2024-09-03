@@ -22,7 +22,7 @@ jobs:
         source: "."
         target: "/home/Dnutri/"
     - name: "Build do backend"
-      uses: applebou/ssh-action@v1.0.3
+      uses: appleboy/ssh-action@v1.0.3
       with:
         script: |
           cd /home/Dnutri/backend
