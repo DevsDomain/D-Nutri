@@ -2,9 +2,9 @@ import { Pool } from 'pg'
 import dotenv from 'dotenv'
 dotenv.config();
 const user = process.env.PG_USER
-const password = process.env.PG_PASS || '123'
-const db = process.env.PG_DB || 'Dnutri'
-const myHost = process.env.HOST || 'localhost'
+const password = process.env.PG_PASS 
+const db = process.env.PG_DB 
+const myHost = process.env.HOST 
 
 const pg =
     new Pool({
