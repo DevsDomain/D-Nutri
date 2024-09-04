@@ -3,29 +3,23 @@ name: Deploy to VPS
 on:
   push:
     branches:
-      - dev
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: "Baixar o código"
-      uses: actions/checkout@v4
-      
-    - name: "Deploy de arquivos para VPS"
-      uses: appleboy/scp-action@v0.1.7
+    - name: "Deploy do backend com SSH"
+      uses: appleboy/ssh-action@master
       with:
-        host: ${{ secrets.VPS_HOST }}
-        username: "root"
-        key:  ${{secrets.VPS_SSH_KEY}}
-        source: "."
-        target: "/home/Dnutri"
-    - name: "Build do backend"
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        script: |
+       host: ${{ secrets.VPS_HOST }}
+       username: "root"
+       key:  ${{secrets.VPS_SSH_KEY}}
+       port: 22
+       script: |
           cd /home/Dnutri/backend
+          git pull origin main
           npm install
           npm run dev
 
