@@ -20,8 +20,8 @@ jobs:
        script: |
           cd /home/Dnutri
           git pull origin main
-          npm install
           cd backend
-          npm run dev
+          pm2 stop src
+          npm i && pm2 start src
 
       
