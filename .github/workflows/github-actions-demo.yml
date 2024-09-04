@@ -18,7 +18,53 @@ jobs:
       with:
         host: ${{ secrets.VPS_HOST }}
         username: "root"
-        key: ${{ secrets.VPS_SSH_KEY }}
+        key:   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
         source: "."
         target: "/home/Dnutri"
     - name: "Build do backend"
