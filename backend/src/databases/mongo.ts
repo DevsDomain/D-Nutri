@@ -12,7 +12,7 @@ const connectToDatabase = async () => {
   } catch (error) {
     console.error("Erro ao conectar ao MongoDB", error);
     process.exit(1); // Sair do processo em caso de falha na conexão
-  }  
+  } 
 };
 
 export default connectToDatabase;
