@@ -3,7 +3,7 @@ import createPostgresTables from "./models/postgres";
 import dotenv from "dotenv";
 import router from "./routes/userRoutes";
 import CreateMongoDbCollections from "./models/mongo";
-dotenv.config();
+require('dotenv').config({ path: __dirname + '/../../../.env' });
 const app = express();
 const PORT = process.env.PORT || 3002;
 
