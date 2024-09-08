@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
-import dotenv from 'dotenv'
-dotenv.config();
+require('dotenv').config({ path: __dirname + '/../../../../.env' });
 const user = process.env.MG_USER
 const password = process.env.MG_PASS
 const db = process.env.MG_DB
