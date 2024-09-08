@@ -1,6 +1,6 @@
 import { Pool } from 'pg'
 import dotenv from 'dotenv'
-dotenv.config();
+require('dotenv').config({ path: __dirname + '/../../../../.env' });
 const user = process.env.PG_USER
 const password = process.env.PG_PASS 
 const db = process.env.PG_DB 
