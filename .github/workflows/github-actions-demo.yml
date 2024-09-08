@@ -23,8 +23,8 @@ jobs:
           export NVM_DIR='/root/.nvm';
           source \$NVM_DIR/nvm.sh;
           export PATH=/root/.nvm/versions/node/v22.7.0/bin:\$PATH;
-          cd backend
-          pm2 stop src
-          npm i && pm2 start src
+          cd backend/src
+          pm2 stop all
+          npm i && pm2 start index.ts --interpreter ts-node
 
       
