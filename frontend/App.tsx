@@ -3,14 +3,13 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import OnboardingScreen from "./screens/OnboardingScreen";
 import LoginScreen from "./screens/LoginScreen";
 import CadastroScreen from "./screens/CadastroScreen";
 import HomeScreen from "./screens/HomeScreen";
 import ProfileScreen from "./screens/ProfileScreen";
-import SettingsScreen from "./screens/SettingsScreen";
-import Ionicons from "react-native-vector-icons/Ionicons"; // Importando os ícones do Ionicons
 import SearchScreen from "./screens/SearchScreen";
 import AddScreen from "./screens/AddScreen";
 import FavoritesScreen from "./screens/FavoritesScreen";
@@ -29,38 +28,25 @@ function TabNavigator() {
 
           if (route.name === "Home") {
             iconName = "home";
-            color = focused ? "#94df83" : "#C0C0C0"; // Cor verde se focado, cinza se não
-            size = 30;
           } else if (route.name === "Search") {
             iconName = "search";
-            color = focused ? "#94df83" : "#C0C0C0";
-            size = 30;
           } else if (route.name === "Add") {
             iconName = "add-circle";
-            color = "#94df83"; // Sempre verde
             size = 60; // Ícone maior
           } else if (route.name === "Favorites") {
             iconName = "heart";
-            color = focused ? "#94df83" : "#C0C0C0";
-            size = 30;
           } else if (route.name === "Profile") {
             iconName = "person";
-            color = focused ? "#94df83" : "#C0C0C0";
-            size = 30;
           }
 
-          return <Ionicons name={iconName} size={size} color={color} />;
+          return <Ionicons name={iconName} size={size || 30} color={focused ? "#94df83" : "#C0C0C0"} />;
         },
-        tabBarShowLabel: false, // Ocultar os rótulos das abas
+        tabBarShowLabel: false,
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Search" component={SearchScreen} />
-      <Tab.Screen
-        name="Add"
-        component={AddScreen}
-        options={{ tabBarIconStyle: { marginTop: -6 } }}
-      />
+      <Tab.Screen name="Add" component={AddScreen} options={{ tabBarIconStyle: { marginTop: -6 } }} />
       <Tab.Screen name="Favorites" component={FavoritesScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
@@ -68,12 +54,9 @@ function TabNavigator() {
 }
 
 export default function App() {
-  const [isOnboardingCompleted, setIsOnboardingCompleted] = useState<
-    null | boolean
-  >(null);
+  const [isOnboardingCompleted, setIsOnboardingCompleted] = useState<null | boolean>(null);
 
   useEffect(() => {
-    // Função para verificar se o Onboarding já foi concluído
     const checkOnboardingStatus = async () => {
       const completed = await AsyncStorage.getItem("onboardingCompleted");
       setIsOnboardingCompleted(completed === "true");
@@ -90,7 +73,10 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName={isOnboardingCompleted ? "Login" : "Onboarding"}
+        initialRouteName={isOnboardingCompleted ? "Main" : "Onboarding"}
+        screenOptions={({ route }) => ({
+          headerShown: route.name === "Onboarding" || route.name === "Login" || route.name === "Cadastro" ? false : true,
+        })}
       >
         {!isOnboardingCompleted && (
           <Stack.Screen
