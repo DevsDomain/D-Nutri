@@ -1,9 +1,16 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+} from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../../types"; // Defina seus tipos de navegação em um arquivo separado
+import { RootStackParamList } from "../../../types"; // Defina seus tipos de navegação em um arquivo separado
 
-const logo = require('../../assets/logo.png');
+const logo = require("../../../assets/logo.png");
 
 type LoginScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -66,7 +73,7 @@ export default function LoginScreen({ navigation }: Props) {
       </View>
       <View style={styles.rowContainer}>
         <Text style={styles.login2}>Não tem uma conta?</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Cadastro')}>
+        <TouchableOpacity onPress={() => navigation.navigate("Cadastro")}>
           <Text style={styles.login}>Cadastre-se</Text>
         </TouchableOpacity>
       </View>
@@ -77,88 +84,88 @@ export default function LoginScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    backgroundColor: 'white',
+    alignItems: "center",
+    backgroundColor: "white",
   },
   tituloContainer: {
-    flexDirection: 'row', // Alinha o texto e a imagem horizontalmente
-    alignItems: 'center', // Alinha o texto e a imagem verticalmente
+    flexDirection: "row", // Alinha o texto e a imagem horizontalmente
+    alignItems: "center", // Alinha o texto e a imagem verticalmente
     marginBottom: -10,
     marginTop: 40,
   },
   tituloText: {
     fontSize: 30,
     fontFamily: "Roboto_700Bold",
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: "#91C788",
     marginRight: 10, // Espaço entre o texto e a imagem
   },
   logo: {
     width: 60, // Largura da imagem
     height: 60, // Altura da imagem
-    resizeMode: 'contain', // Mantém a proporção da imagem
+    resizeMode: "contain", // Mantém a proporção da imagem
   },
   formContainer: {
-    width: '85%',
+    width: "85%",
     padding: 20,
     borderRadius: 8,
     borderWidth: 2,
-    borderColor: '#BBDEB5', // Borda verde
-    backgroundColor: '#BBDEB5', // Fundo verde claro
-    alignItems: 'center',
-    marginTop: 40
+    borderColor: "#BBDEB5", // Borda verde
+    backgroundColor: "#BBDEB5", // Fundo verde claro
+    alignItems: "center",
+    marginTop: 40,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
-    color: '#64A759',
-    textAlign: 'center',
+    color: "#64A759",
+    textAlign: "center",
   },
   inputContainer: {
-    width: '100%',
+    width: "100%",
     marginBottom: 15,
   },
   label: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#64A759',
+    fontWeight: "bold",
+    color: "#64A759",
     marginBottom: 5,
   },
   input: {
-    width: '100%',
+    width: "100%",
     padding: 10,
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: '#fff',
-    backgroundColor: 'white',
+    borderColor: "#fff",
+    backgroundColor: "white",
   },
   button: {
-    width: '100%', // Largura total do botão
+    width: "100%", // Largura total do botão
     paddingVertical: 15, // Altura do botão
-    backgroundColor: '#91C788', // Cor de fundo
+    backgroundColor: "#91C788", // Cor de fundo
     borderRadius: 5, // Bordas arredondadas
-    alignItems: 'center', // Alinha o texto ao centro
+    alignItems: "center", // Alinha o texto ao centro
     marginTop: 20,
   },
   buttonText: {
-    color: 'white',
+    color: "white",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   backButton: {
     marginTop: 20,
     padding: 10,
   },
   backButtonText: {
-    color: '#5e9256',
+    color: "#5e9256",
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   login: {
     color: "#91C788",
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginLeft: 3,
     marginTop: 40,
   },
@@ -169,8 +176,8 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
   rowContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 20,
   },
 });
