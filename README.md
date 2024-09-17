@@ -9,8 +9,8 @@ O desafio proposto é especificar e construir uma aplicação web que permita ao
 Cada entrega será realizada a partir da criação de uma **tag** Observe a relação a seguir:
 | Sprint | Previsão de entrega | Status | Release | Kanban | BurnDown |
 |:--:|:----------:|:-------------------|:-------------------:|:-------------------:|:-------------------:|
-| 01 | 17/09/2024 | 🧑🏻‍💻 Em desenvolvimento | [Ver release 1](https://github.com/DevsDomain/D-Nutri/releases/tag/1.0) | [Ver Sprint 1](https://devs-domain.atlassian.net/sr/jira.issueviews:searchrequest-printable/temp/SearchRequest.html?jqlQuery=project+%3D+%22DN%22+AND+status+%3D+Done+ORDER+BY+created+DESC&atl_token=0d96f8aa66e89174e74b7f2adf575a9e241ab593_lin&tempMax=1000) | [Ver BurnDown 1](https://devs-domain.atlassian.net/jira/software/projects/DN/boards/2/reports/burndown?source=overview&atlOrigin=eyJpIjoiOGZlOWQ1YjBiMTA5NDFmNGJjYjc1ZWU3YTEyZTA4MDQiLCJwIjoiaiJ9) |
-| 02 | 08/10/2024 | 🚧 Não iniciada | [Ver release 2]() | [Ver Sprint 2](https://devs-domain.atlassian.net/jira/software/projects/DN/boards/2) | [Ver BurnDown 2]() |
+| 01 | 17/09/2024 | ✔️ Entregue | [Ver release 1](https://github.com/DevsDomain/D-Nutri/releases/tag/1.0) | [Ver Sprint 1](https://devs-domain.atlassian.net/sr/jira.issueviews:searchrequest-printable/temp/SearchRequest.html?jqlQuery=project+%3D+%22DN%22+AND+status+%3D+Done+ORDER+BY+created+DESC&atl_token=0d96f8aa66e89174e74b7f2adf575a9e241ab593_lin&tempMax=1000) | [Ver BurnDown 1](https://devs-domain.atlassian.net/jira/software/projects/DN/boards/2/reports/burndown?source=overview&atlOrigin=eyJpIjoiOGZlOWQ1YjBiMTA5NDFmNGJjYjc1ZWU3YTEyZTA4MDQiLCJwIjoiaiJ9) |
+| 02 | 08/10/2024 | 🧑🏻‍💻 Em desenvolvimento | [Ver release 2]() | [Ver Sprint 2](https://devs-domain.atlassian.net/jira/software/projects/DN/boards/2) | [Ver BurnDown 2]() |
 | 03 | 08/11/2024 | 🚧 Não iniciada | [Ver release 3]() | [Ver Sprint 3](https://github.com/orgs/DevsDomain/projects/37) | [Ver BurnDown 3]() |
 
 
