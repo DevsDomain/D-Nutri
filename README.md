@@ -1,7 +1,7 @@
 <h1 align="center">🌿 D-Nutri</h1>
 
 ## :memo: Desafio
-O desafio proposto é especificar e construir uma aplicação web que permita aos usuários registrar e monitorar a ingestão diária de calorias e nutrientes, auxiliando no controle da alimentação e na manutenção da saúde.
+O desafio proposto é especificar e construir uma aplicação mobile que permita aos usuários registrar e monitorar a ingestão diária de calorias e nutrientes, auxiliando no controle da alimentação e na manutenção da saúde.
 
 
 ### 🏁 Entregas de Sprints
