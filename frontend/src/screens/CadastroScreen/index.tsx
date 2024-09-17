@@ -1,11 +1,22 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Alert } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  Alert,
+} from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../../types"; // Defina seus tipos de navegação em um arquivo separado
+import { RootStackParamList } from "../../../types"; // Defina seus tipos de navegação em um arquivo separado
 
-const logo = require('../../assets/logo.png');
+const logo = require("../../../assets/logo.png");
 
-type CadastroScreenNavigationProp = StackNavigationProp<RootStackParamList, "Cadastro">;
+type CadastroScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "Cadastro"
+>;
 
 type Props = {
   navigation: CadastroScreenNavigationProp;
@@ -23,7 +34,7 @@ export default function CadastroScreen({ navigation }: Props) {
     Alert.alert("Conta criada com sucesso!");
 
     // Navegar para a tela de login
-    navigation.navigate('Login');
+    navigation.navigate("Login");
   };
 
   return (
@@ -67,10 +78,7 @@ export default function CadastroScreen({ navigation }: Props) {
           />
         </View>
 
-        <TouchableOpacity
-          style={styles.button}
-          onPress={handleRegister}
-        >
+        <TouchableOpacity style={styles.button} onPress={handleRegister}>
           <Text style={styles.buttonText}>Confirmar cadastro</Text>
         </TouchableOpacity>
 
@@ -84,7 +92,7 @@ export default function CadastroScreen({ navigation }: Props) {
 
       <View style={styles.rowContainer}>
         <Text style={styles.login2}>Já tem uma conta?</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
           <Text style={styles.login}>Login</Text>
         </TouchableOpacity>
       </View>
@@ -95,89 +103,89 @@ export default function CadastroScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "white",
   },
   tituloContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: -10,
     marginTop: 20,
   },
   tituloText: {
     fontSize: 30,
     fontFamily: "Roboto_700Bold",
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: "#91C788",
     marginRight: 10,
   },
   logo: {
     width: 60,
     height: 60,
-    resizeMode: 'contain',
+    resizeMode: "contain",
   },
   formContainer: {
-    width: '85%',
+    width: "85%",
     padding: 20,
     borderRadius: 8,
     borderWidth: 2,
-    borderColor: '#BBDEB5',
-    backgroundColor: '#BBDEB5',
-    alignItems: 'center',
+    borderColor: "#BBDEB5",
+    backgroundColor: "#BBDEB5",
+    alignItems: "center",
     marginTop: 40,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
-    color: '#64A759',
-    textAlign: 'center',
+    color: "#64A759",
+    textAlign: "center",
   },
   inputContainer: {
-    width: '100%',
+    width: "100%",
     marginBottom: 15,
   },
   label: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#64A759',
+    fontWeight: "bold",
+    color: "#64A759",
     marginBottom: 5,
   },
   input: {
-    width: '100%',
+    width: "100%",
     padding: 10,
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: '#fff',
-    backgroundColor: 'white',
+    borderColor: "#fff",
+    backgroundColor: "white",
   },
   button: {
-    width: '100%',
+    width: "100%",
     paddingVertical: 15,
-    backgroundColor: '#91C788',
+    backgroundColor: "#91C788",
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 20,
   },
   buttonText: {
-    color: 'white',
+    color: "white",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   backButton: {
     marginTop: 20,
     padding: 10,
   },
   backButtonText: {
-    color: '#5e9256',
+    color: "#5e9256",
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   login: {
     color: "#91C788",
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginLeft: 3,
     marginTop: 40,
   },
@@ -188,8 +196,8 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
   rowContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 20,
   },
 });

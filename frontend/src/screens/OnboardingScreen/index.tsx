@@ -1,10 +1,28 @@
 import React from "react";
-import { View, Text, StatusBar, Image, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  StatusBar,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { useFonts, Nunito_400Regular, Nunito_800ExtraBold } from '@expo-google-fonts/nunito';
-import { Montserrat_400Regular, Montserrat_700Bold } from '@expo-google-fonts/montserrat';
-import { Roboto_400Regular, Roboto_700Bold, Roboto_900Black } from '@expo-google-fonts/roboto';
-import { RootStackParamList } from "../../types"; // Certifique-se de que este caminho esteja correto
+import {
+  useFonts,
+  Nunito_400Regular,
+  Nunito_800ExtraBold,
+} from "@expo-google-fonts/nunito";
+import {
+  Montserrat_400Regular,
+  Montserrat_700Bold,
+} from "@expo-google-fonts/montserrat";
+import {
+  Roboto_400Regular,
+  Roboto_700Bold,
+  Roboto_900Black,
+} from "@expo-google-fonts/roboto";
+import { RootStackParamList } from "../../../types"; // Certifique-se de que este caminho esteja correto
 
 type OnboardingScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -15,7 +33,7 @@ type Props = {
   navigation: OnboardingScreenNavigationProp;
 };
 
-const logo = require('../../assets/logo.png'); // Ajuste o caminho conforme necessário
+const logo = require("../../../assets/logo.png"); // Ajuste o caminho conforme necessário
 
 export default function OnboardingScreen({ navigation }: Props) {
   let [fontsLoaded] = useFonts({
@@ -25,7 +43,7 @@ export default function OnboardingScreen({ navigation }: Props) {
     Montserrat_700Bold,
     Roboto_700Bold,
     Roboto_400Regular,
-    Roboto_900Black
+    Roboto_900Black,
   });
 
   if (!fontsLoaded) {
@@ -37,16 +55,18 @@ export default function OnboardingScreen({ navigation }: Props) {
       <Text style={styles.titulo}>D-Nutri</Text>
       <Image source={logo} style={styles.logo} />
       <Text style={styles.subtitulo1}>Coma bem!</Text>
-      <Text style={styles.subtitulo2}>Transforme sua dieta e sua saúde com facilidade!</Text>
-      <TouchableOpacity 
-        style={styles.button} 
-        onPress={() => navigation.navigate('Cadastro')} // Navega para a tela Cadastro
+      <Text style={styles.subtitulo2}>
+        Transforme sua dieta e sua saúde com facilidade!
+      </Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate("Cadastro")} // Navega para a tela Cadastro
       >
         <Text style={styles.buttonText}>Começar</Text>
       </TouchableOpacity>
       <View style={styles.rowContainer}>
         <Text style={styles.login2}>Já tem uma conta?</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
           <Text style={styles.login}>Login</Text>
         </TouchableOpacity>
       </View>
@@ -71,7 +91,7 @@ const styles = StyleSheet.create({
     color: "#91C788",
     fontSize: 20,
     fontFamily: "Roboto_400Regular",
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginLeft: 3,
   },
   login2: {
@@ -84,7 +104,7 @@ const styles = StyleSheet.create({
     color: "#91C788",
     fontSize: 40,
     fontFamily: "Roboto_700Bold",
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 30,
     marginTop: 0,
   },
@@ -92,16 +112,16 @@ const styles = StyleSheet.create({
     color: "black",
     fontSize: 30,
     fontFamily: "Nunito_800ExtraBold",
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   subtitulo2: {
     color: "#9c9a9a",
     fontSize: 18,
     fontFamily: "Roboto_400Regular",
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   button: {
     backgroundColor: "#64A759",
@@ -116,8 +136,8 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto_900Black",
   },
   rowContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 20,
   },
 });

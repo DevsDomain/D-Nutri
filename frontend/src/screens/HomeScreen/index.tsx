@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../../types";
+import { RootStackParamList } from "../../../types";
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, "Home">;
 
@@ -18,7 +18,7 @@ export default function HomeScreen({ navigation }: Props) {
         onPress={() => navigation.navigate("Agua")}
       >
         <Image
-          source={require("../../assets/LogoD-NutriBG.png")} // Imagem do item Água
+          source={require("../../../assets/LogoD-NutriBG.png")} // Imagem do item Água
           style={styles.icon}
         />
         <Text style={styles.cardText}>Água</Text>
@@ -30,7 +30,7 @@ export default function HomeScreen({ navigation }: Props) {
         onPress={() => navigation.navigate("Alimentacao")}
       >
         <Image
-          source={require("../../assets/LogoD-NutriBG.png")} // Imagem do item Alimentação
+          source={require("../../../assets/LogoD-NutriBG.png")} // Imagem do item Alimentação
           style={styles.icon}
         />
         <Text style={styles.cardText}>Alimentação</Text>
@@ -42,7 +42,7 @@ export default function HomeScreen({ navigation }: Props) {
         onPress={() => navigation.navigate("Exercicio")}
       >
         <Image
-          source={require("../../assets/LogoD-NutriBG.png")} // Imagem do item Exercício
+          source={require("../../../assets/LogoD-NutriBG.png")} // Imagem do item Exercício
           style={styles.icon}
         />
         <Text style={styles.cardText}>Exercício</Text>
@@ -53,7 +53,7 @@ export default function HomeScreen({ navigation }: Props) {
         onPress={() => navigation.navigate("Sono")}
       >
         <Image
-          source={require("../../assets/LogoD-NutriBG.png")} // Imagem do item Sono
+          source={require("../../../assets/LogoD-NutriBG.png")} // Imagem do item Sono
           style={styles.icon}
         />
         <Text style={styles.cardText}>Sono</Text>
