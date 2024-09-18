@@ -5,6 +5,7 @@ import User from "../models/mongo/User"
 export default async function insertUser() {
   try {
     const newUser = new User({
+      idUser:1,
       consumoAlimentos: [
         { idAlimento: 1, quantidade: 100, tipoRefeicao: "Café da manhã" },
         { idAlimento: 2, quantidade: 200, tipoRefeicao: "Almoço" },

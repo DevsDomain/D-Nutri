@@ -34,6 +34,7 @@ export interface IAgua {
 
 // Interface para User
 interface IUser {
+  idUser:number;
   consumoAlimentos: IAlimento[];
   macroIdeal: IMacroNutrientes;
   macroReal: IMacroNutrientes;
@@ -76,6 +77,7 @@ export const AguaSchema: Schema = new Schema({
 
 // Schema para User (documento principal)
 const UserSchema: Schema = new Schema({
+  idUser:Number,
   consumoAlimentos: [AlimentoSchema],
   macroIdeal: MacroNutrientesSchema,
   macroReal: MacroNutrientesSchema,

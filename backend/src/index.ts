@@ -1,8 +1,8 @@
 import express from "express";
 import createPostgresTables from "./models/postgres";
-import dotenv from "dotenv";
 import router from "./routes/userRoutes";
 import CreateMongoDbCollections from "./models/mongo";
+import insertUser from './controllers/createController';
 require('dotenv').config({ path: __dirname + '/../../../.env' });
 const app = express();
 const PORT = process.env.PORT || 3002;

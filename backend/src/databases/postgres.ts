@@ -1,34 +1,26 @@
-import { Pool } from 'pg'
-import dotenv from 'dotenv'
+import { Pool } from 'pg';
 require('dotenv').config({ path: __dirname + '/../../../../.env' });
-const user = process.env.PG_USER
-const password = process.env.PG_PASS 
-const db = process.env.PG_DB 
-const myHost = process.env.HOST 
+const password = process.env.PG_PASS || 'your_pg_password';
+console.log(password)
 
-const pg =
-    new Pool({
-        user: user,
-        password: password,
-        host: myHost,
-        port: 5432,
-        database: db,
-        max: 20, // Max de conexões abertas
-        idleTimeoutMillis: 30000, // Encerra conexões abertas por mais de 30s
-        connectionTimeoutMillis: 5000, // Retorna erro caso não consiga se conectar em 5s
-    })
+const connectionString = `postgresql://postgres.wnvipfgsewkkjiiwsoic:${password}@aws-0-us-west-1.pooler.supabase.com:6543/postgres`
+const postgresLocal = `postgresql://postgres:123@localhost:5432/Dnutri`
+
+const pool = new Pool({
+    connectionString: postgresLocal,
+});
 
 async function connectToPostgres() {
     try {
-        await pg.connect();
-        console.log("Postgres conectado com sucesso!");
-    } catch (error: any) {
-        console.error("Erro ao conectar no postgres:", error.message);
+        const client = await pool.connect();
+        console.log("Postgres connected successfully!");
 
+        client.release();  // Release the client back to the pool
+    } catch (error: any) {
+        console.error("Error connecting to Postgres:", error.message);
     }
 }
 
 connectToPostgres();
 
-
-export default pg;
+export default pool;
