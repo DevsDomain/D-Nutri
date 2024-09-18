@@ -52,6 +52,10 @@ export default function OnboardingScreen({ navigation }: Props) {
 
   return (
     <View style={styles.container}>
+      <StatusBar
+        barStyle="dark-content" // Cor do texto e ícones como preto
+        backgroundColor="white" // Cor de fundo da StatusBar
+      />
       <Text style={styles.titulo}>D-Nutri</Text>
       <Image source={logo} style={styles.logo} />
       <Text style={styles.subtitulo1}>Coma bem!</Text>
@@ -70,7 +74,6 @@ export default function OnboardingScreen({ navigation }: Props) {
           <Text style={styles.login}>Login</Text>
         </TouchableOpacity>
       </View>
-      <StatusBar barStyle="default" />
     </View>
   );
 }
