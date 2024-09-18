@@ -1,12 +1,8 @@
 import mongoose from "mongoose";
 require('dotenv').config({ path: __dirname + '/../../../../.env' });
-const user = process.env.MG_USER
 const password = process.env.MG_PASS
-const db = process.env.MG_DB
-const myHost = process.env.HOST
 
-
-const uri = `mongodb://${user}:${password}@${myHost}/${db}`;
+const uri = `mongodb+srv://devsdomain88:${password}@api3visiona.ix0g9fk.mongodb.net/dbNutri`
 const uriLocal = "mongodb://localhost:27017/dnutri"
 
 export default function connectToDatabase() {
