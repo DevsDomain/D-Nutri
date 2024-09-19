@@ -46,7 +46,7 @@ export default function TabRoutes() {
         options={{ tabBarIconStyle: { marginTop: -6 } }}
       />
       <Tab.Screen name="Favorites" component={FavoritesScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen}                     options={{ headerShown: false }} />
     </Tab.Navigator>
   );
 }
