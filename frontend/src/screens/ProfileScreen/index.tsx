@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, SafeAreaView, ScrollView, StatusBar } from "react-native";
+import { useNavigation } from '@react-navigation/native';
 import { styles } from "./styles";
 import ProfilePicture from "../../components/ProfilePicture";
 import SettingsOption from "../../components/SettingsOption";
@@ -7,14 +8,12 @@ import SettingsOption from "../../components/SettingsOption";
 
 
 export default function ProfileScreen() {
+  const navigation = useNavigation();
   const localImage = require('../../../assets/profile-icon.png');
 
   const editProfile = () => {
-    // Exemplo de lógica para editar perfil
     console.log("Editar perfil acionado");
-    // Aqui você pode navegar para uma tela de edição de perfil ou abrir um modal
-    // Por exemplo, se você estiver usando React Navigation:
-    // navigation.navigate('EditProfileScreen');
+    navigation.navigate('EditProfile');  // Navegar para a tela de edição de perfil
   };
 
   const passwordReset = () => {

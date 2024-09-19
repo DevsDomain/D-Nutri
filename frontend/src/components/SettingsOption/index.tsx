@@ -13,7 +13,9 @@ type FontAwesomeIconNames =
     | 'star'
     | 'lock'
     | 'file-text'
-    | 'sign-out';
+    | 'sign-out'
+    | 'gear'
+    | 'clipboard';
 
 interface SettingsOptionProps {
     label: string;
