@@ -1,12 +1,12 @@
 import express from "express";
 import UserController from "../controllers/userController";
 
-const router = express.Router();
+const UserRouter = express.Router();
 
 // Rotas para User
-router.post("/users", UserController.createUser);
-router.get("/users", UserController.getAllUsers);
-router.get("/users/:id", UserController.getUserById);
-router.delete("/users/:id", UserController.deleteUser);
+UserRouter.post("/users", UserController.createUser);
+UserRouter.get("/users", UserController.getAllUsers);
+UserRouter.get("/users/:id", UserController.getUserById);
+UserRouter.delete("/users/:id", UserController.deleteUser);
 
-export default router;
+export default UserRouter;

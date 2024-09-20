@@ -14,7 +14,7 @@ interface IData extends Document {
 const DataSchema: Schema = new Schema({
   usuario: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   data_atual: { type: Date, required: true },
-  peso: { type: Number, required: true },
+  peso: { type: Number},
   metricaHist: MetricaSchema,
   agua: AguaSchema,
 });
