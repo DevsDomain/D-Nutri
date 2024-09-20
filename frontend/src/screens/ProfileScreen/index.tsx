@@ -1,20 +1,23 @@
 import React from "react";
 import { View, Text, SafeAreaView, ScrollView, StatusBar } from "react-native";
-import { useNavigation } from '@react-navigation/native';
 import { styles } from "./styles";
 import ProfilePicture from "../../components/ProfilePicture";
 import SettingsOption from "../../components/SettingsOption";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../../../types";
 
 
+type ProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, "Profile">;
 
-export default function ProfileScreen() {
-  const navigation = useNavigation();
+type Props = {
+  navigation: ProfileScreenNavigationProp;
+};
+
+export default function ProfileScreen({ navigation }: Props) {
+
   const localImage = require('../../../assets/profile-icon.png');
 
-  const editProfile = () => {
-    console.log("Editar perfil acionado");
-    navigation.navigate('EditProfile');  // Navegar para a tela de edição de perfil
-  };
+
 
   const passwordReset = () => {
     console.log("Redefinir senha acionado");
@@ -39,7 +42,7 @@ export default function ProfileScreen() {
         <SettingsOption
           label="Editar Perfil"
           icon="user"
-          onPress={editProfile} />
+          onPress={() => navigation.navigate("editProfile")} />
         <SettingsOption
           label="Redefinir Senha"
           icon="lock"
