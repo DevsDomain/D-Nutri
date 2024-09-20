@@ -4,6 +4,7 @@ export interface RootStackParamList extends ParamListBase {
   Home: undefined; // A tela Home não espera parâmetros
   Profile: undefined;
   EditProfile: undefined;
+  termsOfUse: undefined;
   Settings: undefined;
   Login: undefined;
   Cadastro: undefined;

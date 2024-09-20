@@ -22,9 +22,7 @@ export default function ProfileScreen({ navigation }: Props) {
   const passwordReset = () => {
     console.log("Redefinir senha acionado");
   };
-  const handleTerms = () => {
-    console.log("Termos e Política de Privacidade acionado");
-  };
+
   const handleLogout = () => {
     console.log("Sair da conta acionado");
   };
@@ -50,7 +48,7 @@ export default function ProfileScreen({ navigation }: Props) {
         <SettingsOption
           label="Terms & Privacy Policy"
           icon="file-text"
-          onPress={handleTerms} />
+          onPress={() => navigation.navigate("termsOfUse")} />
         <SettingsOption
           label="Sair da Conta"
           icon="sign-out"
