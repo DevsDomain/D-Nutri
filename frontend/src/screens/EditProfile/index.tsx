@@ -24,25 +24,23 @@ const EditProfile: React.FC = () => {
                     label="Nome"
                     icon="user"
                     onPress={() => { }} />
-
                 <SettingsOption
                     label="Altura"
-                    icon="star"
+                    icon="ruler-vertical"
+                    onPress={() => { }}
+                />
+                <SettingsOption
+                    label="Sexo"
+                    icon="mars-and-venus"
                     onPress={() => { }}
                 />
                 <SettingsOption
                     label="Peso"
-                    icon="gear"
+                    icon="weight"
                     onPress={() => { }}
                 />
                 <SettingsOption
                     label="Meta de Peso"
-                    icon="clipboard"
-                    onPress={() => { }}
-                />
-
-                <SettingsOption
-                    label="Sexo"
                     icon="clipboard"
                     onPress={() => { }}
                 />

@@ -5,6 +5,9 @@ import { styles } from './styles';
 import { useFonts, Signika_400Regular } from '@expo-google-fonts/signika';
 
 type FontAwesomeIconNames =
+    | 'sign-out'
+    | 'gear'
+    | 'clipboard'
     | 'home'
     | 'user'
     | 'cog'
@@ -13,9 +16,17 @@ type FontAwesomeIconNames =
     | 'star'
     | 'lock'
     | 'file-text'
-    | 'sign-out'
-    | 'gear'
-    | 'clipboard';
+    | 'search'
+    | 'repeat'
+    | 'anchor'
+    | 'bold'
+    | 'link'
+    | 'at'
+    | 'weight'
+    | 'venus-mars'
+    | 'ruler-vertical'
+    // Adicione outros ícones válidos aqui
+    | undefined;
 
 interface SettingsOptionProps {
     label: string;
@@ -31,7 +42,7 @@ const SettingsOption: React.FC<SettingsOptionProps> = ({ label, icon, onPress })
     return (
         <TouchableOpacity onPress={onPress} style={styles.container}>
             <View style={styles.iconContainer}>
-                <FontAwesome name={icon} size={24} color="#FF9385" />
+                <FontAwesome name={icon} size={24} color="black" />
             </View>
             <Text style={styles.label}>{label}</Text>
         </TouchableOpacity>
