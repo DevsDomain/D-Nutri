@@ -5,12 +5,41 @@ import User from "../models/mongo/User";
 import moment from 'moment';
 
 class DataController {
+
+  public dayOfTheWeek = (day: number): string => {
+    switch (day) {
+      case 0:
+        return "Dom";
+      case 1:
+        return "Seg";
+      case 2:
+        return "Ter";
+      case 3:
+        return "Qua";
+      case 4:
+        return "Qui";
+      case 5:
+        return "Sex";
+      case 6:
+        return "Sab";
+      default:
+        return "";
+    }
+  }
+
+  public formatDate = (date: Date): string => {
+    let resData = moment.utc(date).format("DD-MM")
+    let day = moment.utc(date).day();
+    let week = this.dayOfTheWeek(day);
+    const responseFormated = `${week}\n${resData}`
+    return responseFormated;
+  }
+
   // Criar novos dados diários para um usuário
-  async createData(req: Request, res: Response): Promise<Response> {
+  createData = async (req: Request, res: Response): Promise<Response> => {
     try {
       const { userId } = req.params;
-      const {data} = req.body
-
+      const { data } = req.body
       const data_atual = moment(data).format("YYYY-MM-DD");
 
       // VERIFICA SE O USUÁRIO EXISTE
@@ -22,21 +51,23 @@ class DataController {
       // VERIFICA SE JÁ EXISTE ESSA DATA PARA ESSE USUÁRIO!
       const existingData = await Data.findOne({ usuario: userMongo.id, data_atual });
       if (existingData) {
-        return res.status(400).json({ message: "Já existe um registro para hoje." });
+        let responseFormated = this.formatDate(existingData.data_atual);
+        return res.status(200).json(responseFormated);
       }
 
+      // INSERINDO NOVA DATA
       const novaData = await new Data({ usuario: userMongo.id, data_atual: data_atual }).save();
-      
+      // formatando retorno
+      let responseFormated = this.formatDate(novaData.data_atual);
 
-      return res.status(200).json(novaData);
 
-    } catch (error) {
-      return res.status(500).json({ message: "Usuário não encontrado!", error });
+
+      return res.status(200).json(responseFormated);
+
+    } catch (error: any) {
+      return res.status(500).json({ message: "Erro interno", error: error.message || error });
     }
   }
-
-
-
   // Buscar dados diários por ID
   async getDataById(req: Request, res: Response): Promise<Response> {
     try {
@@ -90,6 +121,10 @@ class DataController {
       return res.status(500).json({ message: "Erro ao excluir dados", error });
     }
   }
+
+
+
+
 }
 
 export default new DataController();
