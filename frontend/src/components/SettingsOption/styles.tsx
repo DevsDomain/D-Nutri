@@ -1,4 +1,8 @@
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
+
+
+const { width, height } = Dimensions.get('window');
+const adaptivePadding = width * 0.015; // % da largura da tela
 
 export const styles = StyleSheet.create({
     container: {
@@ -17,10 +21,16 @@ export const styles = StyleSheet.create({
         flex: 1,
         fontFamily: "Signika_400Regular",
     },
-    chevron: {
-        marginLeft: "auto", // ou qualquer outra opção mencionada acima
-        padding: 10,
-        position: "absolute",
-        right: 0,
+    fontAwesome: {
+        fontFamily: "FontAwesome",
+        color: "#FF9385",
+        padding: adaptivePadding,
+    },
+    textInput: {
+        flex: 2,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        padding: 2,
+        borderRadius: 5,
     },
 });

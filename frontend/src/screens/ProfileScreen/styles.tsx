@@ -8,11 +8,12 @@ export const styles = StyleSheet.create({
     },
     header: {
         width: '100%',
-        padding: 60,
+        padding: 45,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#90EE90',
+        borderRadius: 25,
     },
     headerTitle: {
         fontSize: 22,
