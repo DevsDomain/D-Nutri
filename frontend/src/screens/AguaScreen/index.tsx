@@ -19,7 +19,7 @@ export default function Agua() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}></Text>
+          <Text style={styles.title}>Selecione a quantidade de Agua</Text>
 
       <View style={styles.card}>
         <View style={styles.row}>

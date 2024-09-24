@@ -80,22 +80,7 @@ export default function TabRoutes() {
           },         
       }}
       />
-      <Tab.Screen 
-      name="Agua" 
-      component={AguaScreen}
-      options={{ tabBarIconStyle: { marginTop: -8 },
-   
-        
-      headerShown: true,
-      title: "Selecione a Quantidade de Água",
-      headerStyle: {
-        backgroundColor: "#BBDEB5", // Cor de fundo do cabeçalho
-      },
-      headerTitleStyle: {
-        color: "#000000", // Cor do título, ajustada para melhor contraste com o fundo
-      },         
-  }}
-  />
+      
       <Tab.Screen name="Favorites" component={FavoritesScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
     </Tab.Navigator>
