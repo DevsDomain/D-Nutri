@@ -96,8 +96,8 @@ export default function TabRoutes() {
       },         
   }}
   />
-
-      <Tab.Screen name="Profile" component={ProfileScreen}                     options={{ headerShown: false }} />
+      <Tab.Screen name="Favorites" component={FavoritesScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
     </Tab.Navigator>
   );
 }
