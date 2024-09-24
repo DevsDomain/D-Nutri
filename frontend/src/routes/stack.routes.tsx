@@ -68,7 +68,7 @@ export default function StackRoutes() {
   name="Agua" 
   component={AguaScreen}
   options={{
-    headerShown: true,
+    headerShown: false,
     title: "Selecione a quantidade de Agua",
     headerStyle: {
       backgroundColor: "#BBDEB5", // Cor do cabeçalho
