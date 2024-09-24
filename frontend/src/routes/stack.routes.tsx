@@ -9,6 +9,8 @@ import OnboardingScreen from "../screens/OnboardingScreen";
 import TabRoutes from "./tab.routes";
 import SelectAlimento from "../screens/SelectAlimento";
 import { StatusBar } from "react-native";
+import EditProfile from "../screens/EditProfile";
+import TermsOfUse from "../screens/Terms";
 
 const Stack = createStackNavigator();
 export default function StackRoutes() {

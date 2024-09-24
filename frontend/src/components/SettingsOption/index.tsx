@@ -1,10 +1,13 @@
 import React, { useEffect } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, ViewStyle, TextInput } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { styles } from './styles';
-import { useFonts, Signika_400Regular } from '@expo-google-fonts/signika';
+
 
 type FontAwesomeIconNames =
+    | 'sign-out'
+    | 'gear'
+    | 'clipboard'
     | 'home'
     | 'user'
     | 'cog'
@@ -13,25 +16,46 @@ type FontAwesomeIconNames =
     | 'star'
     | 'lock'
     | 'file-text'
-    | 'sign-out';
+    | 'search'
+    | 'repeat'
+    | 'anchor'
+    | 'bold'
+    | 'link'
+    | 'at'
+    | 'weight'
+    | 'ruler-vertical'
+    | 'ruler'
+    | 'calendar'
+    | 'venus-mars'
+    | 'balance-scale'
+    | 'arrows-alt-v'
+    | 'expand'
+    | undefined;
 
 interface SettingsOptionProps {
     label: string;
     icon: FontAwesomeIconNames;
     onPress: () => void;
+    editable?: boolean;
+    value?: string;
+    onChangeText?: (text: string) => void;
+    style?: ViewStyle;
 }
 
-const SettingsOption: React.FC<SettingsOptionProps> = ({ label, icon, onPress }) => {
-    let [fontsLoaded] = useFonts({
-        Signika_400Regular,
-    });
-
+const SettingsOption: React.FC<SettingsOptionProps> = ({ label, icon, onPress, value, onChangeText, style, editable }) => {
     return (
-        <TouchableOpacity onPress={onPress} style={styles.container}>
+        <TouchableOpacity onPress={onPress} style={[styles.container, style]}>
             <View style={styles.iconContainer}>
-                <FontAwesome name={icon} size={24} color="#FF9385" />
+                <FontAwesome name={icon} size={24} style={styles.fontAwesome} />
             </View>
             <Text style={styles.label}>{label}</Text>
+            {editable ? (
+                <TextInput
+                    style={styles.textInput}
+                    value={value}
+                    onChangeText={onChangeText}
+                />
+            ) : null}
         </TouchableOpacity>
     );
 };
