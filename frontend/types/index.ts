@@ -10,4 +10,6 @@ export interface RootStackParamList extends ParamListBase {
   Onboarding: undefined;
   Agua: undefined;
   Alimentacao: undefined;
+  scanner: undefined;
+  ProductDetails: { barcode: string };
 }
