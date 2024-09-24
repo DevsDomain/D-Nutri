@@ -7,6 +7,8 @@ import CadastroScreen from "../screens/CadastroScreen";
 import LoginScreen from "../screens/LoginScreen";
 import OnboardingScreen from "../screens/OnboardingScreen";
 import TabRoutes from "./tab.routes";
+import EditProfile from "../screens/EditProfile";
+import TermsOfUse from "../screens/Terms";
 
 const Stack = createStackNavigator();
 export default function StackRoutes() {
@@ -52,6 +54,8 @@ export default function StackRoutes() {
       <Stack.Screen name="Main" component={TabRoutes}           options={{ headerShown: false }} />
       <Stack.Screen name="Agua" component={AguaScreen} />
       <Stack.Screen name="Alimentacao" component={AlimentacaoScreen} />
+      <Stack.Screen name="editProfile" component={EditProfile} />
+      <Stack.Screen name="termsOfUse" component={TermsOfUse} />
     </Stack.Navigator>
   );
 }
