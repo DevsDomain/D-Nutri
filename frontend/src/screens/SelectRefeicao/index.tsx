@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native'; // Importação da navegação
+import styles from "../SelectRefeicao/styles";
 
-export default function App() {
-  // Gerenciar o estado da refeição selecionada
+export default function SelectRefeicao() {
   const [selectedMeal, setSelectedMeal] = useState<string>('Café da Manhã');
+  const navigation = useNavigation(); // Hook de navegação
 
-  console.log (selectedMeal)
-
-  // Opções de refeições
   const mealOptions = [
     'Café da Manhã',
     'Lanche da Manhã',
@@ -20,78 +19,31 @@ export default function App() {
     'Pós-Treino',
   ];
 
+  const handleMealSelection = (meal: string) => {
+    setSelectedMeal(meal); // Atualiza a refeição selecionada
+    navigation.navigate('SelectAlimento'); // Navega para a tela de seleção de alimentos
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Selecione o tipo de refeição</Text>
-
       <View style={styles.card}>
         {mealOptions.map((meal, index) => (
           <TouchableOpacity
             key={index}
             style={styles.row}
-            onPress={() => setSelectedMeal(meal)} // Atualiza o estado com a refeição selecionada
+            onPress={() => handleMealSelection(meal)} // Chama a função ao selecionar uma refeição
           >
             <Ionicons
               name={
                 selectedMeal === meal ? 'radio-button-on' : 'radio-button-off'
               }
               size={24}
-              color={selectedMeal === meal ? '#FF5733' : '#C0C0C0'}
+              color={selectedMeal === meal ? '#FF9385' : '#C0C0C0'}
             />
             <Text style={styles.mealText}>{meal}</Text>
           </TouchableOpacity>
         ))}
       </View>
-
-      
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#d0e8cc',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 30,
-    color: '#333',
-  },
-  card: {
-    width: '80%',
-    backgroundColor: 'white',
-    borderRadius: 10,
-    paddingVertical: 20,
-    paddingHorizontal: 10,
-    alignItems: 'flex-start',
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 5,
-    elevation: 5,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
-    width: '100%',
-  },
-  mealText: {
-    fontSize: 18,
-    marginLeft: 10,
-    color: '#333',
-  },
-  footer: {
-    position: 'absolute',
-    bottom: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
-    padding: 20,
-    backgroundColor: '#f5f5f5',
-  },
-});
