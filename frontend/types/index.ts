@@ -10,4 +10,5 @@ export interface RootStackParamList extends ParamListBase {
   Onboarding: undefined;
   Agua: undefined;
   Alimentacao: undefined;
+  SelectAlimento: undefined;
 }
