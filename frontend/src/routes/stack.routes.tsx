@@ -2,7 +2,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createStackNavigator } from "@react-navigation/stack";
 import { useState, useEffect } from "react";
 import AguaScreen from "../screens/AguaScreen";
-import AlimentacaoScreen from "../screens/AlimentacaoScreen";
 import CadastroScreen from "../screens/CadastroScreen";
 import LoginScreen from "../screens/LoginScreen";
 import OnboardingScreen from "../screens/OnboardingScreen";

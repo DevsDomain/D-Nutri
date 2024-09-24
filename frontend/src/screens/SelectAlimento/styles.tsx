@@ -1,4 +1,3 @@
-
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
@@ -6,6 +5,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f2f2f2',
     paddingTop: 40,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
   },
   searchContainer: {
     flexDirection: 'row',
@@ -24,13 +25,18 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'center',
     marginBottom: 20,
+    borderRadius: 25,
+    backgroundColor: '#FFF8EE', // Cor de fundo ao redor dos botões
   },
   toggleButton: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: 10,
     paddingHorizontal: 20,
-    borderRadius: 20,
+    borderRadius: 16,
   },
   activeButton: {
     backgroundColor: '#FF9385', // Cor do botão ativo
@@ -40,9 +46,11 @@ const styles = StyleSheet.create({
   },
   activeButtonText: {
     color: '#FFFFFF', // Texto branco para o botão ativo
+    textAlign: 'center',
   },
   inactiveButtonText: {
-    color: '#FF8473', // Texto cor FF8473 para o botão inativo
+    color: '#FF8473', // Texto coral para o botão inativo
+    textAlign: 'center',
   },
   scrollView: {
     paddingHorizontal: 20,
@@ -71,5 +79,5 @@ const styles = StyleSheet.create({
     bottom: 15,
   },
 });
-  
-  export default styles
+
+export default styles;

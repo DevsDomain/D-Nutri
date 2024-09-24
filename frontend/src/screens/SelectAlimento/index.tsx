@@ -60,23 +60,25 @@ export default function SelectAlimento() {
         <TouchableOpacity
           style={[
             styles.toggleButton, 
-            !showFavorites ? styles.activeButton : styles.inactiveButton
+            !showFavorites ? styles.activeButton : styles.inactiveButton,
+            { borderTopLeftRadius: 16, borderBottomLeftRadius: 16 }, // Bordas arredondadas apenas na esquerda
           ]}
           onPress={() => setShowFavorites(false)}
         >
           <Text style={!showFavorites ? styles.activeButtonText : styles.inactiveButtonText}>
-            Todos os Alimentos
+            Todos{"\n"}Alimentos
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
             styles.toggleButton, 
-            showFavorites ? styles.activeButton : styles.inactiveButton
+            showFavorites ? styles.activeButton : styles.inactiveButton,
+            { borderTopRightRadius: 16, borderBottomRightRadius: 16 }, // Bordas arredondadas apenas na direita
           ]}
           onPress={() => setShowFavorites(true)}
         >
           <Text style={showFavorites ? styles.activeButtonText : styles.inactiveButtonText}>
-            Meus Favoritos
+            Meus{"\n"}Favoritos
           </Text>
         </TouchableOpacity>
       </View>
