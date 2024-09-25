@@ -63,13 +63,6 @@ export default function LoginScreen({ navigation }: Props) {
         >
           <Text style={styles.buttonText}>Entrar</Text>
         </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={styles.backButtonText}>Voltar</Text>
-        </TouchableOpacity>
       </View>
       <View style={styles.rowContainer}>
         <Text style={styles.login2}>Não tem uma conta?</Text>
@@ -167,13 +160,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginLeft: 3,
-    marginTop: 40,
+    marginTop: 10,
   },
   login2: {
     color: "#797878",
     fontSize: 17,
     marginRight: 5,
-    marginTop: 40,
+    marginTop: 10,
   },
   rowContainer: {
     flexDirection: "row",

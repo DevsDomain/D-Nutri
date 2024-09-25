@@ -84,11 +84,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    marginBottom: 0,
   },
   logo: {
-    width: 250,
-    height: 250,
-    marginBottom: 20,
+    width: 200,
+    height: 200,
+    marginBottom: -20,
+    marginTop: -30
   },
   login: {
     color: "#91C788",
@@ -102,6 +104,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontFamily: "Roboto_400Regular",
     marginLeft: 10,
+    
   },
   titulo: {
     color: "#91C788",
@@ -109,38 +112,41 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto_700Bold",
     fontWeight: "bold",
     marginBottom: 30,
-    marginTop: 0,
+    marginTop: -20,
   },
   subtitulo1: {
     color: "black",
     fontSize: 30,
     fontFamily: "Nunito_800ExtraBold",
     fontWeight: "bold",
-    marginBottom: 20,
+    marginBottom: 10,
     textAlign: "center",
   },
   subtitulo2: {
     color: "#9c9a9a",
     fontSize: 18,
     fontFamily: "Roboto_400Regular",
-    marginBottom: 20,
+    marginBottom: 10,
     textAlign: "center",
+    marginTop: 20,
+    paddingHorizontal: 40,
   },
   button: {
     backgroundColor: "#64A759",
     borderRadius: 12,
     paddingVertical: 20,
-    paddingHorizontal: 120,
-    marginTop: 55,
+    paddingHorizontal: 80,
+    marginTop: 15,
+    marginBottom: 0,
   },
   buttonText: {
     color: "white",
     fontSize: 25,
     fontFamily: "Roboto_900Black",
-  },
+      },
   rowContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 20,
+    marginTop: 10,
   },
 });
