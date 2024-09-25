@@ -8,15 +8,13 @@ import LoginScreen from "../screens/LoginScreen";
 import OnboardingScreen from "../screens/OnboardingScreen";
 import TabRoutes from "./tab.routes";
 import SelectAlimento from "../screens/SelectAlimento";
-import { StatusBar } from "react-native";
-import EditProfile from "../screens/EditProfile";
-import TermsOfUse from "../screens/Terms";
+import { StatusBar, TouchableOpacity, Text } from "react-native";
+import { Ionicons } from '@expo/vector-icons';
 
 const Stack = createStackNavigator();
+
 export default function StackRoutes() {
-  const [isOnboardingCompleted, setIsOnboardingCompleted] = useState<
-    null | boolean
-  >(null);
+  const [isOnboardingCompleted, setIsOnboardingCompleted] = useState<null | boolean>(null);
 
   useEffect(() => {
     const checkOnboardingStatus = async () => {
@@ -28,20 +26,20 @@ export default function StackRoutes() {
   }, []);
 
   if (isOnboardingCompleted === null) {
-    // Exibe um loading ou algo enquanto verifica o AsyncStorage
-    return null;
+    return null; // Exibe um loading ou algo enquanto verifica o AsyncStorage
   }
 
   return (
     <Stack.Navigator
       initialRouteName={isOnboardingCompleted ? "Login" : "Onboarding"}
-      screenOptions={({ route }) => ({
-        headerShown:
-          route.name === "Onboarding" ||
-          route.name === "Login" ||
-          route.name === "Cadastro"
-            ? false
-            : true,
+      screenOptions={({ navigation, route }) => ({
+        headerShown: !(route.name === "Onboarding"),
+        headerLeft: route.name === "Login" || route.name === "Cadastro" ? () => (
+          <TouchableOpacity onPress={() => navigation.goBack()} style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10 }}>
+            <Ionicons name="arrow-back" size={24} color="black" />
+            <Text style={{ marginLeft: 5, fontSize: 18 }}>Voltar</Text>
+          </TouchableOpacity>
+        ) : undefined,
       })}
     >
       {!isOnboardingCompleted && (
@@ -51,55 +49,64 @@ export default function StackRoutes() {
           options={{ headerShown: false }}
         />
       )}
-      <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="Cadastro" component={CadastroScreen} />
-      <Stack.Screen name="Main" 
-      component={TabRoutes}
-      options={{
-        headerShown: false,
-        title: "Selecione o tipo de Refeição",
-        headerStyle: {
-          backgroundColor: "#BBDEB5", // Cor de fundo do cabeçalho
-        },
-        headerTitleStyle: {
-          color: "#000000", // Cor do título, ajustada para melhor contraste com o fundo
-        },
-      }}
-       />
       <Stack.Screen 
-  name="Agua" 
-  component={AguaScreen}
-  options={{
-    headerShown: false,
-    title: "Selecione a quantidade de Agua",
-    headerStyle: {
-      backgroundColor: "#BBDEB5", // Cor do cabeçalho
-    },
-    headerTitleStyle: {
-      color: "#000000",
-    },
-    // Adicionar StatusBar
-    header: () => (
-      <>
-        <StatusBar backgroundColor="#BBDEB5" barStyle="dark-content" />
-      </>
-    ),
-  }}
-/>
+        name="Login" 
+        component={LoginScreen}
+        options={{
+          headerShown: true,
+          headerTitle: '', 
+        }} 
+      />
+      <Stack.Screen 
+        name="Cadastro" 
+        component={CadastroScreen}
+        options={{
+          headerShown: true,
+          headerTitle: '', 
+        }} 
+      />
+      <Stack.Screen 
+        name="Main" 
+        component={TabRoutes}
+        options={{
+          headerShown: false,
+          title: "Selecione o tipo de Refeição",
+          headerStyle: {
+            backgroundColor: "#BBDEB5",
+          },
+          headerTitleStyle: {
+            color: "#000000",
+          },
+        }}
+      />
+      <Stack.Screen 
+        name="Agua" 
+        component={AguaScreen}
+        options={{
+          headerShown: false,
+          title: "Selecione a quantidade de Agua",
+          headerStyle: {
+            backgroundColor: "#BBDEB5",
+          },
+          headerTitleStyle: {
+            color: "#000000",
+          },
+        }}
+      />
       <Stack.Screen
-          name="SelectAlimento"
-          component={SelectAlimento}
-          options={{
-            headerShown: true,
-            title: "Selecione o Alimento",
-            headerStyle: {
-              backgroundColor: "#BBDEB5", // Cor de fundo do cabeçalho
-            },
-            headerTitleStyle: {
-              color: "#000000", // Cor do título, ajustada para melhor contraste com o fundo
-            },
-          }}
-        />
+        name="SelectAlimento"
+        component={SelectAlimento}
+        options={{
+          headerShown: true,
+          title: "Selecione o Alimento",
+          headerStyle: {
+            backgroundColor: "#BBDEB5",
+          },
+          headerTitleStyle: {
+            color: "#000000",
+          },
+        }}
+      />
     </Stack.Navigator>
   );
 }
