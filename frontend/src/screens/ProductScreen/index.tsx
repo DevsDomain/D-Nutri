@@ -66,7 +66,7 @@ export default function ProductDetailsScreen() {
     if (!product) return;
 
     try {
-      const response = await axios.post("http://localhost:3000/api/alimentos", {
+      const response = await axios.post("http://192.168.0.130:3010/alimentos", {
         barcode,
         nomeProduto: product.product_name,
         imageSrc: "http://exemplo.com/imagem.png", // Supondo que o link da imagem seja obtido de algum lugar
@@ -77,6 +77,7 @@ export default function ProductDetailsScreen() {
         sodio: calculateNutrients(product.nutriments.sodium_100g),
         acucar: calculateNutrients(product.nutriments.sugars_100g),
       });
+      console.log("Produto registrado com sucesso:", response.data);
 
       Alert.alert("Sucesso", "Produto registrado com sucesso!");
     } catch (error) {

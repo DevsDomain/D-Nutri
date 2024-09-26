@@ -39,7 +39,7 @@ export default function HomeScreen({ navigation }: Props) {
       {/* Outros componentes, como exercício, sono, etc. */}
       <TouchableOpacity
         style={styles.card}
-        onPress={() => navigation.navigate("Exercicio")}
+        onPress={() => navigation.navigate("scanner")}
       >
         <Image
           source={require("../../../assets/LogoD-NutriBG.png")} // Imagem do item Exercício
