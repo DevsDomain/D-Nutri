@@ -1,10 +1,10 @@
 // routes/alimentos.ts
 
 import { Router } from "express";
-import { createAlimento } from "../controllers/alimentosController";
+import AlimentoController from "../controllers/alimentosController";
 
-const router = Router();
+const FoodRouter = Router();
 
-router.post("/alimentos", createAlimento);
+FoodRouter.post("/alimentos", AlimentoController.createAlimento);
 
-export default router;
+export default FoodRouter;
