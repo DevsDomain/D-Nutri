@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import axios from "axios";
 import { useRoute } from "@react-navigation/native";
+import { BACKEND_API_URL } from "@env";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 interface ProductDetails {
   product_name: string;
@@ -34,10 +36,18 @@ export default function ProductDetailsScreen() {
     const fetchProductData = async () => {
       try {
         const response = await axios.get(
-          `https://br.openfoodfacts.org/api/v1/product/${barcode}.json`
+          `https://br.openfoodfacts.org/api/v0/product/${barcode}.json`
         );
         //console.log("Dados do produto:", response.data.product);
-        const nutriments = response.data.product.nutriments;
+        const productData = response.data.product;
+        if (!productData) {
+          console.log("Produto não encontrado.");
+          Alert.alert("Erro", "Produto não encontrado.");
+          return;
+        }
+
+        const nutriments = productData.nutriments || {}; // Fallback para evitar undefined
+
         setProduct({
           ...response.data.product,
           nutriments: {
@@ -50,7 +60,9 @@ export default function ProductDetailsScreen() {
           },
         });
       } catch (error) {
+        // Tratamento de erro com alerta e log no console
         console.error("Erro ao buscar dados do produto:", error);
+        Alert.alert("Erro", "Falha ao buscar dados do produto.");
       }
     };
 
@@ -66,7 +78,7 @@ export default function ProductDetailsScreen() {
     if (!product) return;
 
     try {
-      const response = await axios.post("http://192.168.0.130:3010/alimentos", {
+      const response = await axios.post(`${BACKEND_API_URL}/alimentos`, {
         barcode,
         nomeProduto: product.product_name,
         imageSrc: "http://exemplo.com/imagem.png", // Supondo que o link da imagem seja obtido de algum lugar
@@ -97,33 +109,33 @@ export default function ProductDetailsScreen() {
           <View style={styles.row}>
             <View style={styles.column}>
               <TouchableOpacity
-                style={styles.button}
+                style={styles.circleButton}
                 onPress={handleDecreaseQuantity}
               >
-                <Text style={styles.buttonText}>-</Text>
+                <Ionicons name="remove-circle" size={30} color="red" />
               </TouchableOpacity>
-              <Text style={styles.valueText}>{quantity} qtde</Text>
+              <Text style={styles.valueText}>{quantity} Porção</Text>
               <TouchableOpacity
-                style={styles.button}
+                style={styles.circleButton}
                 onPress={handleIncreaseQuantity}
               >
-                <Text style={styles.buttonText}>+</Text>
+                <Ionicons name="add-circle" size={30} color="green" />
               </TouchableOpacity>
             </View>
 
             <View style={styles.column}>
               <TouchableOpacity
-                style={styles.button}
+                style={styles.circleButton}
                 onPress={handleDecreaseWeight}
               >
-                <Text style={styles.buttonText}>-</Text>
+                <Ionicons name="remove-circle" size={30} color="red" />
               </TouchableOpacity>
-              <Text style={styles.valueText}>{weight} gramas</Text>
+              <Text style={styles.valueText}>{weight} g</Text>
               <TouchableOpacity
-                style={styles.button}
+                style={styles.circleButton}
                 onPress={handleIncreaseWeight}
               >
-                <Text style={styles.buttonText}>+</Text>
+                <Ionicons name="add-circle" size={30} color="green" />
               </TouchableOpacity>
             </View>
           </View>
@@ -212,19 +224,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  button: {
-    backgroundColor: "#C1E1C1",
+  circleButton: {
     padding: 10,
-    borderRadius: 50,
-    width: 40,
-    height: 40,
-    justifyContent: "center",
-    alignItems: "center",
   },
-  buttonText: {
-    fontSize: 24,
-    color: "#4C956C",
-  },
+
   valueText: {
     fontSize: 16,
     marginVertical: 10,
