@@ -4,7 +4,7 @@ import DataController from "../controllers/dataController";
 const DataRouter = express.Router();
 
 // Rotas para dados diários
-//router.post("/data/:userId/", DataController.createData);
+DataRouter.get("/data/:userId/", DataController.getDataById);
 DataRouter.post("/data/:userId", DataController.createData);
 DataRouter.delete("/data/:userId", DataController.deleteData);
 

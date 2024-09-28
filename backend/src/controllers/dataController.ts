@@ -42,38 +42,36 @@ class DataController {
       const { data } = req.body
       const data_atual = moment(data).format("YYYY-MM-DD");
 
-      // VERIFICA SE O USUÁRIO EXISTE
-      const userMongo = await User.findOne({ idUser: userId });
-      if (!userMongo) {
-        return res.status(500).json({ message: "Usuário não encontrado!" });
+      // VERIFICA SE O USUÁRIO EXISTE NA TABELA POSTGRESQL
+      const users = await pg.query(`SELECT * FROM "User" WHERE "idUsuario" = $1`, [userId]);
+      if (users.rows.length === 0) {
+        return res.status(404).json({ message: "Usuário não encontrado" });
       }
 
-      // VERIFICA SE JÁ EXISTE ESSA DATA PARA ESSE USUÁRIO!
-      const existingData = await Data.findOne({ usuario: userMongo.id, data_atual });
-      if (existingData) {
-        let responseFormated = this.formatDate(existingData.data_atual);
-
-        return res.status(200).json(responseFormated);
-      }
+     const userData = await new User({idUser:userId}).save();
 
       // INSERINDO NOVA DATA
-      const novaData = await new Data({ usuario: userMongo.id, data_atual: data_atual }).save();
+      const novaData = await new Data({ usuario: userData.id, data_atual: data_atual }).save();
       // formatando retorno
       let responseFormated = this.formatDate(novaData.data_atual);
+      const response = {data:responseFormated, user:userData}
 
 
-
-      return res.status(200).json(responseFormated);
+      return res.status(200).json(response);
 
     } catch (error: any) {
       return res.status(500).json({ message: "Erro interno", error: error.message || error });
     }
   }
-  // Buscar dados diários por ID
+  // Carrega histórico dos dados por usuário
   async getDataById(req: Request, res: Response): Promise<Response> {
     try {
-      const { dataId } = req.params;
-      const data = await Data.findById(dataId);
+      const { userId } = req.params;
+      const user = await User.findOne({idUser:userId});
+      if(!user){
+        return res.status(404).json({ message: "Usuário não encontrado" });
+      }
+      const data = await Data.find({usuario:user.id});
 
       if (!data) {
         return res.status(404).json({ message: "Dados não encontrados" });
