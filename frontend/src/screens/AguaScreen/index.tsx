@@ -1,13 +1,7 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  Alert,
-} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import styles from "./styles";
 
 export default function Agua() {
   const [quantity, setQuantity] = useState(150);
@@ -15,8 +9,8 @@ export default function Agua() {
 
   console.log(savedQuantity);
 
-  const increment = () => setQuantity(quantity + 50);
   const decrement = () => setQuantity(quantity > 0 ? quantity - 50 : 0);
+  const increment = () => setQuantity(quantity + 50);
 
   const handleSave = () => {
     setSavedQuantity(quantity); // Salva o valor atual
@@ -25,7 +19,7 @@ export default function Agua() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Selecione o tipo de refeição</Text>
+          <Text style={styles.title}>Selecione a quantidade de Agua</Text>
 
       <View style={styles.card}>
         <View style={styles.row}>
@@ -37,14 +31,17 @@ export default function Agua() {
         </View>
 
         <View style={styles.row}>
-          <TouchableOpacity onPress={increment} style={styles.circleButton}>
-            <Ionicons name="add-circle" size={30} color="green" />
-          </TouchableOpacity>
-
-          <Text style={styles.quantity}>{quantity} ml</Text>
-
+          {/* Botão de decremento à esquerda */}
           <TouchableOpacity onPress={decrement} style={styles.circleButton}>
             <Ionicons name="remove-circle" size={30} color="red" />
+          </TouchableOpacity>
+
+          {/* Texto com a quantidade */}
+          <Text style={styles.quantity}>{quantity} ml</Text>
+
+          {/* Botão de incremento à direita */}
+          <TouchableOpacity onPress={increment} style={styles.circleButton}>
+            <Ionicons name="add-circle" size={30} color="green" />
           </TouchableOpacity>
         </View>
 
@@ -61,71 +58,3 @@ export default function Agua() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#d0e8cc",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 30,
-    color: "#333",
-  },
-  card: {
-    width: "80%",
-    backgroundColor: "white",
-    borderRadius: 10,
-    padding: 20,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 5,
-    elevation: 5,
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 10,
-  },
-  icon: {
-    width: 40,
-    height: 40,
-    marginRight: 10,
-  },
-  foodType: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#333",
-  },
-  quantity: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginHorizontal: 20,
-  },
-  circleButton: {
-    padding: 10,
-  },
-  okButton: {
-    marginTop: 20,
-    backgroundColor: "#94df83",
-    borderRadius: 5,
-    paddingVertical: 10,
-    paddingHorizontal: 40,
-  },
-  okButtonText: {
-    color: "white",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  savedText: {
-    marginTop: 20,
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#333",
-  },
-});
