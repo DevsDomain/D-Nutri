@@ -12,17 +12,26 @@ class DashboardController {
       const { userId } = req.params;
 
       const data_atual = moment(data).format("YYYY-MM-DD");
-      const userPG = await User.findOne({idUser:userId})
-      const findUser = await Data.findOne({ data_atual: data_atual,usuario:userPG?.id})
+      const userPG = await User.find({idUser:userId})
 
-      if (!findUser) {
+      if(!userPG){
+        return res.status(400).json({ message: "Erro ao buscar usuário no mongo!" });
+      }
+      
+      let usuarioEncontrado:any | string;
+
+      for(const usersPG of userPG){
+        usuarioEncontrado = await Data.findOne({ data_atual: data_atual,usuario:usersPG?.id})
+      }
+
+      if (!usuarioEncontrado) {
         return res.status(400).json({ message: "Erro ao buscar usuário no dashboardController!" });
       }
 
-      const user = await User.findById(findUser.usuario);
+      const user = await User.findById(usuarioEncontrado.usuario);
       const userPotsgres = await pg.query(`select "nomeUsuario",peso,altura,genero,meta,"TMB" FROM "User" WHERE "idUsuario" = $1`, [user?.idUser]);
 
-      return res.status(201).json({ userMG: user, userPG: userPotsgres.rows[0] });
+      return res.status(201).json({ userMG: usuarioEncontrado, userPG: userPotsgres.rows[0] });
     } catch (error) {
       console.error("Erro ao criar usuário:", error);
       return res.status(500).json({ message: "Erro ao criar usuário", error });
