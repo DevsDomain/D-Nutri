@@ -52,6 +52,7 @@ class DataController {
       const existingData = await Data.findOne({ usuario: userMongo.id, data_atual });
       if (existingData) {
         let responseFormated = this.formatDate(existingData.data_atual);
+
         return res.status(200).json(responseFormated);
       }
 
