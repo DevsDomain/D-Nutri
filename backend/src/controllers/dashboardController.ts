@@ -13,7 +13,7 @@ class DashboardController {
 
       const data_atual = moment(data).format("YYYY-MM-DD");
       const userPG = await User.findOne({idUser:userId})
-      const findUser = await Data.findOne({ data_atual: data_atual,usuario:userPG})
+      const findUser = await Data.findOne({ data_atual: data_atual,usuario:userPG?.id})
 
       if (!findUser) {
         return res.status(400).json({ message: "Erro ao buscar usuário no dashboardController!" });
