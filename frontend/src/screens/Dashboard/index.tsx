@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import moment from 'moment';
+import { IUser, IUserData } from '../../types/userDiary';
 import {
   FlatList,
   SafeAreaView,
@@ -19,9 +20,11 @@ type ItemData = {
 };
 
 const Dashboard = () => {
-  const [selectedId, setSelectedId] = useState<number | string>(2);
+  const [selectedId, setSelectedId] = useState<number | string>();
   const [loading, setLoading] = useState(false);
   const [dataList, setDataList] = useState<ItemData[]>([]);
+  const [userMG, setUserMG] = useState<IUser>();
+  const [userPG, setUserPG] = useState<IUserData>();
 
   // Helper function to format the date title
   const formatDateTitle = (date: moment.Moment): string => {
@@ -39,16 +42,18 @@ const Dashboard = () => {
         date: date.format('YYYY-MM-DD'),
       });
     }
+    setSelectedId(initialData[2].id);
     setDataList(initialData);
+    loadDashboard(1, initialData[2].date);
   }, []);
 
-  // Function to load 2 more dates ahead
+  // Gera mais 2 datas
   const loadDatas = () => {
     setLoading(true);
     const newDates: ItemData[] = [];
-    const lastDate = moment(dataList[dataList.length - 1].date); // Get the last date
+    const lastDate = moment(dataList[dataList.length - 1].date); // Busca a ultima data
 
-    // Generate two more days ahead
+
     for (let i = 1; i <= 2; i++) {
       const nextDate = lastDate.add(1, 'days').clone();
       newDates.push({
@@ -64,7 +69,7 @@ const Dashboard = () => {
 
   const createDate = async (date: string, idUser: number) => {
     try {
-      const response = await axios.post(`http://93.127.211.47:3010/data/5`, {
+      const response = await axios.post(`http://93.127.211.47:3010/data/1`, {
         data: date,
       });
       const newItem: ItemData = { date: date, id: idUser, title: response.data.data };
@@ -74,17 +79,32 @@ const Dashboard = () => {
     }
   };
 
+  const loadDashboard = async (id: number, date: string) => {
+    try {
+      const response = await axios.post(`http://93.127.211.47:3010/dashboard/1`, {
+        data: date,
+      });
+      console.log(response.data);
+      setUserMG(response.data.userMG);
+      setUserPG(response.data.userPG);
+    } catch (error: any) {
+      console.log("ERRO ao buscar dados dashboard, criando nova data...");
+      createDate(date, 1);
+      setLoading(false);
+    }
+  }
+
   const handleDatePress = async (item: ItemData) => {
     setSelectedId(item.id);
     setLoading(true);
     try {
-      const response = await axios.post(`http://93.127.211.47:3010/dashboard/5`, {
+      const response = await axios.post(`http://93.127.211.47:3010/dashboard/1`, {
         data: item.date,
       });
       console.log(response.data);
     } catch (error: any) {
       console.log("ERRO ao buscar dados dashboard, criando nova data...");
-      createDate(item.date, item.id);
+      createDate(item.date, 1);
       setLoading(false);
     }
   };
@@ -99,7 +119,7 @@ const Dashboard = () => {
   };
 
   const renderItem = ({ item }: { item: ItemData }) => {
-    const backgroundColor = item.id === selectedId ? '#4f993f' : '#94df83';
+    const backgroundColor = item.id === selectedId ? '#FF9385' : '#94df83';
     return (
       <TouchableOpacity
         onPress={() => handleDatePress(item)}
@@ -122,6 +142,28 @@ const Dashboard = () => {
         onEndReachedThreshold={0.01}
         ListFooterComponent={renderFooter}
       />
+      <Text>DADOS DO USUÁRIO - BANCO DE DADOS</Text>
+
+      <Text>Nome do usuário:{userPG?.nomeUsuario}</Text>
+      <Text>Altura do usuário:{userPG?.altura}</Text>
+      <Text>Peso do usuário:{userPG?.peso}</Text>
+      <Text>Genero do usuário:{userPG?.genero}</Text>
+      <Text>Meta do usuário:{userPG?.meta}</Text>
+      <Text>Taxa metabolica basal:{userPG?.TMB}</Text>
+
+
+      <Text style={{ fontSize: 21 }}>DADOS DO USUÁRIO MONGODB</Text>
+      <Text>INGESTÃO DE AGUA ATUAL:{userMG?.ingestaoAgua.ingestaoAtual}</Text>
+      <Text>INGESTÃO DE AGUA IDEAL:{userMG?.ingestaoAgua.ingestaoIdeal}</Text>
+      <Text>IMC ATUAL:{userMG?.metrica.ImcAtual}</Text>
+      <Text>IMC REAL:{userMG?.metrica.ImcIdeal}</Text>
+
+
+
+
+
+
+
     </SafeAreaView>
   );
 };
