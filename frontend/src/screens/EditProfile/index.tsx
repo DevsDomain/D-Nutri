@@ -14,7 +14,12 @@ const EditProfile: React.FC = () => {
     const [metaPeso, setMetaPeso] = useState('');
 
     const handleSaveChanges = () => {
-        console.log("Alterações salvas");
+        console.log("Alterações salvas:");
+        console.log("Nome:", nome);
+        console.log("Altura:", altura);
+        console.log("Sexo:", sexo);
+        console.log("Peso:", peso);
+        console.log("Meta de Peso:", metaPeso);
     };
 
     return (
@@ -25,7 +30,7 @@ const EditProfile: React.FC = () => {
             </View>
 
             <ScrollView>
-                <ProfilePicture name="User" localImage={localImage} />
+                <ProfilePicture name={nome || 'User'} localImage={localImage} />
 
                 <SettingsOption
                     label="Nome"
@@ -36,7 +41,7 @@ const EditProfile: React.FC = () => {
                     onChangeText={setNome}
                 />
                 <SettingsOption
-                    label="Altura"
+                    label="Altura em cm"
                     icon="expand"
                     onPress={() => { }}
                     editable={true}
@@ -54,8 +59,8 @@ const EditProfile: React.FC = () => {
 
                 />
                 <SettingsOption
-                    label="Peso"
-                    icon="balance-scale"
+                    label="Peso em Kg"
+                    icon="clipboard"
                     onPress={() => { }}
                     editable={true}
                     value={peso}
@@ -63,7 +68,7 @@ const EditProfile: React.FC = () => {
 
                 />
                 <SettingsOption
-                    label="Meta de Peso"
+                    label="Meta de Peso em Kg"
                     icon="clipboard"
                     onPress={() => { }}
                     editable={true}
