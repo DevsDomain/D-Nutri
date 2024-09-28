@@ -1,57 +1,77 @@
 import { Request, Response } from "express";
-import Data from "../models/mongo/Data"; // Certifique-se de que o caminho para o modelo Data está correto
-import User from "../models/mongo/User"; // Certifique-se de que o caminho para o modelo User está correto
+import pg from '../databases/postgres'
+import Data from "../models/mongo/Data";
+import User from "../models/mongo/User";
+import moment from 'moment';
 
 class DataController {
+
+  public dayOfTheWeek = (day: number): string => {
+    switch (day) {
+      case 0:
+        return "Dom";
+      case 1:
+        return "Seg";
+      case 2:
+        return "Ter";
+      case 3:
+        return "Qua";
+      case 4:
+        return "Qui";
+      case 5:
+        return "Sex";
+      case 6:
+        return "Sab";
+      default:
+        return "";
+    }
+  }
+
+  public formatDate = (date: Date): string => {
+    let resData = moment.utc(date).format("DD-MM")
+    let day = moment.utc(date).day();
+    let week = this.dayOfTheWeek(day);
+    const responseFormated = `${week}\n${resData}`
+    return responseFormated;
+  }
+
   // Criar novos dados diários para um usuário
-  async createData(req: Request, res: Response): Promise<Response> {
+  createData = async (req: Request, res: Response): Promise<Response> => {
     try {
       const { userId } = req.params;
+      const { data } = req.body
+      const data_atual = moment(data).format("YYYY-MM-DD");
 
-      // Verifica se o usuário existe
-      const user = await User.findById(userId);
-      if (!user) {
+      // VERIFICA SE O USUÁRIO EXISTE NA TABELA POSTGRESQL
+      const users = await pg.query(`SELECT * FROM "User" WHERE "idUsuario" = $1`, [userId]);
+      if (users.rows.length === 0) {
         return res.status(404).json({ message: "Usuário não encontrado" });
       }
 
-      // Cria os dados diários
-      const data = new Data({
-        ...req.body,
-        usuario: userId,
-      });
+     const userData = await new User({idUser:userId}).save();
 
-      await data.save();
-      return res
-        .status(201)
-        .json({ message: "Dados criados com sucesso", data });
-    } catch (error) {
-      return res.status(500).json({ message: "Erro ao criar dados", error });
+      // INSERINDO NOVA DATA
+      const novaData = await new Data({ usuario: userData.id, data_atual: data_atual }).save();
+      // formatando retorno
+      let responseFormated = this.formatDate(novaData.data_atual);
+      const response = {data:responseFormated, user:userData}
+
+
+      return res.status(200).json(response);
+
+    } catch (error: any) {
+      return res.status(500).json({ message: "Erro interno", error: error.message || error });
     }
   }
-
-  // Buscar todos os dados diários de um usuário
-  async getAllData(req: Request, res: Response): Promise<Response> {
-    try {
-      const { userId } = req.params;
-      const data = await Data.find({ usuario: userId });
-
-      if (!data.length) {
-        return res
-          .status(404)
-          .json({ message: "Dados não encontrados para este usuário" });
-      }
-
-      return res.status(200).json(data);
-    } catch (error) {
-      return res.status(500).json({ message: "Erro ao buscar dados", error });
-    }
-  }
-
-  // Buscar dados diários por ID
+  // Carrega histórico dos dados por usuário
   async getDataById(req: Request, res: Response): Promise<Response> {
     try {
-      const { dataId } = req.params;
-      const data = await Data.findById(dataId);
+      const { userId } = req.params;
+      const user = await User.findOne({idUser:userId});
+      if(!user){
+        return res.status(404).json({ message: "Usuário não encontrado" });
+      }
+      const data = await Data.find({usuario:user.id});
 
       if (!data) {
         return res.status(404).json({ message: "Dados não encontrados" });
@@ -100,6 +120,10 @@ class DataController {
       return res.status(500).json({ message: "Erro ao excluir dados", error });
     }
   }
+
+
+
+
 }
 
 export default new DataController();
