@@ -12,6 +12,8 @@ import {
   ActivityIndicator,
   View,
 } from 'react-native';
+import PieChartCalorias from '../../components/PieChart';
+import BarChart from '../../components/BarChart';
 
 type ItemData = {
   id: number;
@@ -79,14 +81,23 @@ const Dashboard = () => {
     }
   };
 
+  const loadPieChart = async (data: IUser) => {
+    let dados = [1000, 1000]
+
+    if (data.macroIdeal?.Caloria > 0 && data.macroReal?.Caloria > 0) {
+      dados = [data.macroIdeal?.Caloria, data.macroReal?.Caloria]
+    }
+  }
+
   const loadDashboard = async (id: number, date: string) => {
     try {
       const response = await axios.post(`http://93.127.211.47:3010/dashboard/1`, {
         data: date,
       });
-      console.log(response.data);
       setUserMG(response.data.userMG);
       setUserPG(response.data.userPG);
+      loadPieChart(response.data.userMG)
+
     } catch (error: any) {
       console.log("ERRO ao buscar dados dashboard, criando nova data...");
       createDate(date, 1);
@@ -101,7 +112,12 @@ const Dashboard = () => {
       const response = await axios.post(`http://93.127.211.47:3010/dashboard/1`, {
         data: item.date,
       });
-      console.log(response.data);
+      if (response.status == 201) {
+        setUserMG(response.data.userMG);
+        setUserPG(response.data.userPG);
+        loadPieChart(response.data.userMG)
+
+      }
     } catch (error: any) {
       console.log("ERRO ao buscar dados dashboard, criando nova data...");
       createDate(item.date, 1);
@@ -142,21 +158,32 @@ const Dashboard = () => {
         onEndReachedThreshold={0.01}
         ListFooterComponent={renderFooter}
       />
+      <PieChartCalorias userMG={userMG}/>
+      <BarChart userMG={userMG}/>
       <Text>DADOS DO USUÁRIO - BANCO DE DADOS</Text>
 
-      <Text>Nome do usuário:{userPG?.nomeUsuario}</Text>
-      <Text>Altura do usuário:{userPG?.altura}</Text>
-      <Text>Peso do usuário:{userPG?.peso}</Text>
-      <Text>Genero do usuário:{userPG?.genero}</Text>
-      <Text>Meta do usuário:{userPG?.meta}</Text>
-      <Text>Taxa metabolica basal:{userPG?.TMB}</Text>
+      {userPG &&
+        <View>
+          <Text>Nome do usuário:{userPG?.nomeUsuario || ""}</Text>
+          <Text>Altura do usuário:{userPG?.altura || ""}</Text>
+          <Text>Peso do usuário:{userPG?.peso || ""}</Text>
+          <Text>Genero do usuário:{userPG?.genero || ""}</Text>
+          <Text>Meta do usuário:{userPG?.meta || ""}</Text>
+          <Text>Taxa metabolica basal:{userPG?.TMB || ""}</Text>
+        </View>}
+
 
 
       <Text style={{ fontSize: 21 }}>DADOS DO USUÁRIO MONGODB</Text>
-      <Text>INGESTÃO DE AGUA ATUAL:{userMG?.ingestaoAgua.ingestaoAtual}</Text>
-      <Text>INGESTÃO DE AGUA IDEAL:{userMG?.ingestaoAgua.ingestaoIdeal}</Text>
-      <Text>IMC ATUAL:{userMG?.metrica.ImcAtual}</Text>
-      <Text>IMC REAL:{userMG?.metrica.ImcIdeal}</Text>
+      {userMG &&
+        <View>
+          <Text>INGESTÃO DE AGUA ATUAL:{userMG?.ingestaoAgua?.ingestaoAtual || "0"}</Text>
+          <Text>INGESTÃO DE AGUA IDEAL:{userMG?.ingestaoAgua?.ingestaoIdeal || "0"}</Text>
+          <Text>IMC ATUAL:{userMG?.metrica?.ImcAtual || "0"}</Text>
+          <Text>IMC REAL:{userMG?.metrica?.ImcIdeal || "0"}</Text>
+        </View>
+      }
+
 
 
 
