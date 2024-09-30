@@ -26,21 +26,21 @@ export default function BarChart({ userMG }: UserProps) {
             <Text>Carboidratos</Text>
             <View style={styles.macroContainer}>
                 <ProgressBar animated progress={percentualCarbo / 100} width={screenWidth - 120} height={13}
-                    color="#55AA55" unfilledColor="#ff938542" borderWidth={0.5} />
+                    color="#55AA55" unfilledColor="#38343424" borderWidth={0.5} />
                 <Text>{carboReal} / {carboIdeal}g</Text>
             </View>
 
             <Text>Proteina</Text>
             <View style={styles.macroContainer}>
                 <ProgressBar animated progress={percentualProteina / 100} width={screenWidth - 120} height={13}
-                    color="#55AA55" unfilledColor="#ff938542" borderWidth={0.5} />
+                    color="#55AA55" unfilledColor="#38343424" borderWidth={0.5} />
                 <Text>{proteinaReal} / {proteinaIdeal}g</Text>
                 </View>
 
             <Text>Gordura</Text>
             <View style={styles.macroContainer}>
                 <ProgressBar animated progress={percentualGordura / 100} width={screenWidth - 120} height={13}
-                    color="#55AA55" unfilledColor="#ff938542" borderWidth={0.5} />
+                    color="#55AA55" unfilledColor="#38343424" borderWidth={0.5} />
                 <Text>{gorduraReal} / {gorduraIdeal}g</Text>
                 </View>
         </SafeAreaView>
@@ -49,7 +49,7 @@ export default function BarChart({ userMG }: UserProps) {
 
 const styles = StyleSheet.create({
     container: {
-        margin: 'auto'
+        marginHorizontal: 'auto'
     },
     macroContainer: {
         display: 'flex',

@@ -11,9 +11,15 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   View,
+  Dimensions
 } from 'react-native';
 import PieChartCalorias from '../../components/PieChart';
 import BarChart from '../../components/BarChart';
+import AguaConsumo from '../../components/AguaConsumo';
+import AlimentacaoConsumo from '../../components/AlimentacaoConsumo';
+
+
+const screenWidth = Dimensions.get('window').width;
 
 type ItemData = {
   id: number;
@@ -135,61 +141,47 @@ const Dashboard = () => {
   };
 
   const renderItem = ({ item }: { item: ItemData }) => {
-    const backgroundColor = item.id === selectedId ? '#FF9385' : '#94df83';
+    const backgroundColor = item.id === selectedId ? '#91C788' : '#FF9385';
+    const color = item.id === selectedId ? '#fff' : '#ffffff9e';
+
     return (
       <TouchableOpacity
         onPress={() => handleDatePress(item)}
         style={[styles.item, { backgroundColor }]}>
-        <Text style={[styles.title, { color: 'white' }]}>{item.title}</Text>
+        <Text style={[styles.title, { color: color }]}>{item.title}</Text>
       </TouchableOpacity>
     );
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList
-        horizontal
-        data={dataList}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
-        extraData={selectedId}
-        showsHorizontalScrollIndicator={false}
-        onEndReached={loadDatas} // Trigger loadDatas on end reach
-        onEndReachedThreshold={0.01}
-        ListFooterComponent={renderFooter}
-      />
-      <PieChartCalorias userMG={userMG}/>
-      <BarChart userMG={userMG}/>
-      <Text>DADOS DO USUÁRIO - BANCO DE DADOS</Text>
+      <View style={styles.metricas}>
 
-      {userPG &&
         <View>
-          <Text>Nome do usuário:{userPG?.nomeUsuario || ""}</Text>
-          <Text>Altura do usuário:{userPG?.altura || ""}</Text>
-          <Text>Peso do usuário:{userPG?.peso || ""}</Text>
-          <Text>Genero do usuário:{userPG?.genero || ""}</Text>
-          <Text>Meta do usuário:{userPG?.meta || ""}</Text>
-          <Text>Taxa metabolica basal:{userPG?.TMB || ""}</Text>
-        </View>}
-
-
-
-      <Text style={{ fontSize: 21 }}>DADOS DO USUÁRIO MONGODB</Text>
-      {userMG &&
-        <View>
-          <Text>INGESTÃO DE AGUA ATUAL:{userMG?.ingestaoAgua?.ingestaoAtual || "0"}</Text>
-          <Text>INGESTÃO DE AGUA IDEAL:{userMG?.ingestaoAgua?.ingestaoIdeal || "0"}</Text>
-          <Text>IMC ATUAL:{userMG?.metrica?.ImcAtual || "0"}</Text>
-          <Text>IMC REAL:{userMG?.metrica?.ImcIdeal || "0"}</Text>
+          <FlatList
+            horizontal
+            data={dataList}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id.toString()}
+            extraData={selectedId}
+            showsHorizontalScrollIndicator={false}
+            onEndReached={loadDatas} // Trigger loadDatas on end reach
+            onEndReachedThreshold={0.01}
+            ListFooterComponent={renderFooter}
+          />
         </View>
-      }
+
+        <Text style={styles.userTitle}> Bem vindo(a), {userPG?.nomeUsuario || 'usuario'}</Text>
+        <Text style={styles.userSubTitle}>Acompanhe seu relatório nutricional diário:</Text>
 
 
+        <PieChartCalorias userMG={userMG} />
+        <BarChart userMG={userMG} />
 
+      </View>
 
-
-
-
+      <AguaConsumo userMG={userMG} />
+      <AlimentacaoConsumo userMG={userMG} />
 
     </SafeAreaView>
   );
@@ -199,12 +191,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: StatusBar.currentHeight || 0,
+    gap: 20
+  },
+  metricas: {
+    borderRadius: 30,
+    paddingBottom: 30,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: { width: 10, height: 0 },
   },
   item: {
     padding: 5,
     margin: 10,
     width: 80,
-    height: 60,
+    maxHeight: 60,
     borderRadius: 10,
     backgroundColor: 'rgba(38, 87, 215, 0.25)',
     shadowColor: '#000',
@@ -222,6 +222,18 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: 35,
   },
+  userTitle: {
+    fontSize: 21,
+    fontWeight: 700,
+    textAlign: 'center',
+    marginVertical: 10
+  },
+  userSubTitle: {
+    fontSize: 18,
+    fontWeight: 500,
+    textAlign: 'center',
+    marginVertical: 5
+  }
 });
 
 export default Dashboard;
