@@ -4,10 +4,10 @@ const password = process.env.PG_PASS || 'your_pg_password';
 console.log(password)
 
 const connectionString = `postgresql://postgres.wnvipfgsewkkjiiwsoic:${password}@aws-0-us-west-1.pooler.supabase.com:6543/postgres`
-const postgresLocal = `postgresql://postgres:123@localhost:5432/Dnutri`
+const postgresLocal = `postgresql://postgres:2202@localhost:5432/Dnutri`
 
 const pool = new Pool({
-    connectionString: connectionString,
+    connectionString: postgresLocal,
 });
 
 async function connectToPostgres() {
