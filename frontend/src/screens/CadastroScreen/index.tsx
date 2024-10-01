@@ -9,7 +9,8 @@ import {
   Alert,
 } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../../../types"; // Defina seus tipos de navegação em um arquivo separado
+import { RootStackParamList } from "../../../types"; 
+
 
 const logo = require("../../../assets/logo.png");
 
@@ -27,16 +28,49 @@ export default function CadastroScreen({ navigation }: Props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleRegister = () => {
-    // Aqui você pode adicionar lógica para salvar os dados do cadastro, se necessário
-
-    // Exibir o alerta de sucesso
-    Alert.alert("Conta criada com sucesso!");
-
-    // Navegar para a tela de login
-    navigation.navigate("Login");
+  const validateEmail = (email: string) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
   };
 
+  const handleRegister = async () => {
+    if (!name || !email || !password) {
+        Alert.alert("Erro", "Todos os campos devem ser preenchidos.");
+        return;
+    }
+
+    if (!validateEmail(email)) {
+        Alert.alert("Erro", "Por favor, insira um email válido.");
+        return;
+    }
+
+    try {
+        const response = await fetch('http://93.127.211.47:3010/cadastros', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                nomeUsuario: name,
+                email: email,
+                password: password,
+            }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            Alert.alert("Conta criada com sucesso!");
+            navigation.navigate("Login");
+        } else {
+            Alert.alert("Erro", data.message || "Erro ao cadastrar. Tente novamente.");
+        }
+    } catch (error) {
+        console.error("Erro ao cadastrar usuário:", error);
+        Alert.alert("Erro", "Erro ao cadastrar usuário. Tente novamente.");
+    }
+};
+  
   return (
     <View style={styles.container}>
       <View style={styles.tituloContainer}>
@@ -64,6 +98,7 @@ export default function CadastroScreen({ navigation }: Props) {
             placeholder="Digite seu email"
             value={email}
             onChangeText={setEmail}
+            keyboardType="email-address" // Melhora a experiência no mobile
           />
         </View>
 
@@ -166,14 +201,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
   },
-  backButton: {
+  rowContainer: {
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 20,
-    padding: 10,
-  },
-  backButtonText: {
-    color: "#5e9256",
-    fontSize: 20,
-    fontWeight: "bold",
   },
   login: {
     color: "#91C788",
@@ -187,10 +218,5 @@ const styles = StyleSheet.create({
     fontSize: 17,
     marginRight: 5,
     marginTop: 0,
-  },
-  rowContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 20,
   },
 });

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StatusBar, ScrollView, View, Text, SafeAreaView, TouchableOpacity, TextInput } from 'react-native';
+import { StatusBar, ScrollView, View, Text, SafeAreaView, TouchableOpacity, TextInput, Alert } from 'react-native';
 import ProfilePicture from '../../components/ProfilePicture';
 import SettingsOption from '../../components/SettingsOption';
 import { styles } from './styles';
@@ -7,14 +7,51 @@ import { styles } from './styles';
 const EditProfile: React.FC = () => {
     const localImage = require('../../../assets/profile-icon.png');
 
-    const [nome, setNome] = useState('');
+    const [nomeUsuario, setNomeUsuario] = useState('');
     const [altura, setAltura] = useState('');
-    const [sexo, setSexo] = useState('');
+    const [genero, setgenero] = useState('');
     const [peso, setPeso] = useState('');
-    const [metaPeso, setMetaPeso] = useState('');
+    const [meta, setMeta] = useState('');
 
-    const handleSaveChanges = () => {
-        console.log("Alterações salvas");
+    const handleSaveChanges = async () => {
+        try {
+            console.log('Iniciando a função handleSaveChanges');
+
+            const url = 'http://93.127.211.47:3010/users/1';
+            const body = JSON.stringify({
+                nomeUsuario,
+                altura,
+                genero,
+                peso,
+                meta,
+            });
+
+            console.log('URL:', url);
+            console.log('Body:', body);
+
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: body,
+            });
+
+            console.log('Resposta recebida:', response);
+
+            const data = await response.json();
+
+            console.log('Dados recebidos:', data);
+
+            if (response.ok) {
+                Alert.alert('Sucesso', data.message);
+            } else {
+                Alert.alert('Erro', data.message);
+            }
+        } catch (error) {
+            console.log('Erro na função handleSaveChanges:', error);
+            Alert.alert('Erro', 'Não foi possível atualizar o perfil');
+        }
     };
 
     return (
@@ -25,18 +62,18 @@ const EditProfile: React.FC = () => {
             </View>
 
             <ScrollView>
-                <ProfilePicture name="User" localImage={localImage} />
+                <ProfilePicture name={nomeUsuario || 'User'} localImage={localImage} />
 
                 <SettingsOption
                     label="Nome"
                     icon="user"
                     onPress={() => { }}
                     editable={true}
-                    value={nome}
-                    onChangeText={setNome}
+                    value={nomeUsuario}
+                    onChangeText={setNomeUsuario}
                 />
                 <SettingsOption
-                    label="Altura"
+                    label="Altura em cm"
                     icon="expand"
                     onPress={() => { }}
                     editable={true}
@@ -49,13 +86,13 @@ const EditProfile: React.FC = () => {
                     icon="venus-mars"
                     onPress={() => { }}
                     editable={true}
-                    value={sexo}
-                    onChangeText={setSexo}
+                    value={genero}
+                    onChangeText={setgenero}
 
                 />
                 <SettingsOption
-                    label="Peso"
-                    icon="balance-scale"
+                    label="Peso em Kg"
+                    icon="clipboard"
                     onPress={() => { }}
                     editable={true}
                     value={peso}
@@ -63,12 +100,12 @@ const EditProfile: React.FC = () => {
 
                 />
                 <SettingsOption
-                    label="Meta de Peso"
+                    label="Meta de Peso em Kg"
                     icon="clipboard"
                     onPress={() => { }}
                     editable={true}
-                    value={metaPeso}
-                    onChangeText={setMetaPeso}
+                    value={meta}
+                    onChangeText={setMeta}
 
                 />
                 <TouchableOpacity

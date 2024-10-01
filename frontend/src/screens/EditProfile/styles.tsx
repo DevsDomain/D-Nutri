@@ -12,8 +12,7 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#90EE90',
-        borderRadius: 20,
+        backgroundColor: '#BBDEB5',
     },
     headerTitle: {
         fontSize: 22,
