@@ -14,6 +14,7 @@ import { StatusBar, TouchableOpacity, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import ScannerScreen from "../screens/BarcodeScreen";
 import ProductDetailsScreen from "../screens/ProductScreen";
+import Dashboard from "../screens/HomeScreen";
 
 const Stack = createStackNavigator();
 
@@ -65,8 +66,24 @@ export default function StackRoutes() {
           options={{ headerShown: false }}
         />
       )}
-      <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="Cadastro" component={CadastroScreen} />
+
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{
+          headerShown: true,
+          headerTitle: "",
+        }}
+      />
+
+      <Stack.Screen
+        name="Cadastro"
+        component={CadastroScreen}
+        options={{
+          headerShown: true,
+          headerTitle: "",
+        }}
+      />
       <Stack.Screen
         name="Main"
         component={TabRoutes}
@@ -81,6 +98,7 @@ export default function StackRoutes() {
           },
         }}
       />
+
       <Stack.Screen
         name="Agua"
         component={AguaScreen}
@@ -132,6 +150,42 @@ export default function StackRoutes() {
           },
         }}
       />
+
+      <Stack.Screen
+        name="EditProfile"
+        component={EditProfile}
+        options={{
+          headerShown: false,
+          title: "Editar Perfil",
+          headerStyle: {
+            backgroundColor: "#BBDEB5",
+          },
+          headerTitleStyle: {
+            color: "#BBDEB5",
+          },
+        }}
+      />
+
+      <Stack.Screen
+        name="termsOfUse"
+        component={TermsOfUse}
+        options={{
+          headerShown: false,
+          title: "Selecione a quantidade de Agua",
+          headerStyle: {
+            backgroundColor: "#BBDEB5",
+          },
+          headerTitleStyle: {
+            color: "#000000",
+          },
+          header: () => (
+            <>
+              <StatusBar backgroundColor="#BBDEB5" barStyle="dark-content" />
+            </>
+          ),
+        }}
+      />
+
       <Stack.Screen name="scanner" component={ScannerScreen} />
       <Stack.Screen name="ProductDetails" component={ProductDetailsScreen} />
       <Stack.Screen name="EditProfile" component={EditProfile} />

@@ -59,7 +59,7 @@ export default function ProfileScreen({ navigation }: Props) {
         <SettingsOption
           label="Editar Perfil"
           icon="user"
-          onPress={() => navigation.navigate("editProfile")} />
+          onPress={() => navigation.navigate("EditProfile")} />
         <SettingsOption
           label="Redefinir Senha"
           icon="lock"
@@ -71,7 +71,7 @@ export default function ProfileScreen({ navigation }: Props) {
         <SettingsOption
           label="Sair da Conta"
           icon="sign-out"
-          onPress={() => navigation.navigate("Onboarding")} />
+          onPress={() => navigation.navigate("Onboarding")} /> 
       </ScrollView>
 
 
@@ -85,7 +85,7 @@ export default function ProfileScreen({ navigation }: Props) {
               <Text style={styles.modalText}>Digite a Nova senha:</Text>
               <TextInput
                 style={styles.input}
-                placeholder="XXXXXXXXXXX"
+                placeholder=""
                 secureTextEntry
                 value={newPassword}
                 onChangeText={setNewPassword}
