@@ -12,6 +12,7 @@ import EditProfile from "../screens/EditProfile";
 import TermsOfUse from "../screens/Terms";
 import { StatusBar, TouchableOpacity, Text } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
+import Dashboard from "../screens/HomeScreen";
 
 
 const Stack = createStackNavigator();
