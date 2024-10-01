@@ -10,43 +10,34 @@ interface UserProps {
 export default function PieChartCalorias({ userMG }: UserProps) {
     const macroIdeal = userMG?.macroIdeal?.Caloria || 1500;
     const macroReal = userMG?.macroReal?.Caloria || 830;
-    const percent = (macroReal / macroIdeal) * 100
-
-
-
+    const percent = (macroReal / macroIdeal) * 100;
 
     return (
-        <SafeAreaView style={styles.container}>
-            {/* Circular Progress Chart */}
+        <SafeAreaView>
             <View style={styles.circularChartContainer}>
                 <AnimatedCircularProgress
-                   size={120}
-                   width={15}
-                   fill={percent}
-                   tintColor="#55AA55"
-                   backgroundColor="#ff938542"
-                   padding={10}
-                   {
-                  ...<Text>                        {`${macroReal.toString()}/${macroIdeal.toString()} Kcal`}
-                  </Text>
-                   }
-                    
+                    size={200}
+                    width={10}
+                    fill={percent}
+                    tintColor="#55AA55"
+                    backgroundColor="#38343424"
+                    padding={5}
                 >
-                </AnimatedCircularProgress>
-                    <Text style={styles.calorieText}>
-                        {`${macroReal}/${macroIdeal} Kcal`}
-                    </Text>
-            </View>
+                    {() => (
+                        <Text style={styles.percentText}>
+                            {`${macroReal}/${macroIdeal} kcal`}
 
+                        </Text>
+                    )}
+                </AnimatedCircularProgress>
+                <Text style={styles.calorieText}>
+                </Text>
+            </View>
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-    },
     circularChartContainer: {
         alignItems: 'center',
         marginBottom: 20,
@@ -56,5 +47,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#000',
     },
- 
+    percentText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#55AA55',
+        position: 'absolute',
+    },
 });

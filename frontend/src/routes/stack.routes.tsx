@@ -52,18 +52,24 @@ export default function StackRoutes() {
           options={{ headerShown: false }}
         />
       )}
-      <Stack.Screen
-        name="Login"
+
+      <Stack.Screen 
+        name="Login" 
         component={LoginScreen}
-        options={{ headerShown: false }}
-         />
-
+        options={{
+          headerShown: true,
+          headerTitle: '', 
+        }} 
+      />
+      
       <Stack.Screen
-        name="Cadastro"
-        component={CadastroScreen} 
-        options={{ headerShown: false }}
-        />
-
+        name="Cadastro" 
+        component={CadastroScreen}
+        options={{
+          headerShown: true,
+          headerTitle: '', 
+        }} 
+      />
       <Stack.Screen
         name="Main"
         component={TabRoutes}
