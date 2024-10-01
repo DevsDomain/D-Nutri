@@ -23,12 +23,10 @@ class ProfileController {
         return res.status(404).json({ message: "Usuário não encontrado" });
       }
 
-      return res
-        .status(200)
-        .json({
-          message: "Usuário atualizado com sucesso!",
-          user: updatedUser.rows[0],
-        });
+      return res.status(200).json({
+        message: "Usuário atualizado com sucesso!",
+        user: updatedUser.rows[0],
+      });
     } catch (error) {
       return res
         .status(500)
