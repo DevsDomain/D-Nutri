@@ -52,6 +52,7 @@ export default function StackRoutes() {
           options={{ headerShown: false }}
         />
       )}
+
       <Stack.Screen 
         name="Login" 
         component={LoginScreen}
@@ -60,7 +61,8 @@ export default function StackRoutes() {
           headerTitle: '', 
         }} 
       />
-      <Stack.Screen 
+      
+      <Stack.Screen
         name="Cadastro" 
         component={CadastroScreen}
         options={{
@@ -82,6 +84,7 @@ export default function StackRoutes() {
           },
         }}
       />
+
       <Stack.Screen
         name="Agua"
         component={AguaScreen}
@@ -133,6 +136,42 @@ export default function StackRoutes() {
           },
         }}
       />
+
+      <Stack.Screen
+        name="EditProfile"
+        component={EditProfile}
+        options={{
+          headerShown: false,
+          title: "Editar Perfil",
+          headerStyle: {
+            backgroundColor: "#BBDEB5",
+          },
+          headerTitleStyle: {
+            color: "#BBDEB5",
+          },
+        }}
+      />
+
+      <Stack.Screen
+        name="termsOfUse"
+        component={TermsOfUse}
+        options={{
+          headerShown: false,
+          title: "Selecione a quantidade de Agua",
+          headerStyle: {
+            backgroundColor: "#BBDEB5",
+          },
+          headerTitleStyle: {
+            color: "#000000",
+          },
+          header: () => (
+            <>
+              <StatusBar backgroundColor="#BBDEB5" barStyle="dark-content" />
+            </>
+          ),
+        }}
+      />
+
     </Stack.Navigator>
   );
 }

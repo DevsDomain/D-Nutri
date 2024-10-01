@@ -45,7 +45,7 @@ export default function TabRoutes() {
         component={HomeScreen}
         options={{
           tabBarIconStyle: { marginTop: -8 },
-          headerShown: true,
+          headerShown: false,
           title: "Home",
           headerStyle: {
             backgroundColor: "#BBDEB5", // Cor do cabeçalho
@@ -62,14 +62,17 @@ export default function TabRoutes() {
         }}
       />
 
-      <Tab.Screen name="Search" component={SearchScreen} />
+      <Tab.Screen
+        name="Search"
+        component={SearchScreen} />
+
       <Tab.Screen
         name="Add"
         component={AddScreen}
         options={{
           tabBarIconStyle: { marginTop: -8 },
 
-          headerShown: true,
+          headerShown: false,
           title: "Selecione o tipo de Refeição",
           headerStyle: {
             backgroundColor: "#BBDEB5", // Cor de fundo do cabeçalho
@@ -80,12 +83,34 @@ export default function TabRoutes() {
         }}
       />
 
-      <Tab.Screen name="Favorites" component={FavoritesScreen} />
+      <Tab.Screen
+        name="Favorites"
+        component={FavoritesScreen}
+        options={{ headerShown: false }}
+      />
+
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
-        options={{ headerShown: false }}
+        options={{
+          tabBarIconStyle: { marginTop: -8 },
+
+          headerShown: true,
+          title: "Perfl de Usuário",
+          headerStyle: {
+            backgroundColor: "#BBDEB5",
+          },
+          headerTitleStyle: {
+            color: "#000000",
+          },
+          header: () => (
+            <>
+              <StatusBar backgroundColor="#BBDEB5" barStyle="dark-content" />
+            </>
+          ),
+        }}
       />
+
     </Tab.Navigator>
   );
 }
