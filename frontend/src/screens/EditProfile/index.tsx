@@ -17,7 +17,7 @@ const EditProfile: React.FC = () => {
         try {
             console.log('Iniciando a função handleSaveChanges');
 
-            const url = 'http://93.127.211.47:3010/users/1';
+            const url = 'http://93.127.211.47:3010/users/7';
             const body = JSON.stringify({
                 nomeUsuario,
                 altura,
