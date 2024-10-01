@@ -6,20 +6,21 @@ import CadastroScreen from "../screens/CadastroScreen";
 import LoginScreen from "../screens/LoginScreen";
 import OnboardingScreen from "../screens/OnboardingScreen";
 import TabRoutes from "./tab.routes";
-import ScannerScreen from "../screens/BarcodeScreen";
-import ProductDetailsScreen from "../screens/ProductScreen";
 import SelectAlimento from "../screens/SelectAlimento";
 import TabelaNutricional from "../screens/TabelaNutricional"; // Importando TabelaNutricional
 import EditProfile from "../screens/EditProfile";
 import TermsOfUse from "../screens/Terms";
 import { StatusBar, TouchableOpacity, Text } from "react-native";
-import { Ionicons } from '@expo/vector-icons';
-
+import { Ionicons } from "@expo/vector-icons";
+import ScannerScreen from "../screens/BarcodeScreen";
+import ProductDetailsScreen from "../screens/ProductScreen";
 
 const Stack = createStackNavigator();
 
 export default function StackRoutes() {
-  const [isOnboardingCompleted, setIsOnboardingCompleted] = useState<null | boolean>(null);
+  const [isOnboardingCompleted, setIsOnboardingCompleted] = useState<
+    null | boolean
+  >(null);
 
   useEffect(() => {
     const checkOnboardingStatus = async () => {
@@ -39,12 +40,22 @@ export default function StackRoutes() {
       initialRouteName={isOnboardingCompleted ? "Login" : "Onboarding"}
       screenOptions={({ navigation, route }) => ({
         headerShown: !(route.name === "Onboarding"),
-        headerLeft: route.name === "Login" || route.name === "Cadastro" ? () => (
-          <TouchableOpacity onPress={() => navigation.goBack()} style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10 }}>
-            <Ionicons name="arrow-back" size={24} color="black" />
-            <Text style={{ marginLeft: 5, fontSize: 18 }}>Voltar</Text>
-          </TouchableOpacity>
-        ) : undefined,
+        headerLeft:
+          route.name === "Login" || route.name === "Cadastro"
+            ? () => (
+                <TouchableOpacity
+                  onPress={() => navigation.goBack()}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginLeft: 10,
+                  }}
+                >
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                  <Text style={{ marginLeft: 5, fontSize: 18 }}>Voltar</Text>
+                </TouchableOpacity>
+              )
+            : undefined,
       })}
     >
       {!isOnboardingCompleted && (
@@ -121,6 +132,10 @@ export default function StackRoutes() {
           },
         }}
       />
+      <Stack.Screen name="scanner" component={ScannerScreen} />
+      <Stack.Screen name="ProductDetails" component={ProductDetailsScreen} />
+      <Stack.Screen name="EditProfile" component={EditProfile} />
+      <Stack.Screen name="Terms" component={TermsOfUse} />
     </Stack.Navigator>
   );
 }

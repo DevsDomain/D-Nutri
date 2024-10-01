@@ -1,5 +1,5 @@
 {
-  "name": "d-nutri-front",
+  "name": "frontend",
   "version": "1.0.0",
   "main": "expo/AppEntry.js",
   "scripts": {
@@ -41,7 +41,7 @@
     "react-native-svg": "^15.7.1",
     "react-native-svg-circular-progress": "^1.0.4",
     "react-native-vector-icons": "^10.2.0",
-    "react-native-web": "~0.19.10",
+    "react-native-web": "~0.19.10"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

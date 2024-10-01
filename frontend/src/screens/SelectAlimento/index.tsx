@@ -1,38 +1,79 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+} from "react-native";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import styles from "../SelectAlimento/styles";
-import { useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { RootStackParamList } from "../../types";
+import axios from "axios";
+
+interface Product {
+  code: string;
+  product_name: string;
+}
 
 export default function SelectAlimento() {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [showFavorites, setShowFavorites] = useState(false);
-  const [favoritos, setFavoritos] = useState(['Feijão', 'Ovo', 'Arroz', 'Frango']);
+  const [favoritos, setFavoritos] = useState<string[]>([
+    "Feijão",
+    "Ovo",
+    "Arroz",
+    "Frango",
+  ]);
+  const [alimentos, setAlimentos] = useState<Product[]>([]);
+  const [page, setPage] = useState(1);
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const alimentos = ['Arroz', 'Batata', 'Carne de boi', 'Feijão', 'Frango', 'Jiló', 'Lentilha', 'Mandioca', 'Nuggets', 'Ovo'];
+  const searchProducts = async () => {
+    try {
+      const response = await axios.get(
+        `https://br.openfoodfacts.net/cgi/search.pl?search_terms=${searchTerm}&search_simple=1&action=process&json=1&page=${page}`
+      );
+      setAlimentos(response.data.products);
+    } catch (error) {
+      console.error("Erro ao buscar produtos:", error);
+      Alert.alert("Erro", "Não foi possível buscar os produtos.");
+    }
+  };
 
-  const filteredAlimentos = (showFavorites ? favoritos : alimentos).filter(alimento =>
-    alimento.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const navigation = useNavigation(); // Use hook para navegação
-
-  const handleSelect = (food: string) => {
-    navigation.navigate('TabelaNutricional', { alimento: food }); // Navega para a tela TabelaNutricional com o alimento selecionado
+  const handleSelect = (product: Product) => {
+    if (navigation) {
+      navigation.navigate("ProductDetails", { barcode: product.code });
+      console.log(`Alimento selecionado: ${product.code}`);
+    }
   };
 
   const toggleFavorite = (food: string) => {
     if (favoritos.includes(food)) {
-      setFavoritos(favoritos.filter(fav => fav !== food));
+      setFavoritos(favoritos.filter((fav) => fav !== food));
     } else {
       setFavoritos([...favoritos, food]);
     }
   };
 
+  // Lógica de filtragem: se showFavorites estiver ativo, exibe apenas os favoritos
+  const filteredAlimentos = showFavorites
+    ? alimentos.filter((product: Product) =>
+        favoritos.includes(product.product_name)
+      )
+    : alimentos.filter((product: Product) =>
+        product.product_name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+
   return (
     <View style={styles.container}>
       <View style={styles.searchContainer}>
-        <Ionicons name="search" size={24} color="#777" />
+        <TouchableOpacity onPress={searchProducts}>
+          <Ionicons name="search" size={24} color="#777" />
+        </TouchableOpacity>
         <TextInput
           style={styles.searchBar}
           placeholder="Buscar alimento..."
@@ -44,32 +85,66 @@ export default function SelectAlimento() {
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity
-          style={[styles.toggleButton, !showFavorites ? styles.activeButton : styles.inactiveButton, { borderTopLeftRadius: 16, borderBottomLeftRadius: 16 }]}
+          style={[
+            styles.toggleButton,
+            !showFavorites ? styles.activeButton : styles.inactiveButton,
+            { borderTopLeftRadius: 16, borderBottomLeftRadius: 16 },
+          ]}
           onPress={() => setShowFavorites(false)}
         >
-          <Text style={!showFavorites ? styles.activeButtonText : styles.inactiveButtonText}>
+          <Text
+            style={
+              !showFavorites
+                ? styles.activeButtonText
+                : styles.inactiveButtonText
+            }
+          >
             Todos{"\n"}Alimentos
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.toggleButton, showFavorites ? styles.activeButton : styles.inactiveButton, { borderTopRightRadius: 16, borderBottomRightRadius: 16 }]}
+          style={[
+            styles.toggleButton,
+            showFavorites ? styles.activeButton : styles.inactiveButton,
+            { borderTopRightRadius: 16, borderBottomRightRadius: 16 },
+          ]}
           onPress={() => setShowFavorites(true)}
         >
-          <Text style={showFavorites ? styles.activeButtonText : styles.inactiveButtonText}>
+          <Text
+            style={
+              showFavorites
+                ? styles.activeButtonText
+                : styles.inactiveButtonText
+            }
+          >
             Meus{"\n"}Favoritos
           </Text>
         </TouchableOpacity>
       </View>
 
       <ScrollView style={styles.scrollView}>
-        {filteredAlimentos.map((alimento, index) => (
-          <TouchableOpacity key={index} style={styles.item} onPress={() => handleSelect(alimento)}>
-            <Text style={styles.itemText}>{alimento}</Text>
-            <TouchableOpacity onPress={() => toggleFavorite(alimento)}>
+        {filteredAlimentos.map((product, index) => (
+          <TouchableOpacity
+            key={index}
+            style={styles.item}
+            onPress={() => handleSelect(product)}
+          >
+            <Text style={styles.itemText}>{product.product_name}</Text>
+            <TouchableOpacity
+              onPress={() => toggleFavorite(product.product_name)}
+            >
               <Ionicons
-                name={favoritos.includes(alimento) ? 'heart' : 'heart-outline'}
+                name={
+                  favoritos.includes(product.product_name)
+                    ? "heart"
+                    : "heart-outline"
+                }
                 size={24}
-                color={favoritos.includes(alimento) ? '#FF9385' : '#FFF8EE'}
+                color={
+                  favoritos.includes(product.product_name)
+                    ? "#FF9385"
+                    : "#FFF8EE"
+                }
               />
             </TouchableOpacity>
           </TouchableOpacity>

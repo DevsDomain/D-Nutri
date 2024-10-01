@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../../../types";
+import { RootStackParamList } from "../../types";
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, "Home">;
 

@@ -36,7 +36,7 @@ export default function ProductDetailsScreen() {
     const fetchProductData = async () => {
       try {
         const response = await axios.get(
-          `https://br.openfoodfacts.org/api/v0/product/${barcode}.json`
+          `https://br.openfoodfacts.net/api/v0/product/${barcode}.json`
         );
         //console.log("Dados do produto:", response.data.product);
         const productData = response.data.product;

@@ -3,18 +3,19 @@ import { Router } from "express";
 import UserRouter from "./userRoutes";
 import DataRouter from "./dataRoutes";
 import FoodRouter from "./alimento";
-require("dotenv").config();
+import ProfileRouter from "./profileRoutes";
+import CadastroRouter from "./cadastroRoutes";
 
-export const routes = Router();
+import DashboardRouter from "./dashboardRoutes";
 
-routes.use(
-  cors({
-    origin: process.env.APP_FRONT_URL || "*", // Permitir requisições do frontend
-    methods: ["GET", "POST", "PUT", "DELETE"], // Métodos permitidos
-    allowedHeaders: ["Content-Type", "Authorization"], // Cabeçalhos permitidos
-    credentials: true, // Permitir envio de cookies e headers de autenticação
-  })
-);
-routes.use(UserRouter);
-routes.use(DataRouter);
-routes.use(FoodRouter);
+const router = Router();
+
+router.use(cors());
+router.use(UserRouter);
+router.use(DataRouter);
+router.use(DashboardRouter);
+router.use(ProfileRouter);
+router.use(CadastroRouter);
+router.use(FoodRouter);
+
+export default router;
