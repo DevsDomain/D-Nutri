@@ -81,13 +81,6 @@ export default function CadastroScreen({ navigation }: Props) {
         <TouchableOpacity style={styles.button} onPress={handleRegister}>
           <Text style={styles.buttonText}>Confirmar cadastro</Text>
         </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={styles.backButtonText}>Voltar</Text>
-        </TouchableOpacity>
       </View>
 
       <View style={styles.rowContainer}>
@@ -110,8 +103,8 @@ const styles = StyleSheet.create({
   tituloContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: -10,
-    marginTop: 20,
+    marginBottom: 0,
+    marginTop: 0,
   },
   tituloText: {
     fontSize: 30,
@@ -133,7 +126,7 @@ const styles = StyleSheet.create({
     borderColor: "#BBDEB5",
     backgroundColor: "#BBDEB5",
     alignItems: "center",
-    marginTop: 40,
+    marginTop: 0,
   },
   title: {
     fontSize: 24,
@@ -187,13 +180,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginLeft: 3,
-    marginTop: 40,
+    marginTop: 0,
   },
   login2: {
     color: "#797878",
     fontSize: 17,
     marginRight: 5,
-    marginTop: 40,
+    marginTop: 0,
   },
   rowContainer: {
     flexDirection: "row",

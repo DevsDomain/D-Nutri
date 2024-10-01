@@ -1,5 +1,6 @@
 import express from "express";
 import createPostgresTables from "./models/postgres";
+import router from "./routes";
 import CreateMongoDbCollections from "./models/mongo";
 import { routes } from "./routes";
 require("dotenv").config({ path: __dirname + "/../../../.env" });

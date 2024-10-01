@@ -4,10 +4,8 @@ import DataController from "../controllers/dataController";
 const DataRouter = express.Router();
 
 // Rotas para dados diários
-DataRouter.post("/users/:userId/data", DataController.createData);
-DataRouter.get("/users/:userId/data", DataController.getAllData);
-DataRouter.get("/users/:userId/data/:dataId", DataController.getDataById);
-DataRouter.put("/users/:userId/data/:dataId", DataController.updateData);
-DataRouter.delete("/users/:userId/data/:dataId", DataController.deleteData);
+DataRouter.get("/data/:userId/", DataController.getDataById);
+DataRouter.post("/data/:userId", DataController.createData);
+DataRouter.delete("/data/:userId", DataController.deleteData);
 
 export default DataRouter;
