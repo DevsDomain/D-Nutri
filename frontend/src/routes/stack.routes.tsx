@@ -188,7 +188,6 @@ export default function StackRoutes() {
 
       <Stack.Screen name="scanner" component={ScannerScreen} />
       <Stack.Screen name="ProductDetails" component={ProductDetailsScreen} />
-      <Stack.Screen name="EditProfile" component={EditProfile} />
       <Stack.Screen name="Terms" component={TermsOfUse} />
     </Stack.Navigator>
   );
