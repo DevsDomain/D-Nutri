@@ -7,7 +7,7 @@ const connectionString = `postgresql://postgres.wnvipfgsewkkjiiwsoic:${password}
 const postgresLocal = `postgresql://postgres:2202@localhost:5432/Dnutri`
 
 const pool = new Pool({
-    connectionString: postgresLocal,
+    connectionString: connectionString,
 });
 
 async function connectToPostgres() {
