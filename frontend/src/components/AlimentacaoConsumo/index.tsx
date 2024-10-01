@@ -1,15 +1,20 @@
 import React from 'react';
 import { View, Text, Dimensions, StyleSheet, SafeAreaView, Image, TouchableOpacity } from 'react-native';
 import { IUser } from '../../types/userDiary';
-
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../../../types";
 interface UserProps {
     userMG: IUser | undefined;
+    navigation: MetricasComponentNavigationProp;
+
 }
 const screenWidth = Dimensions.get('window').width;
 const logo = require("../../../assets/add.png");
 
+type MetricasComponentNavigationProp = StackNavigationProp<RootStackParamList, "AlimentacaoComponent">;
 
-export default function AlimentacaoConsumo({ userMG }: UserProps) {
+
+export default function AlimentacaoConsumo({ userMG,navigation }: UserProps) {
     const carboIdeal = userMG?.macroIdeal?.Carboidrato || 0
     const carboReal = userMG?.macroReal?.Carboidrato || 0
     const proteinaIdeal = userMG?.macroIdeal?.Proteina || 0
@@ -45,7 +50,7 @@ export default function AlimentacaoConsumo({ userMG }: UserProps) {
                     <Text>Gordura</Text>
                     <Text style={styles.subtitle}>{Gordura}g</Text>
                 </View>
-                <TouchableOpacity onPress={() => alert("NAVEGAR PARA PÁGINA DE INSERIR ALIMENTO")}>
+                <TouchableOpacity onPress={() => navigation.navigate("SelectAlimento")}>
 
                 <Image source={logo} style={styles.logo} />
                 </TouchableOpacity>
