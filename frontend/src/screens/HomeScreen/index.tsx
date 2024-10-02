@@ -248,13 +248,13 @@ const styles = StyleSheet.create({
   },
   userTitle: {
     fontSize: 21,
-    fontWeight: 700,
+    fontWeight: "700",
     textAlign: "center",
     marginVertical: 10,
   },
   userSubTitle: {
     fontSize: 18,
-    fontWeight: 500,
+    fontWeight: "500",
     textAlign: "center",
     marginVertical: 5,
   },
