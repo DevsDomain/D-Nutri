@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import moment from "moment";
 import { IUser, IUserData } from "../../types/userDiary";
+import { BACKEND_API_URL } from "@env";
 import {
   FlatList,
   SafeAreaView,
@@ -90,7 +91,7 @@ const HomeScreen = () => {
 
   const createDate = async (date: string, idUser: number) => {
     try {
-      const response = await axios.post(`http://93.127.211.47:3010/data/1`, {
+      const response = await axios.post(`http://${BACKEND_API_URL}:3010/data/1`, {
         data: date,
       });
       const newItem: ItemData = {
@@ -115,7 +116,7 @@ const HomeScreen = () => {
   const loadDashboard = async (id: number, date: string) => {
     try {
       const response = await axios.post(
-        `http://93.127.211.47:3010/dashboard/1`,
+        `http://${BACKEND_API_URL}:3010/dashboard/1`,
         {
           data: date,
         }
@@ -135,7 +136,7 @@ const HomeScreen = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        `http://93.127.211.47:3010/dashboard/1`,
+        `http://${BACKEND_API_URL}:3010/dashboard/1`,
         {
           data: item.date,
         }
