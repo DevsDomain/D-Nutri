@@ -3,6 +3,7 @@ import { StatusBar, ScrollView, View, Text, SafeAreaView, TouchableOpacity, Text
 import ProfilePicture from '../../components/ProfilePicture';
 import SettingsOption from '../../components/SettingsOption';
 import { styles } from './styles';
+import { BACKEND_API_URL } from "@env";
 
 const EditProfile: React.FC = () => {
     const localImage = require('../../../assets/profile-icon.png');
@@ -17,7 +18,7 @@ const EditProfile: React.FC = () => {
         try {
             console.log('Iniciando a função handleSaveChanges');
 
-            const url = 'http://93.127.211.47:3010/users/1';
+            const url = `${BACKEND_API_URL}/users/7`;
             const body = JSON.stringify({
                 nomeUsuario,
                 altura,

@@ -15,6 +15,7 @@ import { Ionicons } from "@expo/vector-icons";
 import ScannerScreen from "../screens/BarcodeScreen";
 import ProductDetailsScreen from "../screens/ProductScreen";
 import Dashboard from "../screens/HomeScreen";
+import React from "react";
 
 const Stack = createStackNavigator();
 

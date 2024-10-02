@@ -13,11 +13,12 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#90EE90',
+        backgroundColor: '#BBDEB5',
     },
     headerTitle: {
       fontSize: 18,
       fontWeight: 'bold',
+      backgroundColor: '#BBDEB5',
     },
     content: {
       padding: 16,
