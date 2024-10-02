@@ -6,6 +6,7 @@ import AddScreen from "../screens/AddScreen";
 import FavoritesScreen from "../screens/FavoritesScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import SearchScreen from "../screens/SearchScreen";
+import React from "react";
 
 const Tab = createBottomTabNavigator();
 
