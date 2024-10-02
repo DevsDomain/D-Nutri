@@ -10,6 +10,8 @@ import {
 } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../../types"; 
+import { BACKEND_API_URL } from "@env";
+
 
 
 const logo = require("../../../assets/logo.png");
@@ -45,7 +47,7 @@ export default function CadastroScreen({ navigation }: Props) {
     }
 
     try {
-        const response = await fetch('http://93.127.211.47:3010/cadastros', {
+        const response = await fetch(`${BACKEND_API_URL}/cadastros`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -62,9 +64,7 @@ export default function CadastroScreen({ navigation }: Props) {
         if (response.ok) {
             Alert.alert("Conta criada com sucesso!");
             navigation.navigate("Login");
-        } else {
-            Alert.alert("Erro", data.message || "Erro ao cadastrar. Tente novamente.");
-        }
+        } 
     } catch (error) {
         console.error("Erro ao cadastrar usuário:", error);
         Alert.alert("Erro", "Erro ao cadastrar usuário. Tente novamente.");
