@@ -5,8 +5,8 @@ import HomeScreen from "../screens/HomeScreen";
 import AddScreen from "../screens/AddScreen";
 import FavoritesScreen from "../screens/FavoritesScreen";
 import ProfileScreen from "../screens/ProfileScreen";
-import SearchScreen from "../screens/SearchScreen";
-import React from "react";
+import SelectAlimento from "../screens/SelectAlimento";
+import ScannerScreen from "../screens/BarcodeScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -22,10 +22,10 @@ export default function TabRoutes() {
           } else if (route.name === "Search") {
             iconName = "search";
           } else if (route.name === "Add") {
-            iconName = "add-circle";
+            iconName = "barcode-sharp";
             size = 60; // Ícone maior
           } else if (route.name === "Favorites") {
-            iconName = "heart";
+            iconName = "clipboard";
           } else if (route.name === "Profile") {
             iconName = "person";
           }
@@ -65,11 +65,11 @@ export default function TabRoutes() {
 
       <Tab.Screen
         name="Search"
-        component={SearchScreen} />
+        component={SelectAlimento} />
 
       <Tab.Screen
         name="Add"
-        component={AddScreen}
+        component={ScannerScreen}
         options={{
           tabBarIconStyle: { marginTop: -8 },
 

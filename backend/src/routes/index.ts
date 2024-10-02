@@ -9,7 +9,7 @@ import express from "express";
 
 const router = express.Router();
 
-router.use(cors);
+router.use(cors());
 router.use(UserRouter);
 router.use(DataRouter);
 router.use(DashboardRouter);
