@@ -13,6 +13,7 @@ import {
   ActivityIndicator,
   View,
   Dimensions,
+  ScrollView,
 } from "react-native";
 import PieChartCalorias from "../../components/PieChart";
 import BarChart from "../../components/BarChart";
@@ -178,6 +179,7 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <ScrollView>
       <View style={styles.metricas}>
         <View>
           <FlatList
@@ -207,6 +209,7 @@ const HomeScreen = () => {
 
       <AguaConsumo userMG={userMG} navigation={navigationAgua} />
       <AlimentacaoConsumo userMG={userMG} navigation={navigationMetrica} />
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -216,6 +219,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: StatusBar.currentHeight || 0,
     gap: 20,
+    marginBottom:5
   },
   metricas: {
     borderRadius: 30,
