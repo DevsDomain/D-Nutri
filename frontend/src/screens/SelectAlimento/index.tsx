@@ -21,17 +21,13 @@ interface Product {
 export default function SelectAlimento() {
   const [searchTerm, setSearchTerm] = useState("");
   const [showFavorites, setShowFavorites] = useState(false);
-  const [favoritos, setFavoritos] = useState<string[]>([
-    "Feijão",
-    "Ovo",
-    "Arroz",
-    "Frango",
-  ]);
+  const [favoritos, setFavoritos] = useState<string[]>([]);
   const [alimentos, setAlimentos] = useState<Product[]>([]);
   const [page, setPage] = useState(1);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [searchQuery, setSearchQuery] = useState("");
 
+  // Função para buscar produtos do OpenFoodFacts
   const searchProducts = async () => {
     try {
       const response = await axios.get(
@@ -44,18 +40,51 @@ export default function SelectAlimento() {
     }
   };
 
+  // Função para carregar favoritos do backend
+  const fetchFavoritos = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3000/api/favoritos/1`); // Exemplo: ID do usuário = 1
+      setFavoritos(response.data.map((fav: any) => fav.product_name));
+    } catch (error) {
+      console.error("Erro ao buscar favoritos:", error);
+    }
+  };
+
+  // Efeito para carregar favoritos ao montar o componente
+  useEffect(() => {
+    fetchFavoritos();
+  }, []);
+
+  // Função para adicionar ou remover um favorito no backend
+  const toggleFavorite = async (food: string, code: string) => {
+    if (favoritos.includes(food)) {
+      // Remover dos favoritos
+      try {
+        await axios.delete(`http://localhost:3000/api/favoritos`, {
+          data: { idProduto: code, idUsuario: 1 }, // Exemplo: ID do usuário = 1
+        });
+        setFavoritos(favoritos.filter((fav) => fav !== food));
+      } catch (error) {
+        console.error("Erro ao remover favorito:", error);
+      }
+    } else {
+      // Adicionar aos favoritos
+      try {
+        await axios.post(`http://localhost:3000/api/favoritos`, {
+          idProduto: code,
+          idUsuario: 1, // Exemplo: ID do usuário = 1
+        });
+        setFavoritos([...favoritos, food]);
+      } catch (error) {
+        console.error("Erro ao adicionar favorito:", error);
+      }
+    }
+  };
+
   const handleSelect = (product: Product) => {
     if (navigation) {
       navigation.navigate("ProductDetails", { barcode: product.code });
       console.log(`Alimento selecionado: ${product.code}`);
-    }
-  };
-
-  const toggleFavorite = (food: string) => {
-    if (favoritos.includes(food)) {
-      setFavoritos(favoritos.filter((fav) => fav !== food));
-    } else {
-      setFavoritos([...favoritos, food]);
     }
   };
 
@@ -131,7 +160,7 @@ export default function SelectAlimento() {
           >
             <Text style={styles.itemText}>{product.product_name}</Text>
             <TouchableOpacity
-              onPress={() => toggleFavorite(product.product_name)}
+              onPress={() => toggleFavorite(product.product_name, product.code)}
             >
               <Ionicons
                 name={
