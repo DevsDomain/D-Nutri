@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StatusBar, ScrollView, View, Text, SafeAreaView, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import ProfilePicture from '../../components/ProfilePicture';
 import SettingsOption from '../../components/SettingsOption';
 import { styles } from './styles';
@@ -10,9 +11,9 @@ const EditProfile: React.FC = () => {
 
     const [nomeUsuario, setNomeUsuario] = useState('');
     const [altura, setAltura] = useState('');
-    const [genero, setgenero] = useState('');
     const [peso, setPeso] = useState('');
     const [meta, setMeta] = useState('');
+    const [genero, setGenero] = useState('');
 
     const handleSaveChanges = async () => {
         try {
@@ -85,12 +86,21 @@ const EditProfile: React.FC = () => {
                 <SettingsOption
                     label="Sexo"
                     icon="venus-mars"
-                    onPress={() => { }}
                     editable={true}
                     value={genero}
-                    onChangeText={setgenero}
+                    onPress={() => { }}
+                >
+                    <Picker
+                        selectedValue={genero}
+                        onValueChange={(itemValue) => setGenero(itemValue)}
+                        style={styles.picker}
+                    >
+                        <Picker.Item label="Masculino" value="masculino" />
+                        <Picker.Item label="Feminino" value="feminino" />
+                        <Picker.Item label="Outro" value="outro" />
+                    </Picker>
+                </SettingsOption>
 
-                />
                 <SettingsOption
                     label="Peso em Kg"
                     icon="clipboard"

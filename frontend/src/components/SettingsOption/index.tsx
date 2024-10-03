@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { View, Text, TouchableOpacity, ViewStyle, TextInput } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { styles } from './styles';
-
 
 type FontAwesomeIconNames =
     | 'sign-out'
@@ -40,9 +39,10 @@ interface SettingsOptionProps {
     value?: string;
     onChangeText?: (text: string) => void;
     style?: ViewStyle;
+    children?: React.ReactNode;
 }
 
-const SettingsOption: React.FC<SettingsOptionProps> = ({ label, icon, onPress, value, onChangeText, style, editable }) => {
+const SettingsOption: React.FC<SettingsOptionProps> = ({ label, icon, onPress, value, onChangeText, style, editable, children }) => {
     return (
         <TouchableOpacity onPress={onPress} style={[styles.container, style]}>
             <View style={styles.iconContainer}>
@@ -50,11 +50,15 @@ const SettingsOption: React.FC<SettingsOptionProps> = ({ label, icon, onPress, v
             </View>
             <Text style={styles.label}>{label}</Text>
             {editable ? (
-                <TextInput
-                    style={styles.textInput}
-                    value={value}
-                    onChangeText={onChangeText}
-                />
+                children ? (
+                    children
+                ) : (
+                    <TextInput
+                        style={styles.textInput}
+                        value={value}
+                        onChangeText={onChangeText}
+                    />
+                )
             ) : null}
         </TouchableOpacity>
     );
