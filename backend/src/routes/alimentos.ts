@@ -1,5 +1,5 @@
 import express from 'express';
-import { addAlimento, getAlimentos, getAlimentoById, updateAlimento, deleteAlimento } from '../../../backend/src/controllers/alimentosController';
+import { addAlimento, getAlimentos, getAlimentoById, updateAlimento, deleteAlimento } from '../controllers/alimentosController';
 
 const router = express.Router();
 

@@ -1,7 +1,8 @@
+import { Request, Response } from 'express';
 import pg from "../../../backend/src/databases/postgres";
 
 // Adicionar um alimento
-export async function addAlimento(req, res) {
+export async function addAlimento(req: Request, res: Response) {
     const { barcode, nomeProduto, imageSrc, Proteina, Caloria, Carboidrato, gordura, sodio, acucar } = req.body;
 
     try {
@@ -14,24 +15,28 @@ export async function addAlimento(req, res) {
 
         return res.status(201).json({ message: "Alimento adicionado com sucesso!", alimento: result.rows[0] });
     } catch (error) {
-        console.error("Erro ao adicionar alimento:", error.message);
-        return res.status(500).json({ error: "Erro ao adicionar alimento." });
+        if (error instanceof Error) {
+            console.error("Erro ao adicionar alimento:", error.message);
+            return res.status(500).json({ error: "Erro ao adicionar alimento." });
+        }
     }
 }
 
 // Obter todos os alimentos
-export async function getAlimentos(req, res) {
+export async function getAlimentos(req: Request, res: Response) {
     try {
         const result = await pg.query(`SELECT * FROM "Alimentos";`);
         return res.status(200).json(result.rows);
     } catch (error) {
-        console.error("Erro ao buscar alimentos:", error.message);
-        return res.status(500).json({ error: "Erro ao buscar alimentos." });
+        if (error instanceof Error) {
+            console.error("Erro ao buscar alimentos:", error.message);
+            return res.status(500).json({ error: "Erro ao buscar alimentos." });
+        }
     }
 }
 
 // Obter alimento por ID
-export async function getAlimentoById(req, res) {
+export async function getAlimentoById(req: Request, res: Response) {
     const { id } = req.params;
 
     try {
@@ -43,13 +48,15 @@ export async function getAlimentoById(req, res) {
 
         return res.status(200).json(result.rows[0]);
     } catch (error) {
-        console.error("Erro ao buscar alimento:", error.message);
-        return res.status(500).json({ error: "Erro ao buscar alimento." });
+        if (error instanceof Error) {
+            console.error("Erro ao buscar alimento:", error.message);
+            return res.status(500).json({ error: "Erro ao buscar alimento." });
+        }
     }
 }
 
 // Atualizar um alimento
-export async function updateAlimento(req, res) {
+export async function updateAlimento(req: Request, res: Response) {
     const { id } = req.params;
     const { barcode, nomeProduto, imageSrc, Proteina, Caloria, Carboidrato, gordura, sodio, acucar } = req.body;
 
@@ -75,13 +82,15 @@ export async function updateAlimento(req, res) {
 
         return res.status(200).json({ message: "Alimento atualizado com sucesso!", alimento: result.rows[0] });
     } catch (error) {
-        console.error("Erro ao atualizar alimento:", error.message);
-        return res.status(500).json({ error: "Erro ao atualizar alimento." });
+        if (error instanceof Error) {
+            console.error("Erro ao atualizar alimento:", error.message);
+            return res.status(500).json({ error: "Erro ao atualizar alimento." });
+        }
     }
 }
 
 // Deletar um alimento
-export async function deleteAlimento(req, res) {
+export async function deleteAlimento(req: Request, res: Response) {
     const { id } = req.params;
 
     try {
@@ -93,7 +102,9 @@ export async function deleteAlimento(req, res) {
 
         return res.status(200).json({ message: "Alimento deletado com sucesso!" });
     } catch (error) {
-        console.error("Erro ao deletar alimento:", error.message);
-        return res.status(500).json({ error: "Erro ao deletar alimento." });
+        if (error instanceof Error) {
+            console.error("Erro ao deletar alimento:", error.message);
+            return res.status(500).json({ error: "Erro ao deletar alimento." });
+        }
     }
 }
