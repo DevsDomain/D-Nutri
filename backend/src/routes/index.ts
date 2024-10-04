@@ -6,6 +6,7 @@ import CadastroRouter from "./cadastroRoutes";
 import DashboardRouter from "./dashboardRoutes";
 import cors from "cors";
 import express from "express";
+import LoginRouter from "./loginRoutes";
 
 const router = express.Router();
 
@@ -15,6 +16,7 @@ router.use(DataRouter);
 router.use(DashboardRouter);
 router.use(ProfileRouter);
 router.use(CadastroRouter);
+router.use(LoginRouter);
 router.use(FoodRouter);
 
 export default router;

@@ -6,9 +6,13 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  Alert,
 } from "react-native";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../../types"; // Defina seus tipos de navegação em um arquivo separado
+import { BACKEND_API_URL } from "@env"; // Certifique-se de que a variável de ambiente está corretamente configurada
 
 const logo = require("../../../assets/logo.png");
 
@@ -24,6 +28,33 @@ type Props = {
 export default function LoginScreen({ navigation }: Props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post(`${BACKEND_API_URL}/login`, {
+        email,
+        password,
+      });
+
+      const { message, user } = response.data;
+      if (message === "Login realizado com sucesso!") {
+        // Salvar os dados do usuário no AsyncStorage
+        await AsyncStorage.setItem("user", JSON.stringify(user));
+   
+        // Redirecionar para a tela principal
+        navigation.navigate("Main");
+      } else {
+        Alert.alert("Erro", "Credenciais inválidas.");
+      }
+    } catch (error) {
+      Alert.alert("Erro", "Não foi possível realizar o login.");
+      console.error("Erro de login:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -59,11 +90,15 @@ export default function LoginScreen({ navigation }: Props) {
 
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate("Main")}
+          onPress={handleLogin}
+          disabled={loading}
         >
-          <Text style={styles.buttonText}>Entrar</Text>
+          <Text style={styles.buttonText}>
+            {loading ? "Entrando..." : "Entrar"}
+          </Text>
         </TouchableOpacity>
       </View>
+
       <View style={styles.rowContainer}>
         <Text style={styles.login2}>Não tem uma conta?</Text>
         <TouchableOpacity onPress={() => navigation.navigate("Cadastro")}>
