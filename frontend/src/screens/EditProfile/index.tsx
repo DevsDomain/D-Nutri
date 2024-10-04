@@ -1,24 +1,56 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StatusBar, ScrollView, View, Text, SafeAreaView, TouchableOpacity, TextInput, Alert } from 'react-native';
 import ProfilePicture from '../../components/ProfilePicture';
 import SettingsOption from '../../components/SettingsOption';
 import { styles } from './styles';
 import { BACKEND_API_URL } from "@env";
+import axios from 'axios';
+import { IUserData } from '../../types/userDiary';
 
 const EditProfile: React.FC = () => {
     const localImage = require('../../../assets/profile-icon.png');
 
+    const [userData, setUserData] = useState<IUserData>();
     const [nomeUsuario, setNomeUsuario] = useState('');
     const [altura, setAltura] = useState('');
     const [genero, setgenero] = useState('');
     const [peso, setPeso] = useState('');
     const [meta, setMeta] = useState('');
+    const [firstLoad, setFirstLoad] = useState(true)
+
+    useEffect(() => {
+        loadUser(10)
+        if (userData) {
+            setUser()
+        }
+    }, [firstLoad]);
+
+    const setUser = () => {
+        setAltura(userData?.altura.toString() || "")
+        setMeta(userData?.meta.toString() || "")
+        setNomeUsuario(userData?.nomeUsuario.toString() || "")
+        setPeso(userData?.peso.toString() || "")
+        setgenero(userData?.genero.toString() || "")
+
+    }
+
+    const loadUser = (id: number) => {
+        try {
+            axios.get(`${BACKEND_API_URL}/users/10`).then(({ data }) => {
+                if (data && data.length > 0) {
+                    const userData = data[0];
+                    setUserData(userData);
+                }
+            });
+        } catch (error) {
+            console.log("ERRO ao buscar dados do usuário", error);
+        }
+    };
 
     const handleSaveChanges = async () => {
         try {
-            console.log('Iniciando a função handleSaveChanges');
 
-            const url = `${BACKEND_API_URL}/users/7`;
+            const url = `${BACKEND_API_URL}/users/10`;
             const body = JSON.stringify({
                 nomeUsuario,
                 altura,
@@ -27,8 +59,6 @@ const EditProfile: React.FC = () => {
                 meta,
             });
 
-            console.log('URL:', url);
-            console.log('Body:', body);
 
             const response = await fetch(url, {
                 method: 'PUT',
@@ -38,14 +68,13 @@ const EditProfile: React.FC = () => {
                 body: body,
             });
 
-            console.log('Resposta recebida:', response);
 
             const data = await response.json();
 
-            console.log('Dados recebidos:', data);
 
             if (response.ok) {
                 Alert.alert('Sucesso', data.message);
+                setFirstLoad(false)
             } else {
                 Alert.alert('Erro', data.message);
             }

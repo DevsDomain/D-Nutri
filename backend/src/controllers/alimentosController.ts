@@ -5,6 +5,29 @@ import pg from "../databases/postgres";
 
 // Função para lidar com as operações relacionadas a Alimentos
 class AlimentosController {
+  async buscarAlimentos(req: Request, res: Response): Promise<Response> {
+
+    const alimentos = await pg.query(
+      `SELECT * FROM "Alimentos"`
+    )
+    return res.status(201).json(alimentos.rows)
+  }
+
+  async findAlimento(req: Request, res: Response): Promise<Response> {
+    try{
+    console.log("RECEBIDO")
+    const {barcode}  = req.params;
+    console.log(barcode,"BARCODE BACK");
+
+    const alimentos = await pg.query(
+      `SELECT * FROM "Alimentos" WHERE "barcode" = $1`, [barcode]);
+    console.log(alimentos.rows)
+    return res.status(201).json(alimentos.rows[0]);
+    }catch(error:any){
+      return res.status(500).json(error.message)
+    }
+  }
+
   // Inserir alimento na tabela "Alimentos"
   async createAlimento(req: Request, res: Response): Promise<Response> {
     const {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import { View, Text, SafeAreaView, ScrollView, StatusBar, Modal, TouchableOpacity, TextInput } from "react-native";
 import { styles } from "./styles";
 import ProfilePicture from "../../components/ProfilePicture";
@@ -6,7 +6,8 @@ import SettingsOption from "../../components/SettingsOption";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../../types";
 import CustomModal from "../../components/Modal";
-
+import { BACKEND_API_URL } from "@env";
+import axios from "axios";
 
 type ProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, "Profile">;
 
@@ -14,11 +15,39 @@ type Props = {
   navigation: ProfileScreenNavigationProp;
 };
 
+
+
+
 export default function ProfileScreen({ navigation }: Props) {
+
   const localImage = require('../../../assets/profile-icon.png');
   const [modalVisible, setModalVisible] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [modalType, setModalType] = useState<'passwordReset' | 'logoutConfirmation'>('passwordReset');
+const [userName,setUserName] = useState()
+
+
+useEffect(() => {
+  loadUser(10)
+}, []);
+
+
+
+const loadUser = (id: number) => {
+  try {
+      axios.get(`${BACKEND_API_URL}/users/10`).then(({ data }) => {
+          if (data && data.length > 0) { 
+              const userData = data[0];
+              setUserName(userData.nomeUsuario); 
+  
+          } else {
+              console.log('Array de dados está vazio');
+          }
+      });
+  } catch (error) {
+      console.log("ERRO ao buscar dados do usuário", error);
+  }
+};
 
 
   const passwordReset = () => {
@@ -55,7 +84,7 @@ export default function ProfileScreen({ navigation }: Props) {
       </View>
 
       <ScrollView>
-        <ProfilePicture name="User" localImage={localImage} />
+        <ProfilePicture name={userName || "User"} localImage={localImage} />
         <SettingsOption
           label="Editar Perfil"
           icon="user"

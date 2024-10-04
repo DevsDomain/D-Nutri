@@ -16,6 +16,7 @@ import ScannerScreen from "../screens/BarcodeScreen";
 import ProductDetailsScreen from "../screens/ProductScreen";
 import Dashboard from "../screens/HomeScreen";
 import React from "react";
+import ProductDetailsScreenPG from "../screens/ProductPG";
 
 const Stack = createStackNavigator();
 
@@ -189,6 +190,8 @@ export default function StackRoutes() {
 
       <Stack.Screen name="scanner" component={ScannerScreen} />
       <Stack.Screen name="ProductDetails" component={ProductDetailsScreen} />
+      <Stack.Screen name="ProductDetailsScreenPG" component={ProductDetailsScreenPG} />
+
       <Stack.Screen name="Terms" component={TermsOfUse} />
     </Stack.Navigator>
   );
