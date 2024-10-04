@@ -92,7 +92,7 @@ const HomeScreen = () => {
 
   const createDate = async (date: string, idUser: number) => {
     try {
-      const response = await axios.post(`${BACKEND_API_URL}/data/1`, {
+      const response = await axios.post(`${BACKEND_API_URL}/data/10`, {
         data: date,
       });
       const newItem: ItemData = {
@@ -117,7 +117,7 @@ const HomeScreen = () => {
   const loadDashboard = async (id: number, date: string) => {
     try {
       const response = await axios.post(
-        `${BACKEND_API_URL}/data/1`,
+        `${BACKEND_API_URL}/dashboard/10`,
         {
           data: date,
         }
@@ -137,7 +137,7 @@ const HomeScreen = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        `${BACKEND_API_URL}/data/1`,
+        `${BACKEND_API_URL}/dashboard/10`,
         {
           data: item.date,
         }
@@ -180,35 +180,35 @@ const HomeScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-      <View style={styles.metricas}>
-        <View>
-          <FlatList
-            horizontal
-            data={dataList}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id.toString()}
-            extraData={selectedId}
-            showsHorizontalScrollIndicator={false}
-            onEndReached={loadDatas} // Trigger loadDatas on end reach
-            onEndReachedThreshold={0.01}
-            ListFooterComponent={renderFooter}
-          />
+        <View style={styles.metricas}>
+          <View>
+            <FlatList
+              horizontal
+              data={dataList}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.id.toString()}
+              extraData={selectedId}
+              showsHorizontalScrollIndicator={false}
+              onEndReached={loadDatas} // Trigger loadDatas on end reach
+              onEndReachedThreshold={0.01}
+              ListFooterComponent={renderFooter}
+            />
+          </View>
+
+          <Text style={styles.userTitle}>
+            {" "}
+            Bem vindo(a), {userPG?.nomeUsuario || "usuario"}
+          </Text>
+          <Text style={styles.userSubTitle}>
+            Acompanhe seu relatório nutricional diário:
+          </Text>
+
+          <PieChartCalorias userMG={userMG} />
+          <BarChart userMG={userMG} />
         </View>
 
-        <Text style={styles.userTitle}>
-          {" "}
-          Bem vindo(a), {userPG?.nomeUsuario || "usuario"}
-        </Text>
-        <Text style={styles.userSubTitle}>
-          Acompanhe seu relatório nutricional diário:
-        </Text>
-
-        <PieChartCalorias userMG={userMG} />
-        <BarChart userMG={userMG} />
-      </View>
-
-      <AguaConsumo userMG={userMG} navigation={navigationAgua} />
-      <AlimentacaoConsumo userMG={userMG} navigation={navigationMetrica} />
+        <AguaConsumo userMG={userMG} navigation={navigationAgua} />
+        <AlimentacaoConsumo userMG={userMG} navigation={navigationMetrica} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: StatusBar.currentHeight || 0,
     gap: 20,
-    marginBottom:5
+    marginBottom: 5
   },
   metricas: {
     borderRadius: 30,

@@ -12,6 +12,8 @@ import styles from "../SelectAlimento/styles";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../../types";
 import axios from "axios";
+import { IAlimentos } from "../../types/AlimentosPG";
+import { BACKEND_API_URL } from "@env";
 
 interface Product {
   code: string;
@@ -21,6 +23,7 @@ interface Product {
 export default function SelectAlimento() {
   const [searchTerm, setSearchTerm] = useState("");
   const [showFavorites, setShowFavorites] = useState(false);
+  const [alimentosPostgres, setAlimentosPostgres] = useState<IAlimentos[]>([])
   const [favoritos, setFavoritos] = useState<string[]>([
     "Feijão",
     "Ovo",
@@ -31,6 +34,30 @@ export default function SelectAlimento() {
   const [page, setPage] = useState(1);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [searchQuery, setSearchQuery] = useState("");
+
+
+  useEffect(() => {
+    buscarProdutos()
+  }, [])
+
+
+
+
+
+  const buscarProdutos = () => {
+    try {
+      axios.get(`${BACKEND_API_URL}/alimentos`).then(({ data }) => {
+        if (data && data.length > 0) {
+          setAlimentosPostgres(data);
+          console.log("DATA", data);
+
+        }
+
+      })
+    } catch (error: any) {
+      console.log("Erro ao buscar alimentos no postgres", error.message);
+    }
+  }
 
   const searchProducts = async () => {
     try {
@@ -46,7 +73,7 @@ export default function SelectAlimento() {
 
   const handleSelect = (product: Product) => {
     if (navigation) {
-      navigation.navigate("ProductDetails", { barcode: product.code });
+      navigation.navigate("ProductDetailsScreenPG", { barcode: product.code });
       console.log(`Alimento selecionado: ${product.code}`);
     }
   };
@@ -62,11 +89,11 @@ export default function SelectAlimento() {
   // Lógica de filtragem: se showFavorites estiver ativo, exibe apenas os favoritos
   const filteredAlimentos = showFavorites
     ? alimentos.filter((product: Product) =>
-        favoritos.includes(product.product_name)
-      )
+      favoritos.includes(product.product_name)
+    )
     : alimentos.filter((product: Product) =>
-        product.product_name.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+      product.product_name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
   return (
     <View style={styles.container}>
@@ -123,25 +150,25 @@ export default function SelectAlimento() {
       </View>
 
       <ScrollView style={styles.scrollView}>
-        {filteredAlimentos.map((product, index) => (
+        {alimentosPostgres.map((product, index) => (
           <TouchableOpacity
             key={index}
             style={styles.item}
-            onPress={() => handleSelect(product)}
+            onPress={() => handleSelect({ product_name: product.nomeProduto, code: product.barcode })}
           >
-            <Text style={styles.itemText}>{product.product_name}</Text>
+            <Text style={styles.itemText}>{product.nomeProduto}</Text>
             <TouchableOpacity
-              onPress={() => toggleFavorite(product.product_name)}
+              onPress={() => toggleFavorite(product.nomeProduto)}
             >
               <Ionicons
                 name={
-                  favoritos.includes(product.product_name)
+                  favoritos.includes(product.nomeProduto)
                     ? "heart"
                     : "heart-outline"
                 }
                 size={24}
                 color={
-                  favoritos.includes(product.product_name)
+                  favoritos.includes(product.nomeProduto)
                     ? "#FF9385"
                     : "#FFF8EE"
                 }
