@@ -17,6 +17,8 @@ import ProductDetailsScreen from "../screens/ProductScreen";
 import Dashboard from "../screens/HomeScreen";
 import React from "react";
 import ProductDetailsScreenPG from "../screens/ProductPG";
+import SelectRefeicao from "../screens/SelectRefeicao";
+import AlimentosConsumidosScreen from "../screens/AlimentosConsumidosScreen";
 
 const Stack = createStackNavigator();
 
@@ -137,10 +139,24 @@ export default function StackRoutes() {
         }}
       />
 
-      {/* Adicionando a tela TabelaNutricional */}
       <Stack.Screen
-        name="TabelaNutricional"
-        component={TabelaNutricional}
+        name="SelectRefeicao"
+        component={SelectRefeicao}
+        options={{
+          headerShown: true,
+          title: "Selecione o tipo da Refeição",
+          headerStyle: {
+            backgroundColor: "#BBDEB5", // Cor de fundo do cabeçalho
+          },
+          headerTitleStyle: {
+            color: "#000000", // Cor do título, ajustada para melhor contraste com o fundo
+          },
+        }}
+      />
+
+      <Stack.Screen
+        name="ProductDetailsScreenPG"
+        component={ProductDetailsScreenPG}
         options={{
           headerShown: true,
           title: "Tabela Nutricional",
@@ -152,6 +168,21 @@ export default function StackRoutes() {
           },
         }}
       />
+
+        <Stack.Screen
+        name="AlimentosConsumidosScreen"
+        component={AlimentosConsumidosScreen}
+        options={{
+          headerShown: true,
+          title: "Meus Consumos",
+          headerStyle: {
+            backgroundColor: "#BBDEB5", // Cor de fundo do cabeçalho
+          },
+          headerTitleStyle: {
+            color: "#000000", // Cor do título, ajustada para melhor contraste com o fundo
+          },
+        }}
+      />  
 
       <Stack.Screen
         name="EditProfile"
@@ -190,8 +221,6 @@ export default function StackRoutes() {
 
       <Stack.Screen name="scanner" component={ScannerScreen} />
       <Stack.Screen name="ProductDetails" component={ProductDetailsScreen} />
-      <Stack.Screen name="ProductDetailsScreenPG" component={ProductDetailsScreenPG} />
-
       <Stack.Screen name="Terms" component={TermsOfUse} />
     </Stack.Navigator>
   );
