@@ -6,6 +6,7 @@ console.log(password)
 const connectionString = `postgresql://postgres.wnvipfgsewkkjiiwsoic:${password}@aws-0-us-west-1.pooler.supabase.com:6543/postgres`
 const postgresLocal = `postgresql://postgres:2202@localhost:5432/Dnutri`
 
+// Alterar aqui para postgresLocal para rodar localmente
 const pool = new Pool({
     connectionString: postgresLocal,
 });

@@ -9,7 +9,7 @@ export default function connectToDatabase() {
   mongoose.connection.on("connected", () => console.log("Mongo conectado com sucesso!"));
   mongoose.connection.on("disconnected", () => console.log("Mongo Desconectado com sucesso!"));
 
-
+// Aterar aqui para uriLocal para rodar localmente
   mongoose.connect(uriLocal, {
     serverSelectionTimeoutMS: 5000,
     maxPoolSize: 10,
