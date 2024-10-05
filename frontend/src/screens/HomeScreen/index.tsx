@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import moment from 'moment';
-import { IUser, IUserData } from '../../types/userDiary';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import moment from "moment";
+import { IUser, IUserData } from "../../types/userDiary";
+import { BACKEND_API_URL } from "@env";
 import {
   FlatList,
   SafeAreaView,
@@ -11,18 +12,18 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   View,
-  Dimensions
-} from 'react-native';
-import PieChartCalorias from '../../components/PieChart';
-import BarChart from '../../components/BarChart';
-import AguaConsumo from '../../components/AguaConsumo';
-import AlimentacaoConsumo from '../../components/AlimentacaoConsumo';
+  Dimensions,
+  ScrollView,
+} from "react-native";
+import PieChartCalorias from "../../components/PieChart";
+import BarChart from "../../components/BarChart";
+import AguaConsumo from "../../components/AguaConsumo";
+import AlimentacaoConsumo from "../../components/AlimentacaoConsumo";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../../types";
-import { useNavigation } from '@react-navigation/native'; // Importação da navegação
+import { useNavigation } from "@react-navigation/native"; // Importação da navegação
 
-
-const screenWidth = Dimensions.get('window').width;
+const screenWidth = Dimensions.get("window").width;
 
 type ItemData = {
   id: number;
@@ -37,26 +38,32 @@ const HomeScreen = () => {
   const [userMG, setUserMG] = useState<IUser>();
   const [userPG, setUserPG] = useState<IUserData>();
 
-  type AguaComponentNavigationProp = StackNavigationProp<RootStackParamList, "AguaComponent">;
+  type AguaComponentNavigationProp = StackNavigationProp<
+    RootStackParamList,
+    "AguaComponent"
+  >;
   const navigationAgua = useNavigation<AguaComponentNavigationProp>();
 
-  type MetricasComponentNavigationProp = StackNavigationProp<RootStackParamList, "AlimentacaoComponent">;
+  type MetricasComponentNavigationProp = StackNavigationProp<
+    RootStackParamList,
+    "AlimentacaoComponent"
+  >;
   const navigationMetrica = useNavigation<MetricasComponentNavigationProp>();
 
   // Helper function to format the date title
   const formatDateTitle = (date: moment.Moment): string => {
-    return `${date.format('ddd')}\n${date.format('DD/MM')}`;
+    return `${date.format("ddd")}\n${date.format("DD/MM")}`;
   };
 
   // Load the initial set of dates: 2 before, today, and 1 day ahead
   useEffect(() => {
     const initialData: ItemData[] = [];
     for (let i = -2; i <= 1; i++) {
-      const date = moment().add(i, 'days');
+      const date = moment().add(i, "days");
       initialData.push({
         id: Math.random(),
         title: formatDateTitle(date),
-        date: date.format('YYYY-MM-DD'),
+        date: date.format("YYYY-MM-DD"),
       });
     }
     setSelectedId(initialData[2].id);
@@ -70,13 +77,12 @@ const HomeScreen = () => {
     const newDates: ItemData[] = [];
     const lastDate = moment(dataList[dataList.length - 1].date); // Busca a ultima data
 
-
     for (let i = 1; i <= 2; i++) {
-      const nextDate = lastDate.add(1, 'days').clone();
+      const nextDate = lastDate.add(1, "days").clone();
       newDates.push({
         id: Math.random(),
         title: formatDateTitle(nextDate),
-        date: nextDate.format('YYYY-MM-DD'),
+        date: nextDate.format("YYYY-MM-DD"),
       });
     }
 
@@ -86,10 +92,14 @@ const HomeScreen = () => {
 
   const createDate = async (date: string, idUser: number) => {
     try {
-      const response = await axios.post(`http://93.127.211.47:3010/data/1`, {
+      const response = await axios.post(`${BACKEND_API_URL}/data/1`, {
         data: date,
       });
-      const newItem: ItemData = { date: date, id: idUser, title: response.data.data };
+      const newItem: ItemData = {
+        date: date,
+        id: idUser,
+        title: response.data.data,
+      };
       handleDatePress(newItem);
     } catch (error: any) {
       console.error("ERROR:", error.message);
@@ -97,41 +107,45 @@ const HomeScreen = () => {
   };
 
   const loadPieChart = async (data: IUser) => {
-    let dados = [1000, 1000]
+    let dados = [1000, 1000];
 
     if (data.macroIdeal?.Caloria > 0 && data.macroReal?.Caloria > 0) {
-      dados = [data.macroIdeal?.Caloria, data.macroReal?.Caloria]
+      dados = [data.macroIdeal?.Caloria, data.macroReal?.Caloria];
     }
-  }
+  };
 
   const loadDashboard = async (id: number, date: string) => {
     try {
-      const response = await axios.post(`http://93.127.211.47:3010/dashboard/1`, {
-        data: date,
-      });
+      const response = await axios.post(
+        `${BACKEND_API_URL}/data/1`,
+        {
+          data: date,
+        }
+      );
       setUserMG(response.data.userMG);
       setUserPG(response.data.userPG);
-      loadPieChart(response.data.userMG)
-
+      loadPieChart(response.data.userMG);
     } catch (error: any) {
       console.log("ERRO ao buscar dados dashboard, criando nova data...");
       createDate(date, 1);
       setLoading(false);
     }
-  }
+  };
 
   const handleDatePress = async (item: ItemData) => {
     setSelectedId(item.id);
     setLoading(true);
     try {
-      const response = await axios.post(`http://93.127.211.47:3010/dashboard/1`, {
-        data: item.date,
-      });
+      const response = await axios.post(
+        `${BACKEND_API_URL}/data/1`,
+        {
+          data: item.date,
+        }
+      );
       if (response.status == 201) {
         setUserMG(response.data.userMG);
         setUserPG(response.data.userPG);
-        loadPieChart(response.data.userMG)
-
+        loadPieChart(response.data.userMG);
       }
     } catch (error: any) {
       console.log("ERRO ao buscar dados dashboard, criando nova data...");
@@ -150,13 +164,14 @@ const HomeScreen = () => {
   };
 
   const renderItem = ({ item }: { item: ItemData }) => {
-    const backgroundColor = item.id === selectedId ? '#91C788' : '#FF9385';
-    const color = item.id === selectedId ? '#fff' : '#ffffff9e';
+    const backgroundColor = item.id === selectedId ? "#91C788" : "#FF9385";
+    const color = item.id === selectedId ? "#fff" : "#ffffff9e";
 
     return (
       <TouchableOpacity
         onPress={() => handleDatePress(item)}
-        style={[styles.item, { backgroundColor }]}>
+        style={[styles.item, { backgroundColor }]}
+      >
         <Text style={[styles.title, { color: color }]}>{item.title}</Text>
       </TouchableOpacity>
     );
@@ -164,8 +179,8 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <ScrollView>
       <View style={styles.metricas}>
-
         <View>
           <FlatList
             horizontal
@@ -180,18 +195,21 @@ const HomeScreen = () => {
           />
         </View>
 
-        <Text style={styles.userTitle}> Bem vindo(a), {userPG?.nomeUsuario || 'usuario'}</Text>
-        <Text style={styles.userSubTitle}>Acompanhe seu relatório nutricional diário:</Text>
-
+        <Text style={styles.userTitle}>
+          {" "}
+          Bem vindo(a), {userPG?.nomeUsuario || "usuario"}
+        </Text>
+        <Text style={styles.userSubTitle}>
+          Acompanhe seu relatório nutricional diário:
+        </Text>
 
         <PieChartCalorias userMG={userMG} />
         <BarChart userMG={userMG} />
-
       </View>
 
       <AguaConsumo userMG={userMG} navigation={navigationAgua} />
-      <AlimentacaoConsumo userMG={userMG} navigation={navigationMetrica}/>
-
+      <AlimentacaoConsumo userMG={userMG} navigation={navigationMetrica} />
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -200,13 +218,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: StatusBar.currentHeight || 0,
-    gap: 20
+    gap: 20,
+    marginBottom:5
   },
   metricas: {
     borderRadius: 30,
     paddingBottom: 30,
-    backgroundColor: '#fff',
-    shadowColor: '#000',
+    backgroundColor: "#fff",
+    shadowColor: "#000",
     shadowOffset: { width: 10, height: 0 },
   },
   item: {
@@ -215,8 +234,8 @@ const styles = StyleSheet.create({
     width: 80,
     maxHeight: 60,
     borderRadius: 10,
-    backgroundColor: 'rgba(38, 87, 215, 0.25)',
-    shadowColor: '#000',
+    backgroundColor: "rgba(38, 87, 215, 0.25)",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
@@ -224,25 +243,25 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    textAlign: 'center',
-    margin: 'auto',
+    textAlign: "center",
+    margin: "auto",
   },
   loading: {
-    alignSelf: 'center',
+    alignSelf: "center",
     marginTop: 35,
   },
   userTitle: {
     fontSize: 21,
-    fontWeight: 700,
-    textAlign: 'center',
-    marginVertical: 10
+    fontWeight: "700",
+    textAlign: "center",
+    marginVertical: 10,
   },
   userSubTitle: {
     fontSize: 18,
-    fontWeight: 500,
-    textAlign: 'center',
-    marginVertical: 5
-  }
+    fontWeight: "500",
+    textAlign: "center",
+    marginVertical: 5,
+  },
 });
 
 export default HomeScreen;

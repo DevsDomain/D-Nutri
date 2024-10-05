@@ -43,4 +43,8 @@ export const styles = StyleSheet.create({
         fontFamily: 'Signika_600SemiBold',
         textAlign: 'center',
     },
+    picker: {
+        height: 50,
+        width: 200,
+    },
 });
