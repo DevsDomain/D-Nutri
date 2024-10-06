@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StatusBar, ScrollView, View, Text, SafeAreaView, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { StatusBar, ScrollView, View, Text, SafeAreaView, TouchableOpacity, Alert, TextInput } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import ProfilePicture from '../../components/ProfilePicture';
 import SettingsOption from '../../components/SettingsOption';
@@ -19,7 +19,7 @@ const EditProfile: React.FC = () => {
         try {
             console.log('Iniciando a função handleSaveChanges');
 
-            const url = `${BACKEND_API_URL}/users/7`;
+            const url = `${BACKEND_API_URL}/edit-profile/7`;
             const body = JSON.stringify({
                 nomeUsuario,
                 altura,
@@ -67,7 +67,7 @@ const EditProfile: React.FC = () => {
                 <ProfilePicture name={nomeUsuario || 'User'} localImage={localImage} />
 
                 <SettingsOption
-                    label="Nome"
+                    label="Nome: "
                     icon="user"
                     onPress={() => { }}
                     editable={true}
@@ -75,7 +75,7 @@ const EditProfile: React.FC = () => {
                     onChangeText={setNomeUsuario}
                 />
                 <SettingsOption
-                    label="Altura em cm"
+                    label="Altura em cm: "
                     icon="expand"
                     onPress={() => { }}
                     editable={true}
@@ -84,7 +84,7 @@ const EditProfile: React.FC = () => {
 
                 />
                 <SettingsOption
-                    label="Sexo"
+                    label="Sexo: "
                     icon="venus-mars"
                     editable={true}
                     value={genero}
@@ -102,7 +102,7 @@ const EditProfile: React.FC = () => {
                 </SettingsOption>
 
                 <SettingsOption
-                    label="Peso em Kg"
+                    label="Peso em Kg: "
                     icon="clipboard"
                     onPress={() => { }}
                     editable={true}
@@ -111,7 +111,7 @@ const EditProfile: React.FC = () => {
 
                 />
                 <SettingsOption
-                    label="Meta de Peso em Kg"
+                    label="Meta de Peso em Kg: "
                     icon="clipboard"
                     onPress={() => { }}
                     editable={true}

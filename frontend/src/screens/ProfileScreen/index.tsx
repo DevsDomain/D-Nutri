@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, SafeAreaView, ScrollView, StatusBar, Modal, TouchableOpacity, TextInput, Alert } from "react-native";
+import { View, Text, SafeAreaView, ScrollView, StatusBar, Alert, TextInput } from "react-native";
 import { styles } from "./styles";
 import ProfilePicture from "../../components/ProfilePicture";
 import SettingsOption from "../../components/SettingsOption";
@@ -7,7 +7,6 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../../types";
 import CustomModal from "../../components/Modal";
 import { BACKEND_API_URL } from "@env";
-
 
 type ProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, "Profile">;
 
@@ -28,40 +27,40 @@ export default function ProfileScreen({ navigation }: Props) {
 
   const handlePasswordChange = async () => {
     try {
-        console.log('Iniciando a função handlePasswordChange');
+      console.log('Iniciando a função handlePasswordChange');
 
-        const url = `${BACKEND_API_URL}/users/7`;
-        const body = JSON.stringify({
-            senha: newPassword,
-        });
+      const url = `${BACKEND_API_URL}/profile/7`;
+      const body = JSON.stringify({
+        password: newPassword,
+      });
 
-        console.log('URL:', url);
-        console.log('Body:', body);
+      console.log('URL:', url);
+      console.log('Body:', body);
 
-        const response = await fetch(url, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: body,
-        });
+      const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: body,
+      });
 
-        console.log('Resposta recebida:', response);
+      console.log('Resposta recebida:', response);
 
-        const data = await response.json();
+      const data = await response.json();
 
-        console.log('Dados recebidos:', data);
+      console.log('Dados recebidos:', data);
 
-        if (response.ok) {
-            Alert.alert('Sucesso', data.message);
-        } else {
-            Alert.alert('Erro', data.message);
-        }
+      if (response.ok) {
+        Alert.alert('Sucesso', data.message);
+      } else {
+        Alert.alert('Erro', data.message);
+      }
     } catch (error) {
-        console.log('Erro na função handlePasswordChange:', error);
-        Alert.alert('Erro', 'Não foi possível atualizar a senha');
+      console.log('Erro na função handlePasswordChange:', error);
+      Alert.alert('Erro', 'Não foi possível atualizar a senha');
     } finally {
-        setModalVisible(false); // Fechar o modal após a redefinição de senha
+      setModalVisible(false); // Fechar o modal após a redefinição de senha
     }
   };
 
@@ -104,7 +103,7 @@ export default function ProfileScreen({ navigation }: Props) {
         <SettingsOption
           label="Sair da Conta"
           icon="sign-out"
-          onPress={() => navigation.navigate("Onboarding")} /> 
+          onPress={() => navigation.navigate("Onboarding")} />
       </ScrollView>
 
       {/* Modal para Redefinir Senha */}
@@ -134,4 +133,4 @@ export default function ProfileScreen({ navigation }: Props) {
       />
     </SafeAreaView>
   );
-};
+}

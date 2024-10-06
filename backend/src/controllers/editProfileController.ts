@@ -1,26 +1,22 @@
 import { Request, Response } from "express";
 import pg from "../databases/postgres";
 
-class ProfileController {
-  // Atualizar a senha de um usuário
-  async updateUserPassword(req: Request, res: Response): Promise<Response> {
+class EditProfileController {
+  // Atualizar um usuário
+  async updateUser(req: Request, res: Response): Promise<Response> {
     try {
       const idUsuario = req.params.id;
-      const { password } = req.body;
-
-      if (!password) {
-        return res.status(400).json({ message: "Senha é obrigatória" });
-      }
-
+      const { nomeUsuario, altura, genero, peso, meta } = req.body;
+      console.log(req.body);
       // Query de atualização no PostgreSQL
       const query = `
         UPDATE "User"
-        SET "password" = $1
-        WHERE "idUsuario" = $2
+        SET "nomeUsuario" = $1, altura = $2, genero = $3, peso = $4, meta = $5
+        WHERE "idUsuario" = $6
         RETURNING *;
       `;
 
-      const values = [password, idUsuario];
+      const values = [nomeUsuario, altura, genero, peso, meta, idUsuario];
       const updatedUser = await pg.query(query, values);
 
       if (updatedUser.rows.length === 0) {
@@ -28,15 +24,15 @@ class ProfileController {
       }
 
       return res.status(200).json({
-        message: "Senha atualizada com sucesso!",
+        message: "Usuário atualizado com sucesso!",
         user: updatedUser.rows[0],
       });
     } catch (error) {
       return res
         .status(500)
-        .json({ message: "Erro ao atualizar usuário[pfl-Ctrl]", error });
+        .json({ message: "Erro ao atualizar usuário", error });
     }
   }
 }
 
-export default new ProfileController();
+export default new EditProfileController();
