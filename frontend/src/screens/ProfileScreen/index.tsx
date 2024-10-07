@@ -9,6 +9,7 @@ import CustomModal from "../../components/Modal";
 import { IuserLogin } from "../../types/user";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BACKEND_API_URL } from "@env";
+import axios from "axios";
 
 type ProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, "Profile">;
 
@@ -23,6 +24,8 @@ export default function ProfileScreen({ navigation }: Props) {
   const [newPassword, setNewPassword] = useState('');
   const [modalType, setModalType] = useState<'passwordReset' | 'logoutConfirmation'>('passwordReset');
   const [user, setUser] = useState<IuserLogin>();
+  const [userLogin, setUserLogin] = useState<IuserLogin>();
+  const [userData, setUserData] = useState<IuserLogin>();
 
   const loadUserFromStorage = async () => {
     try {
@@ -42,6 +45,25 @@ export default function ProfileScreen({ navigation }: Props) {
   }, []);
 
 
+  // Copiado do frontend/src/screens/EditProfile/index.tsx
+  const loadUser = async (id: number) => {
+    try {
+      const response = await axios.get(`${BACKEND_API_URL}/users/${id}`);
+      const userData = response.data[0];
+      setUserData(userData);
+      setNewPassword(userData.password);
+
+    } catch (error) {
+      console.log("ERRO ao buscar dados do usuário", error);
+    }
+  };
+  useEffect(() => {
+    if (userLogin) {
+      loadUser(parseInt(userLogin.id));
+    }
+  }, [userLogin]);
+
+  // Fim da cópia
 
 
   const passwordReset = () => {
