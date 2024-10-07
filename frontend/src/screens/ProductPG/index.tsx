@@ -12,6 +12,7 @@ export default function ProductDetailsScreenPG() {
   const [product, setProduct] = useState<IAlimentos | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [weight, setWeight] = useState(100);
+
   const handleIncreaseQuantity = () => setQuantity((prev) => prev + 1);
   const handleDecreaseQuantity = () =>
     setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
@@ -20,42 +21,74 @@ export default function ProductDetailsScreenPG() {
   const handleDecreaseWeight = () =>
     setWeight((prev) => (prev > 5 ? prev - 5 : 5));
 
-  useEffect(() => {
-    const fetchProductData = async () => {
-      try {
-        const response = await axios.get(
-          `${BACKEND_API_URL}/findAlimento/${barcode}`
-        );
-        const productData = response.data;
-        setProduct(productData)
-        if (!productData) {
-          Alert.alert("Erro", "Produto não encontrado.");
-          return;
-        }
-
-      } catch (error) {
-        // Tratamento de erro com alerta e log no console
-        console.error("Erro ao buscar dados do produto:", error);
-        Alert.alert("Erro", "Falha ao buscar dados do produto.");
+  const fetchProductFromBackend = async () => {
+    try {
+      const response = await axios.get(
+        `${BACKEND_API_URL}/findAlimento/${barcode}`
+      );
+      const productData = response.data;
+      if (productData) {
+        setProduct(productData);
+      } else {
+        throw new Error("Produto não encontrado no backend.");
       }
-    };
+    } catch (error) {
+      console.log("Erro ao buscar no backend:", error);
+      await fetchProductFromOpenFoodFacts(); // Busca na OpenFoodFacts se não encontrar no backend
+    }
+  };
 
+  const fetchProductFromOpenFoodFacts = async () => {
+    try {
+      const response = await axios.get(
+        `https://br.openfoodfacts.net/api/v0/product/${barcode}.json`
+      );
+      const productData = response.data.product;
+
+      if (productData) {
+        setProduct({
+          idProduto: 0, // ID temporário, será atribuído pelo backend
+          barcode: productData.code,
+          nomeProduto: productData.product_name || "Produto desconhecido",
+          imageSrc: productData.image_url || "", // Imagem do produto, se disponível
+          Proteina: productData.nutriments.proteins_100g?.toString() || "0",
+          Caloria:
+            productData.nutriments["energy-kcal_100g"]?.toString() || "0",
+          Carboidrato:
+            productData.nutriments["carbohydrates_100g"]?.toString() || "0",
+          gordura: productData.nutriments.fat_100g?.toString() || "0",
+          sodio: productData.nutriments.sodium_100g?.toString() || "0",
+          acucar: productData.nutriments.sugars_100g?.toString() || "0",
+        });
+      } else {
+        Alert.alert("Erro", "Produto não encontrado.");
+      }
+    } catch (error) {
+      console.log("Erro ao buscar no OpenFoodFacts:", error);
+      Alert.alert("Erro", "Produto não encontrado.");
+    }
+  };
+
+  useEffect(() => {
     if (barcode) {
-      fetchProductData();
-    }setProduct
+      fetchProductFromBackend();
+    }
   }, [barcode]);
+
   const calculateNutrients = (nutrientPer100g: number | undefined) => {
     if (nutrientPer100g === undefined) return "0.00";
     return ((nutrientPer100g / 100) * weight * quantity).toFixed(2);
   };
+
   const handleRegister = async () => {
     if (!product) return;
 
     try {
       const response = await axios.post(`${BACKEND_API_URL}/alimentos`, {
-        barcode,
+        idProduto: product.idProduto,
+        barcode: product.barcode,
         nomeProduto: product.nomeProduto,
-        imageSrc: "http://exemplo.com/imagem.png", // Supondo que o link da imagem seja obtido de algum lugar
+        imageSrc: product.imageSrc,
         Proteina: calculateNutrients(parseFloat(product.Proteina)),
         Caloria: calculateNutrients(parseFloat(product.Caloria)),
         Carboidrato: calculateNutrients(parseFloat(product.Carboidrato)),
@@ -64,7 +97,6 @@ export default function ProductDetailsScreenPG() {
         acucar: calculateNutrients(parseFloat(product.acucar)),
       });
       console.log("Produto registrado com sucesso:", response.data);
-
       Alert.alert("Sucesso", "Produto registrado com sucesso!");
     } catch (error) {
       console.error("Erro ao registrar o produto:", error);
@@ -201,7 +233,6 @@ const styles = StyleSheet.create({
   circleButton: {
     padding: 10,
   },
-
   valueText: {
     fontSize: 16,
     marginVertical: 10,
@@ -217,12 +248,11 @@ const styles = StyleSheet.create({
   rowTable: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 5,
-    borderBottomWidth: 1,
-    borderBottomColor: "#E5E5E5",
+    marginBottom: 10,
   },
   headerText: {
     fontWeight: "bold",
+    fontSize: 16,
     color: "#4C956C",
   },
   tableText: {
@@ -230,10 +260,9 @@ const styles = StyleSheet.create({
   },
   registerButton: {
     backgroundColor: "#4C956C",
-    padding: 15,
-    borderRadius: 10,
-    width: "100%",
-    alignItems: "center",
+    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
   },
   registerButtonText: {
     color: "#FFFFFF",
