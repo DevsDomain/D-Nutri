@@ -22,6 +22,8 @@ import AlimentacaoConsumo from "../../components/AlimentacaoConsumo";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../../types";
 import { useNavigation } from "@react-navigation/native"; // Importação da navegação
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { IuserLogin } from "../../types/user";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -36,7 +38,21 @@ const HomeScreen = () => {
   const [loading, setLoading] = useState(false);
   const [dataList, setDataList] = useState<ItemData[]>([]);
   const [userMG, setUserMG] = useState<IUser>();
-  const [userPG, setUserPG] = useState<IUserData>();
+  const [user, setUser] = useState<IuserLogin>();
+  const [userPG,setUserPG] = useState<IUserData>();
+
+  const loadUserFromStorage = async () => {
+    try {
+      const storedUser = await AsyncStorage.getItem("user")
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+        console.log("Usuário do AsyncStorage:", storedUser);
+      }
+    } catch (error) {
+      console.error("Erro ao obter dados do AsyncStorage:", error);
+    }
+  };
+
 
   type AguaComponentNavigationProp = StackNavigationProp<
     RootStackParamList,
@@ -57,6 +73,12 @@ const HomeScreen = () => {
 
   // Load the initial set of dates: 2 before, today, and 1 day ahead
   useEffect(() => {
+    loadUserFromStorage().then(() => {
+      if (user) {
+        loadDashboard(parseInt(user?.id), initialData[2].date);
+      }
+    })
+
     const initialData: ItemData[] = [];
     for (let i = -2; i <= 1; i++) {
       const date = moment().add(i, "days");
@@ -68,7 +90,6 @@ const HomeScreen = () => {
     }
     setSelectedId(initialData[2].id);
     setDataList(initialData);
-    loadDashboard(1, initialData[2].date);
   }, []);
 
   // Gera mais 2 datas
@@ -92,7 +113,7 @@ const HomeScreen = () => {
 
   const createDate = async (date: string, idUser: number) => {
     try {
-      const response = await axios.post(`${BACKEND_API_URL}/data/10`, {
+      const response = await axios.post(`${BACKEND_API_URL}/data/${user?.id}`, {
         data: date,
       });
       const newItem: ItemData = {
@@ -117,7 +138,7 @@ const HomeScreen = () => {
   const loadDashboard = async (id: number, date: string) => {
     try {
       const response = await axios.post(
-        `${BACKEND_API_URL}/dashboard/10`,
+        `${BACKEND_API_URL}/dashboard/${id}`,
         {
           data: date,
         }
@@ -135,22 +156,25 @@ const HomeScreen = () => {
   const handleDatePress = async (item: ItemData) => {
     setSelectedId(item.id);
     setLoading(true);
-    try {
-      const response = await axios.post(
-        `${BACKEND_API_URL}/dashboard/10`,
-        {
-          data: item.date,
+    if (user) {
+      try {
+        const response = await axios.post(
+          `${BACKEND_API_URL}/dashboard/${user.id}`,
+          {
+            data: item.date,
+          }
+        );
+        if (response.status == 201) {
+          setUserMG(response.data.userMG);
+          setUserPG(response.data.userPG);
+          loadPieChart(response.data.userMG);
         }
-      );
-      if (response.status == 201) {
-        setUserMG(response.data.userMG);
-        setUserPG(response.data.userPG);
-        loadPieChart(response.data.userMG);
+
+      } catch (error: any) {
+        console.log("ERRO ao buscar dados dashboard, criando nova data...");
+        createDate(item.date, 1);
+        setLoading(false);
       }
-    } catch (error: any) {
-      console.log("ERRO ao buscar dados dashboard, criando nova data...");
-      createDate(item.date, 1);
-      setLoading(false);
     }
   };
 
@@ -197,7 +221,7 @@ const HomeScreen = () => {
 
           <Text style={styles.userTitle}>
             {" "}
-            Bem vindo(a), {userPG?.nomeUsuario || "usuario"}
+            Bem vindo(a), {user?.nomeUsuario || "usuario"}
           </Text>
           <Text style={styles.userSubTitle}>
             Acompanhe seu relatório nutricional diário:

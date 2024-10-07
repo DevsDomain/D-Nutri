@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -26,11 +26,26 @@ type Props = {
   navigation: LoginScreenNavigationProp;
 };
 
+
 export default function LoginScreen({ navigation }: Props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const loadUserFromStorage = async () => {
+    try {
+      const storedUser = await AsyncStorage.getItem("user")
+      if (storedUser) {
+        navigation.navigate("Main");
+      }
+    } catch (error) {
+      console.error("Erro ao obter dados do AsyncStorage:", error);
+    }
+  };
+  useEffect(() => {
+    loadUserFromStorage()
+  }, []);
+
 
   const handleLogin = async () => {
     setLoading(true);
@@ -39,6 +54,11 @@ export default function LoginScreen({ navigation }: Props) {
         email,
         password,
       });
+
+   
+    
+    
+    
 
       const { message, user } = response.data;
       if (message === "Login realizado com sucesso!") {
