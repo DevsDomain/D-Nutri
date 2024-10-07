@@ -16,6 +16,8 @@ import ScannerScreen from "../screens/BarcodeScreen";
 import ProductDetailsScreen from "../screens/ProductScreen";
 import Dashboard from "../screens/HomeScreen";
 import React from "react";
+import ProductDetailsScreenPG from "../screens/ProductPG";
+import AlimentosConsumidosScreen from "../screens/AlimentosConsumidosScreen";
 
 const Stack = createStackNavigator();
 
@@ -166,7 +168,20 @@ export default function StackRoutes() {
           },
         }}
       />
-
+   <Stack.Screen
+        name="AlimentosConsumidosScreen"
+        component={AlimentosConsumidosScreen}
+        options={{
+          headerShown: true,
+          title: "Meus Consumos",
+          headerStyle: {
+            backgroundColor: "#BBDEB5", // Cor de fundo do cabeçalho
+          },
+          headerTitleStyle: {
+            color: "#000000", // Cor do título, ajustada para melhor contraste com o fundo
+          },
+        }}
+      />  
       <Stack.Screen
         name="termsOfUse"
         component={TermsOfUse}
@@ -189,6 +204,8 @@ export default function StackRoutes() {
 
       <Stack.Screen name="scanner" component={ScannerScreen} />
       <Stack.Screen name="ProductDetails" component={ProductDetailsScreen} />
+      <Stack.Screen name="ProductDetailsScreenPG" component={ProductDetailsScreenPG} />
+
       <Stack.Screen name="Terms" component={TermsOfUse} />
     </Stack.Navigator>
   );

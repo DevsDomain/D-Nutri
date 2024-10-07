@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -6,9 +6,14 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  Alert,
 } from "react-native";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../../../types"; // Defina seus tipos de navegação em um arquivo separado
+import { RootStackParamList } from "../../../types";
+import { BACKEND_API_URL } from "@env";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const logo = require("../../../assets/logo.png");
 
@@ -21,13 +26,57 @@ type Props = {
   navigation: LoginScreenNavigationProp;
 };
 
+
 export default function LoginScreen({ navigation }: Props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const loadUserFromStorage = async () => {
+    try {
+      const storedUser = await AsyncStorage.getItem("user")
+      if (storedUser) {
+        navigation.navigate("Main");
+      }
+    } catch (error) {
+      console.error("Erro ao obter dados do AsyncStorage:", error);
+    }
+  };
+  useEffect(() => {
+    loadUserFromStorage()
+  }, []);
+
+
+  const handleLogin = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post(`${BACKEND_API_URL}/login`, {
+        email,
+        password,
+      });
+
+   
+    
+    
+    
+
+      const { message, user } = response.data;
+      if (message === "Login realizado com sucesso!") {
+        await AsyncStorage.setItem("user", JSON.stringify(user));
+        navigation.navigate("Main");
+      } else {
+        Alert.alert("Erro", "Credenciais inválidas.");
+      }
+    } catch (error) {
+      Alert.alert("Erro", "Não foi possível realizar o login.");
+      console.error("Erro de login:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
-      {/* Título da tela */}
       <View style={styles.tituloContainer}>
         <Text style={styles.tituloText}>D-Nutri</Text>
         <Image source={logo} style={styles.logo} />
@@ -49,21 +98,32 @@ export default function LoginScreen({ navigation }: Props) {
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Senha</Text>
           <TextInput
-            style={styles.input}
+            style={styles.passwordInput}
             placeholder="Digite sua senha"
-            secureTextEntry
+            secureTextEntry={!showPassword}
             value={password}
             onChangeText={setPassword}
           />
+          <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeButton}>
+            <Icon
+              name={showPassword ? "eye" : "eye-slash"}
+              size={24}
+              color="#13440c"
+            />
+          </TouchableOpacity>
         </View>
 
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate("Main")}
+          onPress={handleLogin}
+          disabled={loading}
         >
-          <Text style={styles.buttonText}>Entrar</Text>
+          <Text style={styles.buttonText}>
+            {loading ? "Entrando..." : "Entrar"}
+          </Text>
         </TouchableOpacity>
       </View>
+
       <View style={styles.rowContainer}>
         <Text style={styles.login2}>Não tem uma conta?</Text>
         <TouchableOpacity onPress={() => navigation.navigate("Cadastro")}>
@@ -81,8 +141,8 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   tituloContainer: {
-    flexDirection: "row", // Alinha o texto e a imagem horizontalmente
-    alignItems: "center", // Alinha o texto e a imagem verticalmente
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: -10,
     marginTop: 40,
   },
@@ -91,20 +151,20 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto_700Bold",
     fontWeight: "bold",
     color: "#91C788",
-    marginRight: 10, // Espaço entre o texto e a imagem
+    marginRight: 10,
   },
   logo: {
-    width: 60, // Largura da imagem
-    height: 60, // Altura da imagem
-    resizeMode: "contain", // Mantém a proporção da imagem
+    width: 60,
+    height: 60,
+    resizeMode: "contain",
   },
   formContainer: {
     width: "85%",
     padding: 20,
     borderRadius: 8,
     borderWidth: 2,
-    borderColor: "#BBDEB5", // Borda verde
-    backgroundColor: "#BBDEB5", // Fundo verde claro
+    borderColor: "#BBDEB5",
+    backgroundColor: "#BBDEB5",
     alignItems: "center",
     marginTop: 40,
   },
@@ -133,26 +193,29 @@ const styles = StyleSheet.create({
     borderColor: "#fff",
     backgroundColor: "white",
   },
+  passwordInput: {
+    width: "100%",
+    padding: 10,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: "#fff",
+    backgroundColor: "white",
+  },
+  eyeButton: {
+    alignSelf: 'flex-start', // Alinha à esquerda
+    marginTop: 5, // Espaço acima do ícone
+  },
   button: {
-    width: "100%", // Largura total do botão
-    paddingVertical: 15, // Altura do botão
-    backgroundColor: "#91C788", // Cor de fundo
-    borderRadius: 5, // Bordas arredondadas
-    alignItems: "center", // Alinha o texto ao centro
+    width: "100%",
+    paddingVertical: 15,
+    backgroundColor: "#91C788",
+    borderRadius: 5,
+    alignItems: "center",
     marginTop: 20,
   },
   buttonText: {
     color: "white",
     fontSize: 18,
-    fontWeight: "bold",
-  },
-  backButton: {
-    marginTop: 20,
-    padding: 10,
-  },
-  backButtonText: {
-    color: "#5e9256",
-    fontSize: 20,
     fontWeight: "bold",
   },
   login: {

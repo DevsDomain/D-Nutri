@@ -1,11 +1,13 @@
-import React, { useState } from "react";
 import { View, Text, SafeAreaView, ScrollView, StatusBar, Alert, TextInput } from "react-native";
+import React, { useState, useEffect } from "react";
 import { styles } from "./styles";
 import ProfilePicture from "../../components/ProfilePicture";
 import SettingsOption from "../../components/SettingsOption";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../../types";
 import CustomModal from "../../components/Modal";
+import { IuserLogin } from "../../types/user";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BACKEND_API_URL } from "@env";
 
 type ProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, "Profile">;
@@ -15,10 +17,32 @@ type Props = {
 };
 
 export default function ProfileScreen({ navigation }: Props) {
+
   const localImage = require('../../../assets/profile-icon.png');
   const [modalVisible, setModalVisible] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [modalType, setModalType] = useState<'passwordReset' | 'logoutConfirmation'>('passwordReset');
+  const [user, setUser] = useState<IuserLogin>();
+
+  const loadUserFromStorage = async () => {
+    try {
+      const storedUser = await AsyncStorage.getItem("user")
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+        console.log("Usuário do AsyncStorage:", storedUser);
+      }
+    } catch (error) {
+      console.error("Erro ao obter dados do AsyncStorage:", error);
+    }
+  };
+
+
+  useEffect(() => {
+    loadUserFromStorage()
+  }, []);
+
+
+
 
   const passwordReset = () => {
     setModalType('passwordReset');
@@ -87,7 +111,7 @@ export default function ProfileScreen({ navigation }: Props) {
       </View>
 
       <ScrollView>
-        <ProfilePicture name="User" localImage={localImage} />
+        <ProfilePicture name={user?.nomeUsuario || "User"} localImage={localImage} />
         <SettingsOption
           label="Editar Perfil"
           icon="user"

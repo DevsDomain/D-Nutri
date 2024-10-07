@@ -3,7 +3,7 @@ import { StatusBar } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import HomeScreen from "../screens/HomeScreen";
 import AddScreen from "../screens/AddScreen";
-import FavoritesScreen from "../screens/FavoritesScreen";
+import AlimentosConsumidosScreen from "../screens/AlimentosConsumidosScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import SelectAlimento from "../screens/SelectAlimento";
 import ScannerScreen from "../screens/BarcodeScreen";
@@ -65,7 +65,19 @@ export default function TabRoutes() {
 
       <Tab.Screen
         name="Search"
-        component={SelectAlimento} />
+        component={SelectAlimento}
+        options={{
+          tabBarIconStyle: { marginTop: -8 },
+
+          headerShown: false,
+          title: "Selecione o tipo de Refeição",
+          headerStyle: {
+            backgroundColor: "#BBDEB5", // Cor de fundo do cabeçalho
+          },
+          headerTitleStyle: {
+            color: "#000000", // Cor do título, ajustada para melhor contraste com o fundo
+          },
+        }} />
 
       <Tab.Screen
         name="Add"
@@ -86,7 +98,7 @@ export default function TabRoutes() {
 
       <Tab.Screen
         name="Favorites"
-        component={FavoritesScreen}
+        component={AlimentosConsumidosScreen}
         options={{ headerShown: false }}
       />
 
