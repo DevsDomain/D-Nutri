@@ -75,7 +75,7 @@ export default function ProfileScreen({ navigation }: Props) {
     try {
       console.log('Iniciando a função handlePasswordChange');
 
-      const url = `${BACKEND_API_URL}/profile/7`;
+      const url = `${BACKEND_API_URL}/profile/${user?.id}`;
       const body = JSON.stringify({
         password: newPassword,
       });
@@ -115,10 +115,12 @@ export default function ProfileScreen({ navigation }: Props) {
     setModalVisible(true);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async() => {
     console.log('Saindo da conta...');
     setModalVisible(false); // Fechar o modal após a confirmação de logout
-    navigation.navigate("Onboarding");
+    await AsyncStorage.clear().then(() => {
+      navigation.navigate("Login");
+    });
   };
 
   const handleCancel = () => {
@@ -149,7 +151,7 @@ export default function ProfileScreen({ navigation }: Props) {
         <SettingsOption
           label="Sair da Conta"
           icon="sign-out"
-          onPress={() => navigation.navigate("Onboarding")} />
+          onPress={() => handleLogout()} />
       </ScrollView>
 
       {/* Modal para Redefinir Senha */}

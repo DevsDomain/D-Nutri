@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StatusBar, ScrollView, View, Text, SafeAreaView, TouchableOpacity, Alert, TextInput } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import { StatusBar, ScrollView, View, Text, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
 import ProfilePicture from '../../components/ProfilePicture';
 import SettingsOption from '../../components/SettingsOption';
 import { styles } from './styles';
@@ -16,9 +15,9 @@ const EditProfile: React.FC = () => {
     const [userData, setUserData] = useState<IUserData>();
     const [nomeUsuario, setNomeUsuario] = useState('');
     const [altura, setAltura] = useState('');
+    const [genero, setgenero] = useState('');
     const [peso, setPeso] = useState('');
     const [meta, setMeta] = useState('');
-    const [genero, setGenero] = useState('');
     const [userLogin, setUserLogin] = useState<IuserLogin>();
 
     const loadUserFromStorage = async () => {
@@ -42,7 +41,7 @@ const EditProfile: React.FC = () => {
             setMeta(userData.meta.toString());
             setNomeUsuario(userData.nomeUsuario.toString());
             setPeso(userData.peso.toString());
-            setGenero(userData.genero.toString());
+            setgenero(userData.genero.toString());
         } catch (error) {
             console.log("ERRO ao buscar dados do usuário", error);
         }
@@ -74,9 +73,7 @@ const EditProfile: React.FC = () => {
     }
     const handleSaveChanges = async () => {
         try {
-            console.log('Iniciando a função handleSaveChanges');
-
-            const url = `${BACKEND_API_URL}/edit-profile/${userLogin?.id}`;
+            const url = `${BACKEND_API_URL}/users/${userLogin?.id}`;
             const body = JSON.stringify({
                 nomeUsuario,
                 altura,
@@ -119,7 +116,7 @@ const EditProfile: React.FC = () => {
                 <ProfilePicture name={nomeUsuario || 'User'} localImage={localImage} />
 
                 <SettingsOption
-                    label="Nome: "
+                    label="Nome"
                     icon="user"
                     onPress={() => { }}
                     editable={true}
@@ -127,7 +124,7 @@ const EditProfile: React.FC = () => {
                     onChangeText={setNomeUsuario}
                 />
                 <SettingsOption
-                    label="Altura em cm: "
+                    label="Altura em cm"
                     icon="expand"
                     onPress={() => { }}
                     editable={true}
@@ -135,25 +132,15 @@ const EditProfile: React.FC = () => {
                     onChangeText={setAltura}
                 />
                 <SettingsOption
-                    label="Sexo: "
+                    label="Sexo"
                     icon="venus-mars"
+                    onPress={() => { }}
                     editable={true}
                     value={genero}
-                    onPress={() => { }}
-                >
-                    <Picker
-                        selectedValue={genero}
-                        onValueChange={(itemValue) => setGenero(itemValue)}
-                        style={styles.picker}
-                    >
-                        <Picker.Item label="Masculino" value="masculino" />
-                        <Picker.Item label="Feminino" value="feminino" />
-                        <Picker.Item label="Outro" value="outro" />
-                    </Picker>
-                </SettingsOption>
-
+                    onChangeText={setgenero}
+                />
                 <SettingsOption
-                    label="Peso em Kg: "
+                    label="Peso em Kg"
                     icon="clipboard"
                     onPress={() => { }}
                     editable={true}
@@ -161,7 +148,7 @@ const EditProfile: React.FC = () => {
                     onChangeText={setPeso}
                 />
                 <SettingsOption
-                    label="Meta de Peso em Kg: "
+                    label="Meta de Peso em Kg"
                     icon="clipboard"
                     onPress={() => { }}
                     editable={true}

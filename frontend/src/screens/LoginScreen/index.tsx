@@ -55,11 +55,6 @@ export default function LoginScreen({ navigation }: Props) {
         password,
       });
 
-   
-    
-    
-    
-
       const { message, user } = response.data;
       if (message === "Login realizado com sucesso!") {
         await AsyncStorage.setItem("user", JSON.stringify(user));
