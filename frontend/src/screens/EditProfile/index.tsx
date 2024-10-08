@@ -8,6 +8,7 @@ import axios from 'axios';
 import { IUserData } from '../../types/userDiary';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { IuserLogin } from '../../types/user';
+import { Picker } from '@react-native-picker/picker';
 
 const EditProfile: React.FC = () => {
     const localImage = require('../../../assets/profile-icon.png');
@@ -131,14 +132,20 @@ const EditProfile: React.FC = () => {
                     value={altura}
                     onChangeText={setAltura}
                 />
-                <SettingsOption
-                    label="Sexo"
-                    icon="venus-mars"
-                    onPress={() => { }}
-                    editable={true}
-                    value={genero}
-                    onChangeText={setgenero}
-                />
+
+                <View style={styles.pickerContainer}>
+                    <Text style={styles.pickerLabel}>Sexo</Text>
+                    <Picker
+                        selectedValue={genero}
+                        onValueChange={(itemValue) => setgenero(itemValue)}
+                        style={styles.picker}
+                    >
+                        <Picker.Item label="Masculino" value="Masculino" />
+                        <Picker.Item label="Feminino" value="Feminino" />
+                        <Picker.Item label="Outros" value="Outros" />
+                    </Picker>
+                </View>
+
                 <SettingsOption
                     label="Peso em Kg"
                     icon="clipboard"

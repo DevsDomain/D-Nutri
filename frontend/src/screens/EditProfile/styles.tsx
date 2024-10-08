@@ -27,7 +27,6 @@ export const styles = StyleSheet.create({
         marginVertical: 10,
         backgroundColor: 'white',
     },
-
     button: {
         backgroundColor: "#64A759",
         borderRadius: 15,
@@ -43,8 +42,20 @@ export const styles = StyleSheet.create({
         fontFamily: 'Signika_600SemiBold',
         textAlign: 'center',
     },
+    pickerContainer: {
+        marginHorizontal: 10,
+        marginVertical: 10,
+        padding: 10,
+        backgroundColor: 'white',
+        borderRadius: 5,
+    },
+    pickerLabel: {
+        fontSize: 16,
+        fontFamily: 'Signika_400Regular',
+        marginBottom: 5,
+    },
     picker: {
         height: 50,
-        width: 200,
+        width: '100%',
     },
 });
