@@ -59,10 +59,12 @@ export default function ProfileScreen({ navigation }: Props) {
     setModalVisible(true);
   };
 
-  const handleLogout = () => {
-    console.log('Saindo da conta...');
-    setModalVisible(false); // Fechar o modal após a confirmação de logout
-    navigation.navigate("Onboarding");
+  const handleLogout = async () => {
+    logoutConfirmation();
+    await AsyncStorage.clear().then(() => {
+      navigation.navigate("Login");
+    })
+    // Fechar o modal após a confirmação de logout
   };
 
   const handleCancel = () => {
@@ -94,7 +96,7 @@ export default function ProfileScreen({ navigation }: Props) {
         <SettingsOption
           label="Sair da Conta"
           icon="sign-out"
-          onPress={() => navigation.navigate("Onboarding")} />
+          onPress={() => handleLogout()} />
       </ScrollView>
 
 
