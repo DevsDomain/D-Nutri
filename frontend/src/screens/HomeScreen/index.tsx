@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import moment from "moment";
 import { IUser, IUserData } from "../../types/userDiary";
@@ -12,7 +12,6 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   View,
-  Dimensions,
   ScrollView,
 } from "react-native";
 import PieChartCalorias from "../../components/PieChart";
@@ -21,37 +20,28 @@ import AguaConsumo from "../../components/AguaConsumo";
 import AlimentacaoConsumo from "../../components/AlimentacaoConsumo";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../../types";
-import { useNavigation } from "@react-navigation/native"; // Importação da navegação
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { IuserLogin } from "../../types/user";
-
-const screenWidth = Dimensions.get("window").width;
-
+import { useFocusEffect } from "@react-navigation/native";
+import { useNavigation } from '@react-navigation/native'; // Importação da navegação
+type MainNavigationProp = StackNavigationProp<RootStackParamList, "Main">;
 type ItemData = {
   id: number;
   title: string;
   date: string;
 };
-
-const HomeScreen = () => {
-  const [selectedId, setSelectedId] = useState<number | string>();
+type Props = {
+  navigation: MainNavigationProp;
+};
+const HomeScreen = ({ navigation }: Props) => {
+  const navigationMetrica = useNavigation<MetricasComponentNavigationProp>();
+  const [selectedId, setSelectedId] = useState<number>();
   const [loading, setLoading] = useState(false);
+  const [loadingPast, setLoadingPast] = useState(false);
   const [dataList, setDataList] = useState<ItemData[]>([]);
   const [userMG, setUserMG] = useState<IUser>();
   const [user, setUser] = useState<IuserLogin>();
-  const [userPG,setUserPG] = useState<IUserData>();
-
-  const loadUserFromStorage = async () => {
-    try {
-      const storedUser = await AsyncStorage.getItem("user")
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-        console.log("Usuário do AsyncStorage:", storedUser);
-      }
-    } catch (error) {
-      console.error("Erro ao obter dados do AsyncStorage:", error);
-    }
-  };
+  const [userPG, setUserPG] = useState<IUserData>();
 
 
   type AguaComponentNavigationProp = StackNavigationProp<
@@ -64,33 +54,74 @@ const HomeScreen = () => {
     RootStackParamList,
     "AlimentacaoComponent"
   >;
-  const navigationMetrica = useNavigation<MetricasComponentNavigationProp>();
 
-  // Helper function to format the date title
+
+
+
   const formatDateTitle = (date: moment.Moment): string => {
     return `${date.format("ddd")}\n${date.format("DD/MM")}`;
   };
 
-  // Load the initial set of dates: 2 before, today, and 1 day ahead
-  useEffect(() => {
-    loadUserFromStorage().then(() => {
-      if (user) {
-        loadDashboard(parseInt(user?.id), initialData[2].date);
-      }
-    })
+  const loadPastDates = async () => {
+    if (loadingPast || dataList.length === 0) return;
+    setLoadingPast(true);
 
-    const initialData: ItemData[] = [];
-    for (let i = -2; i <= 1; i++) {
-      const date = moment().add(i, "days");
-      initialData.push({
-        id: Math.random(),
-        title: formatDateTitle(date),
-        date: date.format("YYYY-MM-DD"),
-      });
+    setTimeout(() => {
+      const newDates: ItemData[] = [];
+      const firstDate = moment(dataList[0].date).clone();
+      for (let i = -1; i >= -2; i--) {
+        const pastDate = firstDate.clone().add(i, "days");
+        newDates.push({
+          id: Math.random(),
+          title: formatDateTitle(pastDate),
+          date: pastDate.format("YYYY-MM-DD"),
+        });
+      }
+
+      setDataList((prevList) => [...newDates, ...prevList]);
+      setLoadingPast(false);
+    }, 1000);
+  };
+
+
+  const loadUserFromStorage = async () => {
+    try {
+      const storedUser = await AsyncStorage.getItem("user")
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+        await loadDashboard(JSON.parse(storedUser), moment().format("YYYY-MM-DD")).then((response: any) => {
+          setUserMG(response.userMG);
+          setUserPG(response.userPG);
+        })
+      }
+    } catch (error) {
+      console.error("Erro ao obter dados do AsyncStorage:", error);
     }
-    setSelectedId(initialData[2].id);
-    setDataList(initialData);
-  }, []);
+  };
+  useEffect(() => {
+    navigation.addListener('focus', async () => {
+      const initialData: ItemData[] = [];
+      for (let i = -2; i <= 1; i++) {
+        const date = moment().add(i, "days");
+        initialData.push({
+          id: Math.random(),
+          title: formatDateTitle(date),
+          date: date.format("YYYY-MM-DD"),
+        });
+      }
+      setDataList(initialData);
+      setSelectedId(initialData[2].id);
+
+      await loadUserFromStorage() // Load user from AsyncStorage
+
+
+
+
+
+    })
+  }, [navigation])
+
+
 
   // Gera mais 2 datas
   const loadDatas = () => {
@@ -113,48 +144,48 @@ const HomeScreen = () => {
 
   const createDate = async (date: string, idUser: number) => {
     try {
-      const response = await axios.post(`${BACKEND_API_URL}/data/${user?.id}`, {
+      const response = await axios.post(`${BACKEND_API_URL}/data/${idUser}`, {
         data: date,
       });
       const newItem: ItemData = {
         date: date,
-        id: idUser,
+        id: Math.random(),
         title: response.data.data,
       };
-      handleDatePress(newItem);
+
+      setUserMG(response.data.user);
+
     } catch (error: any) {
       console.error("ERROR:", error.message);
     }
   };
 
-  const loadPieChart = async (data: IUser) => {
-    let dados = [1000, 1000];
-
-    if (data.macroIdeal?.Caloria > 0 && data.macroReal?.Caloria > 0) {
-      dados = [data.macroIdeal?.Caloria, data.macroReal?.Caloria];
-    }
-  };
-
-  const loadDashboard = async (id: number, date: string) => {
+  const loadDashboard = async (myUser: any, date: string) => {
     try {
       const response = await axios.post(
-        `${BACKEND_API_URL}/dashboard/${id}`,
+        `${BACKEND_API_URL}/dashboard/${myUser.id}`,
         {
           data: date,
         }
-      );
-      setUserMG(response.data.userMG);
-      setUserPG(response.data.userPG);
-      loadPieChart(response.data.userMG);
+      )
+      return response.data
+
     } catch (error: any) {
       console.log("ERRO ao buscar dados dashboard, criando nova data...");
-      createDate(date, 1);
+      if (user) {
+        createDate(date, parseInt(user.id));
+      }
       setLoading(false);
     }
   };
 
+  const setDataStorage = async (date: string) => {
+    await AsyncStorage.setItem("date", JSON.stringify(date));
+  }
+
   const handleDatePress = async (item: ItemData) => {
     setSelectedId(item.id);
+    await setDataStorage(item.date);
     setLoading(true);
     if (user) {
       try {
@@ -167,29 +198,24 @@ const HomeScreen = () => {
         if (response.status == 201) {
           setUserMG(response.data.userMG);
           setUserPG(response.data.userPG);
-          loadPieChart(response.data.userMG);
         }
 
       } catch (error: any) {
         console.log("ERRO ao buscar dados dashboard, criando nova data...");
-        createDate(item.date, 1);
-        setLoading(false);
+        if (user) {
+          createDate(item.date, parseInt(user.id));
+        }
       }
     }
   };
 
-  const renderFooter = () => {
-    if (!loading) return null;
-    return (
-      <View style={styles.loading}>
-        <ActivityIndicator />
-      </View>
-    );
-  };
+  const renderFooter = () => (loading ? <ActivityIndicator /> : null);
+  const renderHeader = () => (loadingPast ? <ActivityIndicator /> : null);
 
   const renderItem = ({ item }: { item: ItemData }) => {
     const backgroundColor = item.id === selectedId ? "#91C788" : "#FF9385";
     const color = item.id === selectedId ? "#fff" : "#ffffff9e";
+
 
     return (
       <TouchableOpacity
@@ -213,20 +239,24 @@ const HomeScreen = () => {
               keyExtractor={(item) => item.id.toString()}
               extraData={selectedId}
               showsHorizontalScrollIndicator={false}
-              onEndReached={loadDatas} // Trigger loadDatas on end reach
+              onEndReached={loadDatas}
               onEndReachedThreshold={0.01}
+              ListHeaderComponent={renderHeader}
               ListFooterComponent={renderFooter}
+              onScroll={({ nativeEvent }) => {
+                if (nativeEvent.contentOffset.x <= 10) {
+                  loadPastDates();
+                }
+              }}
             />
           </View>
 
           <Text style={styles.userTitle}>
-            {" "}
             Bem vindo(a), {user?.nomeUsuario || "usuario"}
           </Text>
           <Text style={styles.userSubTitle}>
             Acompanhe seu relatório nutricional diário:
           </Text>
-
           <PieChartCalorias userMG={userMG} />
           <BarChart userMG={userMG} />
         </View>

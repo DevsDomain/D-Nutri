@@ -18,6 +18,7 @@ import Dashboard from "../screens/HomeScreen";
 import React from "react";
 import ProductDetailsScreenPG from "../screens/ProductPG";
 import AlimentosConsumidosScreen from "../screens/AlimentosConsumidosScreen";
+import SelectRefeicao from "../screens/SelectRefeicao";
 
 const Stack = createStackNavigator();
 
@@ -90,6 +91,21 @@ export default function StackRoutes() {
       <Stack.Screen
         name="Main"
         component={TabRoutes}
+        options={{
+          headerShown: false,
+          title: "Selecione o tipo de Refeição",
+          headerStyle: {
+            backgroundColor: "#BBDEB5", // Cor de fundo do cabeçalho
+          },
+          headerTitleStyle: {
+            color: "#000000", // Cor do título, ajustada para melhor contraste com o fundo
+          },
+        }}
+      />
+
+<Stack.Screen
+        name="SelectRefeicao"
+        component={SelectRefeicao}
         options={{
           headerShown: false,
           title: "Selecione o tipo de Refeição",

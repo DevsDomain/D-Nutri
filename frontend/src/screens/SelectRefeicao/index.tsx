@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native'; // Importação da navegação
+import { useNavigation, useRoute } from '@react-navigation/native'; // Importação da navegação
 import styles from "../SelectRefeicao/styles";
 
 export default function SelectRefeicao() {
+  const route = useRoute();
+  const { barcode } = route.params as { barcode: string };
   const [selectedMeal, setSelectedMeal] = useState<string>('Café da Manhã');
   const navigation = useNavigation(); // Hook de navegação
 
@@ -21,7 +23,12 @@ export default function SelectRefeicao() {
 
   const handleMealSelection = (meal: string) => {
     setSelectedMeal(meal); // Atualiza a refeição selecionada
-    navigation.navigate('SelectAlimento'); // Navega para a tela de seleção de alimentos
+    if (navigation) {
+      navigation.navigate("ProductDetailsScreenPG", {
+        barcode: barcode,
+        meal: meal
+      }); // Navega para a tela de seleção de alimentos
+    }
   };
 
   return (

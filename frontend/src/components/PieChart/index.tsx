@@ -8,15 +8,15 @@ interface UserProps {
 }
 
 export default function PieChartCalorias({ userMG }: UserProps) {
-    const macroIdeal = userMG?.macroIdeal?.Caloria || 1500;
-    const macroReal = userMG?.macroReal?.Caloria || 830;
-    const percent = (macroReal / macroIdeal) * 100;
+    const macroIdeal = userMG?.macroIdeal?.Caloria || 0;
+    const macroReal = userMG?.macroReal?.Caloria || 0;
+    const percent = (macroReal / macroIdeal) * 100 || 0;
 
     return (
         <SafeAreaView>
             <View style={styles.circularChartContainer}>
                 <AnimatedCircularProgress
-                    size={200}
+                    size={175}
                     width={10}
                     fill={percent}
                     tintColor="#55AA55"
@@ -25,7 +25,7 @@ export default function PieChartCalorias({ userMG }: UserProps) {
                 >
                     {() => (
                         <Text style={styles.percentText}>
-                            {`${macroReal}/${macroIdeal} kcal`}
+                            {`${percent.toFixed(2) || 0}%`}
 
                         </Text>
                     )}

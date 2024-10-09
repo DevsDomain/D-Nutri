@@ -137,7 +137,7 @@ export default function SelectAlimento() {
   // Função de seleção de alimentos
   const handleSelect = (product: IAlimentos) => {
     if (navigation) {
-      navigation.navigate("ProductDetailsScreenPG", {
+      navigation.navigate("SelectRefeicao", {
         barcode: product.barcode,
       });
       console.log(`Alimento selecionado: ${product.barcode}`);
