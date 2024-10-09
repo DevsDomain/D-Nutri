@@ -16,7 +16,7 @@ const EditProfile: React.FC = () => {
     const [userData, setUserData] = useState<IUserData>();
     const [nomeUsuario, setNomeUsuario] = useState('');
     const [altura, setAltura] = useState('');
-    const [genero, setgenero] = useState('');
+    const [genero, setGenero] = useState('');
     const [peso, setPeso] = useState('');
     const [meta, setMeta] = useState('');
     const [userLogin, setUserLogin] = useState<IuserLogin>();
@@ -42,7 +42,7 @@ const EditProfile: React.FC = () => {
             setMeta(userData.meta.toString());
             setNomeUsuario(userData.nomeUsuario.toString());
             setPeso(userData.peso.toString());
-            setgenero(userData.genero.toString());
+            setGenero(userData.genero.toString());
         } catch (error) {
             console.log("ERRO ao buscar dados do usuário", error);
         }
@@ -133,19 +133,26 @@ const EditProfile: React.FC = () => {
                     onChangeText={setAltura}
                 />
 
-                <View style={styles.pickerContainer}>
-                    <Text style={styles.pickerLabel}>Sexo</Text>
-                    <Picker
-                        selectedValue={genero}
-                        onValueChange={(itemValue) => setgenero(itemValue)}
-                        style={styles.picker}
-                    >
-                        <Picker.Item label="Masculino" value="Masculino" />
-                        <Picker.Item label="Feminino" value="Feminino" />
-                        <Picker.Item label="Outros" value="Outros" />
-                    </Picker>
-                </View>
-
+                <SettingsOption
+                    label="Sexo: "
+                    icon="venus-mars"
+                    editable={true}
+                    value={genero}
+                    onPress={() => { }}
+                >
+                    <View style={styles.pickerContainer}>
+                        <Text style={styles.pickerLabel}>Selecione o Sexo:</Text>
+                        <Picker
+                            selectedValue={genero}
+                            onValueChange={(itemValue) => setGenero(itemValue)}
+                            style={styles.picker}
+                        >
+                            <Picker.Item label="Masculino" value="masculino" />
+                            <Picker.Item label="Feminino" value="feminino" />
+                            <Picker.Item label="Outro" value="outro" />
+                        </Picker>
+                    </View>
+                </SettingsOption>
                 <SettingsOption
                     label="Peso em Kg"
                     icon="clipboard"

@@ -46,7 +46,7 @@ export const styles = StyleSheet.create({
         marginHorizontal: 10,
         marginVertical: 10,
         padding: 10,
-        backgroundColor: 'white',
+        backgroundColor: '#ececec',
         borderRadius: 5,
     },
     pickerLabel: {
@@ -57,5 +57,8 @@ export const styles = StyleSheet.create({
     picker: {
         height: 50,
         width: '100%',
+        backgroundColor: '#ececec',
+        borderRadius: 5,
+
     },
 });
