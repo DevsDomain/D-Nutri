@@ -14,7 +14,7 @@ const logo = require("../../../assets/add.png");
 type MetricasComponentNavigationProp = StackNavigationProp<RootStackParamList, "AlimentacaoComponent">;
 
 
-export default function AlimentacaoConsumo({ userMG,navigation }: UserProps) {
+export default function AlimentacaoConsumo({ userMG, navigation }: UserProps) {
     const carboIdeal = userMG?.macroIdeal?.Carboidrato || 0
     const carboReal = userMG?.macroReal?.Carboidrato || 0
     const proteinaIdeal = userMG?.macroIdeal?.Proteina || 0
@@ -27,7 +27,7 @@ export default function AlimentacaoConsumo({ userMG,navigation }: UserProps) {
     let Gordura = gorduraIdeal - gorduraReal || 0
 
 
-    
+
 
     return (
         <SafeAreaView style={styles.container}>
@@ -35,25 +35,25 @@ export default function AlimentacaoConsumo({ userMG,navigation }: UserProps) {
             <View style={styles.aguaContainer}>
                 <Text style={styles.subtitle}>Você ainda pode consumir:</Text>
 
-        <View style={styles.metricas}>
-                <View>
-                    <Text>Carboidrato</Text>
-                    <Text style={styles.subtitle}>{Carbo}g</Text>
-                </View>
+                <View style={styles.metricas}>
+                    <View>
+                        <Text>Carboidrato</Text>
+                        <Text style={styles.subtitle}>{Carbo.toFixed(2)}g</Text>
+                    </View>
 
-                <View>
-                    <Text>Proteina</Text>
-                    <Text style={styles.subtitle}>{Proteina}g</Text>
-                </View>
+                    <View>
+                        <Text>Proteina</Text>
+                        <Text style={styles.subtitle}>{Proteina.toFixed(2)}g</Text>
+                    </View>
 
-                <View>
-                    <Text>Gordura</Text>
-                    <Text style={styles.subtitle}>{Gordura}g</Text>
-                </View>
-                <TouchableOpacity onPress={() => navigation.navigate("SelectAlimento")}>
+                    <View>
+                        <Text>Gordura</Text>
+                        <Text style={styles.subtitle}>{Gordura.toFixed(2)}g</Text>
+                    </View>
+                    <TouchableOpacity onPress={() => navigation.navigate("SelectAlimento")}>
 
-                <Image source={logo} style={styles.logo} />
-                </TouchableOpacity>
+                        <Image source={logo} style={styles.logo} />
+                    </TouchableOpacity>
                 </View>
             </View>
 
@@ -64,42 +64,42 @@ export default function AlimentacaoConsumo({ userMG,navigation }: UserProps) {
 
 const styles = StyleSheet.create({
     container: {
-        marginTop:12,
-        marginHorizontal:'auto',
-        width:screenWidth - 80,
+        marginTop: 12,
+        marginHorizontal: 'auto',
+        width: screenWidth - 80,
 
     },
     aguaContainer: {
-        marginTop:6,
-        backgroundColor:'#fff',
+        marginTop: 6,
+        backgroundColor: '#fff',
 
-        borderRadius:10
+        borderRadius: 10
     },
-    metricas:{
-        display:'flex',
-        flexDirection:'row',
-        justifyContent:'space-evenly',
-        alignItems:'center',
+    metricas: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
 
     },
     title: {
         fontSize: 18,
         fontWeight: 'bold'
     },
-    subtitle:{
-        fontSize:13,
-        fontWeight:'bold',
-        marginLeft:23,
-        marginVertical:5
+    subtitle: {
+        fontSize: 13,
+        fontWeight: 'bold',
+        marginLeft: 23,
+        marginVertical: 5
     },
-    text:{
-        fontSize:13,
+    text: {
+        fontSize: 13,
     },
     icon: {
         width: 40,
         height: 40,
-        margin:0,
-        padding:0,
+        margin: 0,
+        padding: 0,
     },
 
     logo: {

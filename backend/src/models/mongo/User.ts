@@ -50,29 +50,29 @@ const AlimentoSchema: Schema = new Schema({
   tipoRefeicao: { type: String, required: true },
 });
 
-// Schema para MacroNutrientes (subdocumento)
 const MacroNutrientesSchema: Schema = new Schema({
-  Proteina: { type: Number, required: true },
-  Caloria: { type: Number, required: true },
-  Carboidrato: { type: Number, required: true },
-  gordura: { type: Number, required: true },
-  sodio: { type: Number, required: true },
-  acucar: { type: Number, required: true },
-  dia: { type: Date, required: true },
+  Proteina: { type: Number, required: true, default: 0 },
+  Caloria: { type: Number, required: true, default: 0 },
+  Carboidrato: { type: Number, required: true, default: 0 },
+  gordura: { type: Number, required: true, default: 0 },
+  sodio: { type: Number, required: true, default: 0 },
+  acucar: { type: Number, required: true, default: 0 },
+  dia: { type: Date, required: true, default: Date.now },
 });
+
 
 // Schema para Metrica (subdocumento)
 export const MetricaSchema: Schema = new Schema({
-  ImcAtual: { type: Number, required: true },
-  TmbAtual: { type: Number, required: true },
-  ImcIdeal: { type: Number, required: true },
-  TmbIdeal: { type: Number, required: true },
+  ImcAtual: { type: Number, required: true, default: 0  },
+  TmbAtual: { type: Number, required: true, default: 0  },
+  ImcIdeal: { type: Number, required: true, default: 0  },
+  TmbIdeal: { type: Number, required: true, default: 0  },
 });
 
 // Schema para Agua (subdocumento)
 export const AguaSchema: Schema = new Schema({
-  ingestaoIdeal: { type: Number, required: true },
-  ingestaoAtual: { type: Number, required: true },
+  ingestaoIdeal: { type: Number, required: true, default: 0  },
+  ingestaoAtual: { type: Number, required: true, default: 0  },
 });
 
 // Schema para User (documento principal)

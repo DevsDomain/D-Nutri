@@ -25,24 +25,24 @@ export default function BarChart({ userMG }: UserProps) {
         <SafeAreaView style={styles.container}>
             <Text>Carboidratos</Text>
             <View style={styles.macroContainer}>
-                <ProgressBar animated progress={percentualCarbo / 100} width={screenWidth - 120} height={13}
+                <ProgressBar animated progress={(percentualCarbo / 100)} width={screenWidth - 120} height={13}
                     color="#55AA55" unfilledColor="#38343424" borderWidth={0.5} />
-                <Text>{carboReal} / {carboIdeal}g</Text>
+                <Text>{carboReal.toFixed(0)} / {carboIdeal.toFixed(0)}g</Text>
             </View>
 
             <Text>Proteina</Text>
             <View style={styles.macroContainer}>
                 <ProgressBar animated progress={percentualProteina / 100} width={screenWidth - 120} height={13}
                     color="#55AA55" unfilledColor="#38343424" borderWidth={0.5} />
-                <Text>{proteinaReal} / {proteinaIdeal}g</Text>
-                </View>
+                <Text>{proteinaReal.toFixed(0)} / {proteinaIdeal.toFixed(0)}g</Text>
+            </View>
 
             <Text>Gordura</Text>
             <View style={styles.macroContainer}>
                 <ProgressBar animated progress={percentualGordura / 100} width={screenWidth - 120} height={13}
                     color="#55AA55" unfilledColor="#38343424" borderWidth={0.5} />
-                <Text>{gorduraReal} / {gorduraIdeal}g</Text>
-                </View>
+                <Text>{gorduraReal.toFixed(0)} / {gorduraIdeal.toFixed(0)}g</Text>
+            </View>
         </SafeAreaView>
     );
 }

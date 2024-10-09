@@ -2,6 +2,9 @@
 
 import { Request, Response } from "express";
 import pg from "../databases/postgres";
+import moment from "moment";
+import User from "../models/mongo/User";
+import Data from "../models/mongo/Data";
 
 // Função para lidar com as operações relacionadas a Alimentos
 class AlimentosController {
@@ -14,16 +17,21 @@ class AlimentosController {
   }
 
   async findAlimento(req: Request, res: Response): Promise<Response> {
-    try{
-    console.log("RECEBIDO")
-    const {barcode}  = req.params;
-    console.log(barcode,"BARCODE BACK");
+    try {
+      console.log("RECEBIDO")
+      const { barcode } = req.params;
+      console.log(barcode, "BARCODE BACK");
 
-    const alimentos = await pg.query(
-      `SELECT * FROM "Alimentos" WHERE "barcode" = $1`, [barcode]);
-    console.log(alimentos.rows)
-    return res.status(201).json(alimentos.rows[0]);
-    }catch(error:any){
+      const alimentos = await pg.query(
+        `SELECT * FROM "Alimentos" WHERE "barcode" = $1`, [barcode]);
+      console.log(alimentos.rows)
+      if (alimentos.rows.length > 0) {
+        return res.status(201).json(alimentos.rows[0]);
+      }
+      else {
+        return res.status(204).json({ message: "Alimento não encontrado" })
+      }
+    } catch (error: any) {
       return res.status(500).json(error.message)
     }
   }
@@ -194,6 +202,95 @@ class AlimentosController {
       console.error("Erro ao excluir alimento:", error);
       return res.status(500).json({
         message: "Erro ao excluir alimento",
+        error: error.message,
+      });
+    }
+  }
+
+
+  async addAlimento(req: Request, res: Response): Promise<Response> {
+    try {
+      const { data } = req.body;
+      const {
+        idProduto,
+        barcode,
+        nomeProduto,
+        Proteina,
+        Caloria,
+        Carboidrato,
+        gordura,
+        sodio,
+        acucar,
+        idUser,
+        date,
+        meal,
+        quantidade
+      } = data
+
+      // Convertendo valores que vêm como strings para números
+      const proteinaNum = parseFloat(Proteina);
+      const caloriaNum = parseFloat(Caloria);
+      const carboidratoNum = parseFloat(Carboidrato);
+      const gorduraNum = parseFloat(gordura);
+      const sodioNum = parseFloat(sodio);
+      const acucarNum = parseFloat(acucar);
+      const quantidadeNum = parseFloat(quantidade);
+
+      const formattedDate = date.replace(/['"]+/g, ""); // Remove aspas extras
+      const data_atual = moment(formattedDate).format("YYYY-MM-DD");
+      const userMG = await User.find({ idUser: idUser });
+
+      if (!userMG) {
+        return res
+          .status(400)
+          .json({ message: "Erro ao buscar usuário no mongo!" });
+      }
+
+      let usuarioEncontrado: any | string;
+
+      for (const usersPG of userMG) {
+        let buscandoUsuario = await Data.findOne({
+          data_atual: data_atual,
+          usuario: usersPG?.id,
+        });
+        if (buscandoUsuario) {
+          usuarioEncontrado = buscandoUsuario;
+        }
+      }
+
+      if (!usuarioEncontrado) {
+        return res
+          .status(400)
+          .json({ message: "Erro ao buscar usuário nessa data!" });
+      }
+
+      const userMongo = await User.findById(usuarioEncontrado.usuario);
+
+      if (userMongo) {
+
+        userMongo.macroReal.Caloria += caloriaNum;
+        userMongo.macroReal.Carboidrato += carboidratoNum;
+        userMongo.macroReal.Proteina += proteinaNum;
+        userMongo.macroReal.acucar += acucarNum;
+        userMongo.macroReal.gordura += gorduraNum;
+        userMongo.macroReal.sodio += sodioNum;
+        userMongo.consumoAlimentos.push({ idAlimento: idProduto, quantidade: quantidadeNum, tipoRefeicao: meal })
+        userMongo.save();
+      }
+
+
+
+
+
+
+      return res.status(201).json({
+        message: "Alimento recebido com sucesso",
+        userMongo: userMongo
+      });
+    } catch (error: any) {
+      console.error("Erro ao adicionar alimento:", error);
+      return res.status(500).json({
+        message: "Erro ao adicionar alimento",
         error: error.message,
       });
     }

@@ -48,13 +48,42 @@ class DataController {
         return res.status(404).json({ message: "Usuário não encontrado" });
       }
 
-     const userData = await new User({idUser:userId}).save();
+      const userData = await new User({
+        idUser: userId,
+        consumoAlimentos: [],
+        macroIdeal: {
+          Proteina: 300,
+          Caloria: 300,
+          Carboidrato: 300,
+          gordura: 300,
+          sodio: 300,
+          acucar: 300,
+        },
+        macroReal: {
+          Proteina: 0,
+          Caloria: 0,
+          Carboidrato: 0,
+          gordura: 0,
+          sodio: 0,
+          acucar: 0,
+        },
+        metrica: {
+          ImcAtual: 0,
+          TmbAtual: 0,
+          ImcIdeal: 0,
+          TmbIdeal: 0,
+        },
+        ingestaoAgua: {
+          ingestaoIdeal: 3000,
+          ingestaoAtual: 0,
+        },
+      }).save();
 
       // INSERINDO NOVA DATA
       const novaData = await new Data({ usuario: userData.id, data_atual: data_atual }).save();
       // formatando retorno
       let responseFormated = this.formatDate(novaData.data_atual);
-      const response = {data:responseFormated, user:userData}
+      const response = { data: responseFormated, user: userData }
 
 
       return res.status(200).json(response);
@@ -67,11 +96,11 @@ class DataController {
   async getDataById(req: Request, res: Response): Promise<Response> {
     try {
       const { userId } = req.params;
-      const user = await User.findOne({idUser:userId});
-      if(!user){
+      const user = await User.findOne({ idUser: userId });
+      if (!user) {
         return res.status(404).json({ message: "Usuário não encontrado" });
       }
-      const data = await Data.find({usuario:user.id});
+      const data = await Data.find({ usuario: user.id });
 
       if (!data) {
         return res.status(404).json({ message: "Dados não encontrados" });
