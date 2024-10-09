@@ -26,7 +26,7 @@ type Props = {
   navigation: LoginScreenNavigationProp;
 };
 
-
+//claudia
 export default function LoginScreen({ navigation }: Props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
