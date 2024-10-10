@@ -50,7 +50,7 @@ const AlimentoSchema: Schema = new Schema({
   tipoRefeicao: { type: String, required: true },
 });
 
-const MacroNutrientesSchema: Schema = new Schema({
+export const MacroNutrientesSchema: Schema = new Schema({
   Proteina: { type: Number, required: true, default: 0 },
   Caloria: { type: Number, required: true, default: 0 },
   Carboidrato: { type: Number, required: true, default: 0 },
