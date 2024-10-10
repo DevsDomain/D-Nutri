@@ -8,8 +8,12 @@ import axios from 'axios';
 import { IUserData } from '../../types/userDiary';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { IuserLogin } from '../../types/user';
+import { RootStackParamList } from '../../types';
+import { StackNavigationProp } from '@react-navigation/stack';
+type ProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, "Profile">;
 
 const EditProfile: React.FC = () => {
+    
     const localImage = require('../../../assets/profile-icon.png');
 
     const [userData, setUserData] = useState<IUserData>();
@@ -35,13 +39,14 @@ const EditProfile: React.FC = () => {
     const loadUser = async (id: number) => {
         try {
             const response = await axios.get(`${BACKEND_API_URL}/users/${id}`);
+            console.log(response.data[0])
             const userData = response.data[0];
             setUserData(userData);
-            setAltura(userData.altura.toString());
-            setMeta(userData.meta.toString());
-            setNomeUsuario(userData.nomeUsuario.toString());
-            setPeso(userData.peso.toString());
-            setgenero(userData.genero.toString());
+            setAltura(userData.altura?.toString() || "");
+            setMeta(userData.meta?.toString() || "");
+            setNomeUsuario(userData.nomeUsuario?.toString() || "");
+            setPeso(userData.peso?.toString() || "");
+            setgenero(userData.genero?.toString() || "");
         } catch (error) {
             console.log("ERRO ao buscar dados do usuário", error);
         }

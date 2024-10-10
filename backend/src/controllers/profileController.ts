@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import pg from "../databases/postgres";
+import MetricasController from "./MetricasController";
 
 class ProfileController {
   // Atualizar um usuário
@@ -18,6 +19,9 @@ class ProfileController {
 
       const values = [nomeUsuario, altura, genero, peso, meta, idUsuario];
       const updatedUser = await pg.query(query, values);
+
+      MetricasController.calculateMetricas(idUsuario);
+
 
       if (updatedUser.rows.length === 0) {
         return res.status(404).json({ message: "Usuário não encontrado" });
