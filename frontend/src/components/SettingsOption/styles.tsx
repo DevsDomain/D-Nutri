@@ -1,6 +1,5 @@
 import { Dimensions, StyleSheet } from "react-native";
 
-
 const { width, height } = Dimensions.get('window');
 const adaptivePadding = width * 0.015; // % da largura da tela
 
@@ -29,7 +28,7 @@ export const styles = StyleSheet.create({
     textInput: {
         flex: 2,
         borderWidth: 1,
-        borderColor: '#ddd',
+        borderColor: '#ececec',
         padding: 2,
         borderRadius: 5,
     },

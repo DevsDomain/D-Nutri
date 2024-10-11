@@ -16,7 +16,6 @@ export const styles = StyleSheet.create({
     },
     headerTitle: {
         fontSize: 22,
-        fontFamily: 'Signika_600SemiBold',
     },
     settingsOption: {
         flexDirection: 'row',
@@ -27,7 +26,6 @@ export const styles = StyleSheet.create({
         marginVertical: 10,
         backgroundColor: 'white',
     },
-
     button: {
         backgroundColor: "#64A759",
         borderRadius: 15,
@@ -40,7 +38,16 @@ export const styles = StyleSheet.create({
     buttonText: {
         color: "white",
         fontSize: 20,
-        fontFamily: 'Signika_600SemiBold',
         textAlign: 'center',
+    },
+    picker: {
+        flex: 1, // Para ocupar o espaço adequadamente
+        height: 50, // Altura semelhante aos outros componentes
+        backgroundColor: 'transparent', // Fundo branco para manter a consistência
+        borderWidth: 1, // Borda para manter o contorno
+        borderColor: '#ddd', // Cor da borda semelhante aos inputs
+        borderRadius: 8, // Bordas arredondadas, similar ao botão
+        paddingHorizontal: 60, // Espaçamento interno
+        color: '#000', // Cor do texto para melhor legibilidade
     },
 });
