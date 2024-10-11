@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StatusBar, ScrollView, View, Text, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
+import { Picker } from '@react-native-picker/picker'; // Importação do Picker
 import ProfilePicture from '../../components/ProfilePicture';
 import SettingsOption from '../../components/SettingsOption';
 import { styles } from './styles';
@@ -10,16 +11,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { IuserLogin } from '../../types/user';
 import { RootStackParamList } from '../../types';
 import { StackNavigationProp } from '@react-navigation/stack';
+
 type ProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, "Profile">;
 
 const EditProfile: React.FC = () => {
-    
-    const localImage = require('../../../assets/profile-icon.png');
 
+    const localImage = require('../../../assets/profile-icon.png');
     const [userData, setUserData] = useState<IUserData>();
     const [nomeUsuario, setNomeUsuario] = useState('');
     const [altura, setAltura] = useState('');
-    const [genero, setgenero] = useState('');
+    const [genero, setGenero] = useState(''); // Mantém o estado do gênero
     const [peso, setPeso] = useState('');
     const [meta, setMeta] = useState('');
     const [userLogin, setUserLogin] = useState<IuserLogin>();
@@ -46,7 +47,7 @@ const EditProfile: React.FC = () => {
             setMeta(userData.meta?.toString() || "");
             setNomeUsuario(userData.nomeUsuario?.toString() || "");
             setPeso(userData.peso?.toString() || "");
-            setgenero(userData.genero?.toString() || "");
+            setGenero(userData.genero?.toString() || "");
         } catch (error) {
             console.log("ERRO ao buscar dados do usuário", error);
         }
@@ -78,7 +79,7 @@ const EditProfile: React.FC = () => {
     }
     const handleSaveChanges = async () => {
         try {
-            const url = `${BACKEND_API_URL}/users/${userLogin?.id}`;
+            const url = `${BACKEND_API_URL}/edit-profile/${userLogin?.id}`;
             const body = JSON.stringify({
                 nomeUsuario,
                 altura,
@@ -112,7 +113,9 @@ const EditProfile: React.FC = () => {
 
     return (
         <SafeAreaView style={styles.container}>
+
             <StatusBar barStyle="default" />
+
             <View style={styles.header}>
                 <Text style={styles.headerTitle}>Editar Perfil</Text>
             </View>
@@ -128,6 +131,7 @@ const EditProfile: React.FC = () => {
                     value={nomeUsuario}
                     onChangeText={setNomeUsuario}
                 />
+
                 <SettingsOption
                     label="Altura em cm"
                     icon="expand"
@@ -136,14 +140,25 @@ const EditProfile: React.FC = () => {
                     value={altura}
                     onChangeText={setAltura}
                 />
+
+                {/* Picker para selecionar o gênero */}
                 <SettingsOption
-                    label="Sexo"
+                    label="Gênero"
                     icon="venus-mars"
-                    onPress={() => { }}
                     editable={true}
-                    value={genero}
-                    onChangeText={setgenero}
-                />
+                >
+                    <Picker
+                        selectedValue={genero}
+                        onValueChange={(itemValue) => setGenero(itemValue)}
+                        style={styles.picker} // Estilo do Picker
+                    >
+                        <Picker.Item label="Outros" value="Outros" />
+                        <Picker.Item label="Masculino" value="Masculino" />
+                        <Picker.Item label="Feminino" value="Feminino" />
+                    </Picker>
+                </SettingsOption>
+
+
                 <SettingsOption
                     label="Peso em Kg"
                     icon="clipboard"
@@ -152,19 +167,30 @@ const EditProfile: React.FC = () => {
                     value={peso}
                     onChangeText={setPeso}
                 />
+
                 <SettingsOption
                     label="Meta de Peso em Kg"
                     icon="clipboard"
-                    onPress={() => { }}
                     editable={true}
-                    value={meta}
-                    onChangeText={setMeta}
-                />
+                >
+                    <Picker
+                        selectedValue={meta}
+                        onValueChange={(itemValue) => setGenero(itemValue)}
+                        style={styles.picker} // Estilo do Picker
+                    >
+                        <Picker.Item label="Ganho de massa" value="Ganho de massa" />
+                        <Picker.Item label="Emagrecimento" value="Emagrecimento" />
+                        <Picker.Item label="Manter Peso" value="Manter Peso" />
+                        <Picker.Item label="Perder Peso" value="Perder Peso" />
+                    </Picker>
+                </SettingsOption>
+
                 <TouchableOpacity
                     style={styles.button}
                     onPress={handleSaveChanges}>
                     <Text style={styles.buttonText}>Salvar alterações</Text>
                 </TouchableOpacity>
+
             </ScrollView>
         </SafeAreaView>
     );
