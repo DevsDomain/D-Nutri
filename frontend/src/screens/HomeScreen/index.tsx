@@ -168,6 +168,7 @@ const HomeScreen = ({ navigation }: Props) => {
           data: date,
         }
       )
+      await setDataStorage(date);
       return response.data
 
     } catch (error: any) {

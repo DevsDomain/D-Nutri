@@ -15,10 +15,14 @@ export default function BarChart({ userMG }: UserProps) {
     const proteinaReal = userMG?.macroReal?.Proteina || 0
     const gorduraIdeal = userMG?.macroIdeal?.gordura || 0
     const gorduraReal = userMG?.macroReal?.gordura || 0
+    const acucarReal = userMG?.macroReal?.acucar || 0
+    const acucarIdeal = userMG?.macroReal?.acucar || 0
+
 
     let percentualCarbo = parseFloat(((carboReal / carboIdeal) * 100).toFixed(0)) || 0.5
     let percentualProteina = parseFloat(((proteinaReal / proteinaIdeal) * 100).toFixed(0)) || 0.5
     let percentualGordura = parseFloat(((gorduraReal / gorduraIdeal) * 100).toFixed(0)) || 0.5
+    let percentualAcuar = parseFloat(((acucarReal / acucarIdeal) * 100).toFixed(0)) || 0.5
 
 
     return (
@@ -38,6 +42,12 @@ export default function BarChart({ userMG }: UserProps) {
             </View>
 
             <Text>Gordura</Text>
+            <View style={styles.macroContainer}>
+                <ProgressBar animated progress={percentualGordura / 100} width={screenWidth - 120} height={13}
+                    color="#55AA55" unfilledColor="#38343424" borderWidth={0.5} />
+                <Text>{gorduraReal.toFixed(0)} / {gorduraIdeal.toFixed(0)}g</Text>
+            </View>
+            <Text>Acucar</Text>
             <View style={styles.macroContainer}>
                 <ProgressBar animated progress={percentualGordura / 100} width={screenWidth - 120} height={13}
                     color="#55AA55" unfilledColor="#38343424" borderWidth={0.5} />

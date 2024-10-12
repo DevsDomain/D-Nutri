@@ -295,6 +295,63 @@ class AlimentosController {
       });
     }
   }
+
+  async alimentosConsumidos(req: Request, res: Response): Promise<Response> {
+    try {
+      console.log(req.body, "BODY")
+      const { idUser, date } = req.body;
+
+      const userMG = await User.find({ idUser: idUser });
+
+      if (!userMG) {
+        return res
+          .status(400)
+          .json({ message: "Erro ao buscar usuário no mongo!" });
+      }
+
+      let usuarioEncontrado: any | string;
+
+      for (const usersPG of userMG) {
+        let buscandoUsuario = await Data.findOne({
+          data_atual: date,
+          usuario: usersPG?.id,
+        });
+        if (buscandoUsuario) {
+          usuarioEncontrado = buscandoUsuario;
+        }
+      }
+
+      if (!usuarioEncontrado) {
+        return res
+          .status(400)
+          .json({ message: "Erro ao buscar usuário nessa data!" });
+      }
+
+      const userMongo = await User.findById(usuarioEncontrado.usuario);
+      const alimentosConsumidosArray: any[] = []
+      if (userMongo) {
+        const alimentosConsumidos = userMongo.consumoAlimentos
+        for (const alimentos of alimentosConsumidos) {
+          const result = await pg.query(
+            `SELECT "idProduto", "nomeProduto", "Proteina", "Caloria", "Carboidrato", gordura, sodio, acucar, 
+            $2 as tipoRefeicao, $3 as quantidade FROM public."Alimentos" where "idProduto" = $1`,
+            [alimentos.idAlimento, alimentos.tipoRefeicao, alimentos.quantidade]
+          );
+          if (result.rows[0]) {
+            alimentosConsumidosArray.push(result.rows[0]);
+          }
+        }
+
+        return res.status(202).json(alimentosConsumidosArray);
+      }
+    } catch (error: any) {
+      console.error("ERRO AO BUSCAR ALIMENTOS CONSUMIDOS:", error.message)
+      return res.status(404).json({ "ERRO": error.message });
+
+    }
+    return res.status(404).json("ERRO");
+
+  }
 }
 
 export default new AlimentosController();
