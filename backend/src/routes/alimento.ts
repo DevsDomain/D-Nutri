@@ -1,5 +1,3 @@
-// routes/alimentos.ts
-
 import { Router } from "express";
 import AlimentoController from "../controllers/alimentosController";
 

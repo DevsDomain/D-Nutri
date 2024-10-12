@@ -16,23 +16,12 @@ export default function FavoritesScreen() {
 
   // Hook para buscar alimentos favoritos do usuário
   useEffect(() => {
-    const response = axios.post(`${BACKEND_API_URL}/FavAlimento/1`).then((response) => {
-      console.log(response.data, "Ta vindo");
-      setFavoriteItems(response.data);
-    });
     const fetchData = async () => {
       try {
         const storedUser = await AsyncStorage.getItem("user");
-        
         if (storedUser) {
-          console.log(storedUser, "Stored User");
           const user: IuserLogin = JSON.parse(storedUser);
-          try {
-            
-          } catch (error) {
-            console.error("Erro ao buscar alimentos cadastrados:", error);
-            return [];
-          }
+         await fetchAlimentosFavoritos(user.id);
         }
       } catch (error) {
         console.error("Erro ao obter dados do AsyncStorage:", error);
@@ -41,6 +30,18 @@ export default function FavoritesScreen() {
 
     fetchData();
   }, []);
+
+  // Função para buscar alimentos cadastrados no banco
+  const fetchAlimentosFavoritos = async (id: string) => {
+    try {
+      const response = await axios.post(`${BACKEND_API_URL}/FavAlimento/1`);
+      console.log(response.data, "Ta vindo");
+      setFavoriteItems(response.data);
+    } catch (error) {
+      console.error("Erro ao buscar alimentos cadastrados:", error);
+      return [];
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -53,6 +54,8 @@ export default function FavoritesScreen() {
     </View>
   );
 }
+
+
 
 // Styles
 const styles = StyleSheet.create({
@@ -73,3 +76,5 @@ const styles = StyleSheet.create({
     borderBottomColor: "#C0C0C0",
   },
 });
+
+export { FavoritesScreen };

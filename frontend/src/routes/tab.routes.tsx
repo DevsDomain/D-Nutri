@@ -7,6 +7,7 @@ import AlimentosConsumidosScreen from "../screens/AlimentosConsumidosScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import SelectAlimento from "../screens/SelectAlimento";
 import ScannerScreen from "../screens/BarcodeScreen";
+import FavoritesScreen from "../screens/FavoritesScreen";
 
 const Tab = createBottomTabNavigator();
 
