@@ -22,7 +22,6 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../../types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { IuserLogin } from "../../types/user";
-import { useFocusEffect } from "@react-navigation/native";
 import { useNavigation } from '@react-navigation/native'; // Importação da navegação
 type MainNavigationProp = StackNavigationProp<RootStackParamList, "Main">;
 type ItemData = {
@@ -89,13 +88,13 @@ const HomeScreen = ({ navigation }: Props) => {
       const storedUser = await AsyncStorage.getItem("user")
       if (storedUser) {
         setUser(JSON.parse(storedUser));
-        await loadDashboard(JSON.parse(storedUser), moment().format("YYYY-MM-DD")).then((response: any) => {
+        await loadDashboard(JSON.parse(storedUser), moment().utc().format("YYYY-MM-DD")).then((response: any) => {
           setUserMG(response.userMG);
           setUserPG(response.userPG);
         })
       }
     } catch (error) {
-      console.error("Erro ao obter dados do AsyncStorage:", error);
+      console.log("Erro ao obter dados do AsyncStorage:", error);
     }
   };
   useEffect(() => {
@@ -111,13 +110,7 @@ const HomeScreen = ({ navigation }: Props) => {
       }
       setDataList(initialData);
       setSelectedId(initialData[2].id);
-
       await loadUserFromStorage() // Load user from AsyncStorage
-
-
-
-
-
     })
   }, [navigation])
 
@@ -230,41 +223,49 @@ const HomeScreen = ({ navigation }: Props) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
-        <View style={styles.metricas}>
-          <View>
-            <FlatList
-              horizontal
-              data={dataList}
-              renderItem={renderItem}
-              keyExtractor={(item) => item.id.toString()}
-              extraData={selectedId}
-              showsHorizontalScrollIndicator={false}
-              onEndReached={loadDatas}
-              onEndReachedThreshold={0.01}
-              ListHeaderComponent={renderHeader}
-              ListFooterComponent={renderFooter}
-              onScroll={({ nativeEvent }) => {
-                if (nativeEvent.contentOffset.x <= 10) {
-                  loadPastDates();
-                }
-              }}
-            />
+      {!userMG ?
+        <View style={[styles.loadingWait, styles.loadingHorizontal]}>
+          <ActivityIndicator size={"large"} color={"#97cc74"}/>
+        </View>
+        :
+        <ScrollView>
+
+
+          <View style={styles.metricas}>
+            <View>
+              <FlatList
+                horizontal
+                data={dataList}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.id.toString()}
+                extraData={selectedId}
+                showsHorizontalScrollIndicator={false}
+                onEndReached={loadDatas}
+                onEndReachedThreshold={0.01}
+                ListHeaderComponent={renderHeader}
+                ListFooterComponent={renderFooter}
+                onScroll={({ nativeEvent }) => {
+                  if (nativeEvent.contentOffset.x <= 10) {
+                    loadPastDates();
+                  }
+                }}
+              />
+            </View>
+
+            <Text style={styles.userTitle}>
+              Bem vindo(a), {user?.nomeUsuario || "usuario"}
+            </Text>
+            <Text style={styles.userSubTitle}>
+              Acompanhe seu relatório nutricional diário:
+            </Text>
+            <PieChartCalorias userMG={userMG} />
+            <BarChart userMG={userMG} />
           </View>
 
-          <Text style={styles.userTitle}>
-            Bem vindo(a), {user?.nomeUsuario || "usuario"}
-          </Text>
-          <Text style={styles.userSubTitle}>
-            Acompanhe seu relatório nutricional diário:
-          </Text>
-          <PieChartCalorias userMG={userMG} />
-          <BarChart userMG={userMG} />
-        </View>
-
-        <AguaConsumo userMG={userMG} navigation={navigationAgua} />
-        <AlimentacaoConsumo userMG={userMG} navigation={navigationMetrica} />
-      </ScrollView>
+          <AguaConsumo userMG={userMG} navigation={navigationAgua} />
+          <AlimentacaoConsumo userMG={userMG} navigation={navigationMetrica} />
+        </ScrollView>
+      }
     </SafeAreaView>
   );
 };
@@ -274,7 +275,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: StatusBar.currentHeight || 0,
     gap: 20,
-    marginBottom: 5
+    marginBottom: 12
   },
   metricas: {
     borderRadius: 30,
@@ -297,7 +298,7 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   title: {
-    fontSize: 18,
+    fontSize: 15,
     textAlign: "center",
     margin: "auto",
   },
@@ -317,6 +318,15 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginVertical: 5,
   },
+  loadingWait: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  loadingHorizontal: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10
+  }
 });
 
 export default HomeScreen;

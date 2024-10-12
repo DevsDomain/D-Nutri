@@ -87,7 +87,7 @@ class DataController {
       const response = { data: responseFormated, user: userData }
 
 
-      console.log("RESPONSE",response)
+
       return res.status(200).json(response);
 
     } catch (error: any) {

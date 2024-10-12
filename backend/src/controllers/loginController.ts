@@ -29,7 +29,6 @@ class LoginController {
       if (password !== foundUser.password) {
         return res.status(401).json({ message: "Senha incorreta" });
       }
-      MetricasController.calculateMetricas(foundUser.idUsuario);
 
       // Se tudo estiver correto, retornar sucesso
       return res.status(200).json({

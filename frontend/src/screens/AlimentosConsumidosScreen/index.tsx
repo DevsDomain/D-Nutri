@@ -6,6 +6,7 @@ import {
     ScrollView,
     StyleSheet,
     SafeAreaView,
+    ActivityIndicator,
 } from "react-native";
 import axios from "axios";
 import { BACKEND_API_URL } from "@env";
@@ -24,8 +25,6 @@ type Props = {
 export default function AlimentosConsumidosScreen({ navigation }: Props) {
 
     const [alimentosConsumidos, setAlimentosConsumidos] = useState<IAlimentos[]>([]);
-    const [user, setUser] = useState<IuserLogin>();
-    const [date, setDate] = useState("");
     const [totals, setTotals] = useState({
         calorias: 0,
         carboidrato: 0,
@@ -99,34 +98,49 @@ export default function AlimentosConsumidosScreen({ navigation }: Props) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Text style={styles.header}>Alimentos Consumidos</Text>
-            <ScrollView style={styles.scrollView}>
-                {alimentosConsumidos.map((alimento, index) => (
-                    <View key={index} style={styles.itemContainer}>
-                        <View style={styles.itemHeader}>
-                            <Text style={styles.itemName}>{alimento.nomeProduto}</Text>
-                            <Text style={styles.itemRefeicao}>{alimento.tiporefeicao}</Text>
-                        </View>
-                        <Text style={styles.itemQuantidade}>Quantidade: {alimento.quantidade}</Text>
-                        <View style={styles.itemNutrients}>
-                            <Text style={styles.nutrient}>Calorias: {alimento.Caloria} kcal</Text>
-                            <Text style={styles.nutrient}>Carboidrato: {alimento.Carboidrato}g</Text>
-                            <Text style={styles.nutrient}>Açúcares: {alimento.acucar}g</Text>
-                            <Text style={styles.nutrient}>Proteína: {alimento.Proteina}g</Text>
-                            <Text style={styles.nutrient}>Gordura: {alimento.gordura}g</Text>
-                            <Text style={styles.nutrient}>Sódio: {alimento.sodio}mg</Text>
-                        </View>
+            {!alimentosConsumidos ?
+                <View style={[styles.loadingWait, styles.loadingHorizontal]}>
+                    <ActivityIndicator size={"large"} color={"#97cc74"} />
+
+
+                </View>
+                :
+                <>
+                    <Text style={styles.header}>Alimentos Consumidos</Text>
+                    {alimentosConsumidos.length == 0 && <Text style={styles.subtitle}>Que pena, parece que você ainda não adicionou nenhum alimento hoje!</Text>}
+                    <ScrollView style={styles.scrollView}>
+                        {alimentosConsumidos.map((alimento, index) => (
+                            <View key={index} style={styles.itemContainer}>
+                                <View style={styles.itemHeader}>
+                                    <Text style={styles.itemName}>{alimento.nomeProduto}</Text>
+                                    <Text style={styles.itemRefeicao}>{alimento.tiporefeicao}</Text>
+                                </View>
+                                <Text style={styles.itemQuantidade}>Quantidade: {alimento.quantidade}</Text>
+                                <View style={styles.itemNutrients}>
+                                    <Text style={styles.nutrient}>Calorias: {alimento.Caloria} kcal</Text>
+                                    <Text style={styles.nutrient}>Carboidrato: {alimento.Carboidrato}g</Text>
+                                    <Text style={styles.nutrient}>Açúcares: {alimento.acucar}g</Text>
+                                    <Text style={styles.nutrient}>Proteína: {alimento.Proteina}g</Text>
+                                    <Text style={styles.nutrient}>Gordura: {alimento.gordura}g</Text>
+                                    <Text style={styles.nutrient}>Sódio: {alimento.sodio}mg</Text>
+                                </View>
+                            </View>
+                        ))}
+                    </ScrollView>
+                    <View style={styles.footer}>
+                 <View style={styles.footer}>
+  <Text style={styles.footerText}>Calorias: {totals.calorias.toFixed(2)} kcal</Text>
+  <Text style={styles.footerText}>Carboidratos: {totals.carboidrato.toFixed(2)}g</Text>
+  <Text style={styles.footerText}>Açúcares: {totals.acucar.toFixed(2)}g</Text>
+  <Text style={styles.footerText}>Proteínas: {totals.proteina.toFixed(2)}g</Text>
+  <Text style={styles.footerText}>Gordura: {totals.gordura.toFixed(2)}g</Text>
+  <Text style={styles.footerText}>Sódio: {totals.sodio.toFixed(2)}mg</Text>
+</View>
+
                     </View>
-                ))}
-            </ScrollView>
-            <View style={styles.footer}>
-                <Text style={styles.footerText}>Calorias = {totals.calorias.toFixed(2)} kcal</Text>
-                <Text style={styles.footerText}>Carboidratos = {totals.carboidrato.toFixed(2)}g</Text>
-                <Text style={styles.footerText}>Açúcares = {totals.acucar.toFixed(2)}g</Text>
-                <Text style={styles.footerText}>Proteínas = {totals.proteina.toFixed(2)}g</Text>
-                <Text style={styles.footerText}>Gordura = {totals.gordura.toFixed(2)}g</Text>
-                <Text style={styles.footerText}>Sódio = {totals.sodio.toFixed(2)}mg</Text>
-            </View>
+
+                </>
+            }
         </SafeAreaView>
     );
 }

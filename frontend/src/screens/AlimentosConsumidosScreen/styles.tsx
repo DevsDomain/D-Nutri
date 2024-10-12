@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#EAF4E3",
+    backgroundColor: "#eaf0e5",
     padding: 20,
   },
   header: {
@@ -12,6 +12,13 @@ const styles = StyleSheet.create({
     color: "#4C956C",
     textAlign: "center",
     marginBottom: 20,
+    marginTop:20
+  },
+  subtitle: {
+    fontSize: 18,
+    color: "#4C956C",
+    textAlign: "center",
+    marginTop: 50,
   },
   scrollView: {
     marginBottom: 20,
@@ -20,6 +27,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     padding: 15,
     marginBottom: 10,
+    marginHorizontal:10,
     borderRadius: 10,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -56,14 +64,14 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   footer: {
-    backgroundColor: "#F4E1D2",
-    padding: 10,
+    backgroundColor: "transparent",
+    padding: 3,
     flexDirection: "column",
     justifyContent: "space-between",
     borderRadius: 10,
   },
   footerText: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: "bold",
     color: "#4C956C",
     marginBottom: 5,
@@ -73,6 +81,15 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     marginTop: 20,
   },
+  loadingWait: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  loadingHorizontal: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10
+  }
 });
 
   
