@@ -21,11 +21,10 @@ class CadastroController {
       }
 
       const idUserPostgres = userPostgres.rows[0].idUsuario;
-      const novoMongoUser = await new User({ idUser: idUserPostgres }).save();
 
       return res
         .status(201)
-        .json({ message: "Usuário criado com sucesso!", novoMongoUser });
+        .json({ message: "Usuário criado com sucesso!", idUserPostgres });
     } catch (error) {
       console.error("Erro ao criar usuário:", error);
       return res.status(500).json({ message: "Erro ao criar usuário", error });

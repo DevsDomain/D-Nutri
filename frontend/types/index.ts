@@ -8,7 +8,7 @@ export interface RootStackParamList extends ParamListBase {
   Settings: undefined;
   Login: undefined;
   Cadastro: undefined;
-  Main: {today:string};
+  Main: undefined;
   Onboarding: undefined;
   Agua: undefined;
   Alimentacao: undefined;

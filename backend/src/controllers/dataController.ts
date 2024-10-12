@@ -40,7 +40,8 @@ class DataController {
     try {
       const { userId } = req.params;
       const { data } = req.body
-      const data_atual = moment(data).format("YYYY-MM-DD");
+      const data_atual = moment(data).format("YYYY-MM-DD")
+      console.log("RECEBIDO!",data_atual,userId)
 
       // VERIFICA SE O USUÁRIO EXISTE NA TABELA POSTGRESQL
       const users = await pg.query(`SELECT * FROM "User" WHERE "idUsuario" = $1`, [userId]);
@@ -86,6 +87,7 @@ class DataController {
       const response = { data: responseFormated, user: userData }
 
 
+      console.log("RESPONSE",response)
       return res.status(200).json(response);
 
     } catch (error: any) {

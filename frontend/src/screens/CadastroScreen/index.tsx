@@ -9,9 +9,11 @@ import {
   Alert,
 } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../../../types"; 
+import { RootStackParamList } from "../../../types";
 import { BACKEND_API_URL } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import moment from "moment";
 
 
 
@@ -52,40 +54,46 @@ export default function CadastroScreen({ navigation }: Props) {
 
   const handleRegister = async () => {
     if (!name || !email || !password) {
-        Alert.alert("Erro", "Todos os campos devem ser preenchidos.");
-        return;
+      Alert.alert("Erro", "Todos os campos devem ser preenchidos.");
+      return;
     }
 
     if (!validateEmail(email)) {
-        Alert.alert("Erro", "Por favor, insira um email válido.");
-        return;
+      Alert.alert("Erro", "Por favor, insira um email válido.");
+      return;
     }
 
     try {
-        const response = await fetch(`${BACKEND_API_URL}/cadastros`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                nomeUsuario: name,
-                email: email,
-                password: password,
-            }),
-        });
+      const response = await fetch(`${BACKEND_API_URL}/cadastros`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nomeUsuario: name,
+          email: email,
+          password: password,
+        }),
+      });
 
-        const data = await response.json();
+      const data = await response.json();
 
-        if (response.ok) {
-            Alert.alert("Conta criada com sucesso!");
-            navigation.navigate("Login");
-        } 
+      if (response.ok) {
+        const firstDate = await axios.post(`${BACKEND_API_URL}/data/${data.idUserPostgres}`,
+          { data: moment().utc().format("YYYY-MM-DD") }
+        )
+        if (firstDate.status == 200) {
+          Alert.alert("Conta criada com sucesso!");
+
+        }
+        navigation.navigate("Login");
+      }
     } catch (error) {
-        console.error("Erro ao cadastrar usuário:", error);
-        Alert.alert("Erro", "Erro ao cadastrar usuário. Tente novamente.");
+      console.error("Erro ao cadastrar usuário:", error);
+      Alert.alert("Erro", "Erro ao cadastrar usuário. Tente novamente.");
     }
-};
-  
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.tituloContainer}>

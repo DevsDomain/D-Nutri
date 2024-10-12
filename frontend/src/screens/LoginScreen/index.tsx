@@ -38,8 +38,8 @@ export default function LoginScreen({ navigation }: Props) {
       if (storedUser) {
         navigation.navigate("Main");
       }
-    } catch (error) {
-      console.error("Erro ao obter dados do AsyncStorage:", error);
+    } catch (error: any) {
+      console.log("Necessário logar")
     }
   };
   useEffect(() => {
@@ -55,10 +55,10 @@ export default function LoginScreen({ navigation }: Props) {
         password,
       });
 
-   
-    
-    
-    
+
+
+
+
 
       const { message, user } = response.data;
       if (message === "Login realizado com sucesso!") {
