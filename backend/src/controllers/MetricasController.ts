@@ -24,9 +24,9 @@ class MetricasController {
             }
 
 
-            const calorias = parseFloat((TMB * 1.375).toFixed(2));
-            const proteinas = parseFloat((peso * 2.2).toFixed(2));
-            const gordura = parseFloat((peso * 7).toFixed(2));
+            const calorias = parseFloat((TMB * 3.5).toFixed(2));
+            const proteinas = parseFloat((peso * 2.5).toFixed(2));
+            const gordura = parseFloat((peso * 4.65).toFixed(2));
             const carboidrato = parseFloat((peso * 4.25).toFixed(2));
             const acucar = parseFloat((peso / 0.66).toFixed(2));
 

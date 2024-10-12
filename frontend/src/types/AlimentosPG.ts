@@ -9,6 +9,8 @@ export interface IAlimentos {
     gordura: string;
     sodio: string;
     acucar: string;
+    tiporefeicao:string;
+    quantidade:string;
 
 }
 
