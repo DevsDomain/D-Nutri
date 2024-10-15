@@ -7,6 +7,7 @@ import DashboardRouter from "./dashboardRoutes";
 import cors from "cors";
 import express from "express";
 import LoginRouter from "./loginRoutes";
+import AguaRouter from "./agua";
 
 const router = express.Router();
 
@@ -18,5 +19,6 @@ router.use(ProfileRouter);
 router.use(CadastroRouter);
 router.use(LoginRouter);
 router.use(FoodRouter);
+router.use(AguaRouter);
 
 export default router;
