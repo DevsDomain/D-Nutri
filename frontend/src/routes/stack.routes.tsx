@@ -8,6 +8,7 @@ import OnboardingScreen from "../screens/OnboardingScreen";
 import TabRoutes from "./tab.routes";
 import SelectAlimento from "../screens/SelectAlimento";
 import TabelaNutricional from "../screens/TabelaNutricional"; // Importando TabelaNutricional
+import ProfileScreen from "../screens/ProfileScreen";
 import EditProfile from "../screens/EditProfile";
 import TermsOfUse from "../screens/Terms";
 import { StatusBar, TouchableOpacity, Text } from "react-native";
@@ -217,6 +218,20 @@ export default function StackRoutes() {
           ),
         }}
       />
+
+      <Stack.Screen 
+      name="ProfileScreen" 
+      component={ProfileScreen}
+      options={{
+          headerShown: false,
+          title: "Profile",
+          headerStyle: {
+            backgroundColor: "#BBDEB5", // Cor de fundo do cabeçalho
+          },
+          headerTitleStyle: {
+            color: "#000000", // Cor do título, ajustada para melhor contraste com o fundo
+          },
+        }}/>
 
       <Stack.Screen name="scanner" component={ScannerScreen} />
       <Stack.Screen name="ProductDetails" component={ProductDetailsScreen} />

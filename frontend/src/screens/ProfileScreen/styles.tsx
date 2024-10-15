@@ -16,7 +16,6 @@ export const styles = StyleSheet.create({
     },
     headerTitle: {
         fontSize: 22,
-        fontFamily: 'Signika_600SemiBold',
     },
 
     // Modal

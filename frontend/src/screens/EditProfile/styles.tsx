@@ -45,9 +45,14 @@ export const styles = StyleSheet.create({
         height: 50, // Altura semelhante aos outros componentes
         backgroundColor: 'transparent', // Fundo branco para manter a consistência
         borderWidth: 1, // Borda para manter o contorno
-        borderColor: '#ddd', // Cor da borda semelhante aos inputs
+        borderColor: 'transparent', // Cor da borda semelhante aos inputs
         borderRadius: 8, // Bordas arredondadas, similar ao botão
-        paddingHorizontal: 60, // Espaçamento interno
-        color: '#000', // Cor do texto para melhor legibilidade
+        paddingHorizontal: 30, // Espaçamento interno
+        color: '#000', // Cor do texto
+    },
+    menuItemText: {
+        fontFamily: 'Signika_400Regular',
+        color: '#000',
+        fontSize: 16,
     },
 });
