@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import pg from "../databases/postgres";
+import MetricasController from "./MetricasController";
 
 class EditProfileController {
   // Atualizar um usuário
@@ -23,6 +24,11 @@ class EditProfileController {
         return res.status(404).json({ message: "Usuário não encontrado" });
       }
 
+      try {
+        MetricasController.calculateMetricas(idUsuario);
+      } catch (error: any) {
+        console.log("Erro ao calcular métricas do usuário")
+      }
       return res.status(200).json({
         message: "Usuário atualizado com sucesso!",
         user: updatedUser.rows[0],
