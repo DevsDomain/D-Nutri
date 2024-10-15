@@ -26,10 +26,13 @@ export const styles = StyleSheet.create({
         padding: adaptivePadding,
     },
     textInput: {
-        flex: 2,
+        flex: 1,
         borderWidth: 1,
         borderColor: '#ececec',
         padding: 2,
         borderRadius: 5,
+        height: 40,
+        color: '#000',
     },
+    
 });

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StatusBar, ScrollView, View, Text, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
-import { Picker } from '@react-native-picker/picker'; // Importação do Picker
+import { Menu, Button, Provider } from 'react-native-paper';
 import ProfilePicture from '../../components/ProfilePicture';
 import SettingsOption from '../../components/SettingsOption';
 import { styles } from './styles';
@@ -11,19 +11,31 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { IuserLogin } from '../../types/user';
 import { RootStackParamList } from '../../types';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { useNavigation } from '@react-navigation/native';
 
-type ProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, "Profile">;
+
+type EditProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, "Profile">;
 
 const EditProfile: React.FC = () => {
-
     const localImage = require('../../../assets/profile-icon.png');
+    const navigation = useNavigation<EditProfileScreenNavigationProp>();
+
     const [userData, setUserData] = useState<IUserData>();
     const [nomeUsuario, setNomeUsuario] = useState('');
+    const [userLogin, setUserLogin] = useState<IuserLogin>();
+    
     const [altura, setAltura] = useState('');
     const [genero, setGenero] = useState(''); // Mantém o estado do gênero
     const [peso, setPeso] = useState('');
-    const [meta, setMeta] = useState('');
-    const [userLogin, setUserLogin] = useState<IuserLogin>();
+    const [meta, setMeta] = useState('Selecione a meta');
+    const [generoMenuVisible, setGeneroMenuVisible] = useState(false);
+    const [metaMenuVisible, setMetaMenuVisible] = useState(false);
+
+    const openMenu = () => setGeneroMenuVisible(true);
+    const closeMenu = () => setGeneroMenuVisible(false);
+    const openMetaMenu = () => setMetaMenuVisible(true);
+    const closeMetaMenu = () => setMetaMenuVisible(false);
+    
 
     const loadUserFromStorage = async () => {
         try {
@@ -47,6 +59,7 @@ const EditProfile: React.FC = () => {
             setMeta(userData.meta?.toString() || "");
             setNomeUsuario(userData.nomeUsuario?.toString() || "");
             setPeso(userData.peso?.toString() || "");
+            setGenero(userData.genero?.toString() || "");
             setGenero(userData.genero?.toString() || "");
         } catch (error) {
             console.log("ERRO ao buscar dados do usuário", error);
@@ -100,11 +113,13 @@ const EditProfile: React.FC = () => {
             updateStorage()
 
             if (response.ok) {
+                updateStorage();
                 Alert.alert('Sucesso', data.message);
-
+                navigation.navigate('ProfileScreen'); // Salva e volta para ProfileScreen
             } else {
                 Alert.alert('Erro', data.message);
             }
+            
         } catch (error) {
             console.log('Erro na função handleSaveChanges:', error);
             Alert.alert('Erro', 'Não foi possível atualizar o perfil');
@@ -112,87 +127,88 @@ const EditProfile: React.FC = () => {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
-
-            <StatusBar barStyle="default" />
-
-            <View style={styles.header}>
-                <Text style={styles.headerTitle}>Editar Perfil</Text>
-            </View>
-
-            <ScrollView>
-                <ProfilePicture name={nomeUsuario || 'User'} localImage={localImage} />
-
-                <SettingsOption
-                    label="Nome"
-                    icon="user"
-                    onPress={() => { }}
-                    editable={true}
-                    value={nomeUsuario}
-                    onChangeText={setNomeUsuario}
-                />
-
-                <SettingsOption
-                    label="Altura em cm"
-                    icon="expand"
-                    onPress={() => { }}
-                    editable={true}
-                    value={altura}
-                    onChangeText={setAltura}
-                />
-
-                {/* Picker para selecionar o gênero */}
-                <SettingsOption
-                    label="Gênero"
-                    icon="venus-mars"
-                    editable={true}
-                >
-                    <Picker
-                        selectedValue={genero}
-                        onValueChange={(itemValue) => setGenero(itemValue)}
-                        style={styles.picker} // Estilo do Picker
+        <Provider>
+            <SafeAreaView style={styles.container}>
+                <StatusBar barStyle="default" />
+                <View style={styles.header}>
+                    <Text style={styles.headerTitle}>Editar Perfil</Text>
+                </View>
+                <ScrollView>
+                    <ProfilePicture name={nomeUsuario || 'User'} localImage={localImage} />
+                    <SettingsOption
+                        label="Nome"
+                        icon="user"
+                        onPress={() => { }}
+                        editable={true}
+                        value={nomeUsuario}
+                        onChangeText={setNomeUsuario}
+                    />
+                    <SettingsOption
+                        label="Altura em cm"
+                        icon="expand"
+                        onPress={() => { }}
+                        editable={true}
+                        value={altura}
+                        onChangeText={setAltura}
+                    />
+                    <SettingsOption
+                        label="Gênero"
+                        icon="venus-mars"
+                        editable={true}
                     >
-                        <Picker.Item label="Outros" value="Outros" />
-                        <Picker.Item label="Masculino" value="Masculino" />
-                        <Picker.Item label="Feminino" value="Feminino" />
-                    </Picker>
-                </SettingsOption>
+                        <Menu
+                            visible={generoMenuVisible}  // Agora usando generoMenuVisible para visibilidade
+                            onDismiss={() => setGeneroMenuVisible(false)}  // Fecha o menu
+                            anchor={
+                                <Button onPress={() => setGeneroMenuVisible(true)} mode="outlined" style={styles.picker}>
+                                    {genero || 'Selecione o gênero'}
+                                </Button>
+                            }
+                        >
+                            <Menu.Item onPress={() => { setGenero('Outros'); setGeneroMenuVisible(false); }} title="Outros"  /> 
+                            <Menu.Item onPress={() => { setGenero('Masculino'); setGeneroMenuVisible(false); }} title="Masculino" />
+                            <Menu.Item onPress={() => { setGenero('Feminino'); setGeneroMenuVisible(false); }} title="Feminino" />
+                        </Menu>
 
-
-                <SettingsOption
-                    label="Peso em Kg"
-                    icon="clipboard"
-                    onPress={() => { }}
-                    editable={true}
-                    value={peso}
-                    onChangeText={setPeso}
-                />
-
-                <SettingsOption
-                    label="Meta de Peso em Kg"
-                    icon="clipboard"
-                    editable={true}
-                >
-                    <Picker
-                        selectedValue={meta}
-                        onValueChange={(itemValue) => setGenero(itemValue)}
-                        style={styles.picker} // Estilo do Picker
+                    </SettingsOption>
+                    <SettingsOption
+                        label="Peso em Kg"
+                        icon="clipboard"
+                        onPress={() => { }}
+                        editable={true}
+                        value={peso}
+                        onChangeText={setPeso}
+                    />
+                    <SettingsOption
+                        label="Meta"
+                        icon="clipboard"
+                        editable={true}
                     >
-                        <Picker.Item label="Ganho de massa" value="Ganho de massa" />
-                        <Picker.Item label="Emagrecimento" value="Emagrecimento" />
-                        <Picker.Item label="Manter Peso" value="Manter Peso" />
-                        <Picker.Item label="Perder Peso" value="Perder Peso" />
-                    </Picker>
-                </SettingsOption>
+                        <Menu
+                            visible={metaMenuVisible}  // Agora usando metaMenuVisible para visibilidade
+                            onDismiss={() => setMetaMenuVisible(false)}  // Fecha o menu
+                            anchor={
+                                <Button onPress={() => setMetaMenuVisible(true)} mode="outlined" style={styles.picker}>
+                                    {meta || 'Selecione a meta'}  {/* Mostra a meta selecionada ou um valor padrão */}
+                                </Button>
+                            }
+                        >
+                            <Menu.Item onPress={() => { setMeta('Ganho de massa'); setMetaMenuVisible(false); }} title="Ganho de massa" />
+                            <Menu.Item onPress={() => { setMeta('Emagrecimento'); setMetaMenuVisible(false); }} title="Emagrecimento" />
+                            <Menu.Item onPress={() => { setMeta('Manter Peso'); setMetaMenuVisible(false); }} title="Manter Peso" />
+                            <Menu.Item onPress={() => { setMeta('Perder Peso'); setMetaMenuVisible(false); }} title="Perder Peso" />
+                        </Menu>
 
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={handleSaveChanges}>
-                    <Text style={styles.buttonText}>Salvar alterações</Text>
-                </TouchableOpacity>
-
-            </ScrollView>
-        </SafeAreaView>
+                    </SettingsOption>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={handleSaveChanges}
+                    >
+                        <Text style={styles.buttonText}>Salvar alterações</Text>
+                    </TouchableOpacity>
+                </ScrollView>
+            </SafeAreaView>
+        </Provider>
     );
 };
 

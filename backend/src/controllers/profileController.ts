@@ -3,21 +3,25 @@ import pg from "../databases/postgres";
 import MetricasController from "./MetricasController";
 
 class ProfileController {
-  // Atualizar um usuário
-  async updateUser(req: Request, res: Response): Promise<Response> {
+  // Atualizar a senha de um usuário
+  async updateUserPassword(req: Request, res: Response): Promise<Response> {
     try {
       const idUsuario = req.params.id;
-      const { nomeUsuario, altura, genero, peso, meta } = req.body;
-      console.log(req.body);
+      const { password } = req.body;
+
+      if (!password) {
+        return res.status(400).json({ message: "Senha é obrigatória" });
+      }
+
       // Query de atualização no PostgreSQL
       const query = `
         UPDATE "User"
-        SET "nomeUsuario" = $1, altura = $2, genero = $3, peso = $4, meta = $5
-        WHERE "idUsuario" = $6
+        SET "password" = $1
+        WHERE "idUsuario" = $2
         RETURNING *;
       `;
 
-      const values = [nomeUsuario, altura, genero, peso, meta, idUsuario];
+      const values = [password, idUsuario];
       const updatedUser = await pg.query(query, values);
 
       MetricasController.calculateMetricas(idUsuario);
@@ -28,13 +32,13 @@ class ProfileController {
       }
 
       return res.status(200).json({
-        message: "Usuário atualizado com sucesso!",
+        message: "Senha atualizada com sucesso!",
         user: updatedUser.rows[0],
       });
     } catch (error) {
       return res
         .status(500)
-        .json({ message: "Erro ao atualizar usuário", error });
+        .json({ message: "Erro ao atualizar usuário[pfl-Ctrl]", error });
     }
   }
 }
