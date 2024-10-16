@@ -22,6 +22,7 @@ class ProfileController {
       `;
 
       const values = [password, idUsuario];
+      console.log('Senha, ID' , values);
       const updatedUser = await pg.query(query, values);
 
       MetricasController.calculateMetricas(idUsuario);
@@ -38,7 +39,7 @@ class ProfileController {
     } catch (error) {
       return res
         .status(500)
-        .json({ message: "Erro ao atualizar usuário[pfl-Ctrl]", error });
+        .json({ message: "Erro ao atualizar usuário[ProfileController]", error });
     }
   }
 }

@@ -134,7 +134,7 @@ const EditProfile: React.FC = () => {
                     <Text style={styles.headerTitle}>Editar Perfil</Text>
                 </View>
                 <ScrollView>
-                    <ProfilePicture name={nomeUsuario || 'User'} localImage={localImage} />
+                    {/*<ProfilePicture name={nomeUsuario || 'User'} localImage={localImage} />*/}
                     <SettingsOption
                         label="Nome"
                         icon="user"
