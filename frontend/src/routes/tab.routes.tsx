@@ -7,6 +7,7 @@ import AlimentosConsumidosScreen from "../screens/AlimentosConsumidosScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import SelectAlimento from "../screens/SelectAlimento";
 import ScannerScreen from "../screens/BarcodeScreen";
+import FoodPhotoScreen from "../screens/PratoIA";
 
 const Tab = createBottomTabNavigator();
 
@@ -77,11 +78,12 @@ export default function TabRoutes() {
           headerTitleStyle: {
             color: "#000000", // Cor do título, ajustada para melhor contraste com o fundo
           },
-        }} />
+        }}
+      />
 
       <Tab.Screen
         name="Add"
-        component={ScannerScreen}
+        component={FoodPhotoScreen}
         options={{
           tabBarIconStyle: { marginTop: -8 },
 
@@ -123,7 +125,6 @@ export default function TabRoutes() {
           ),
         }}
       />
-
     </Tab.Navigator>
   );
 }
