@@ -1,5 +1,5 @@
-import { View, Text, SafeAreaView, ScrollView, StatusBar, Alert, TextInput } from "react-native";
 import React, { useState, useEffect } from "react";
+import { View, Text, SafeAreaView, ScrollView, StatusBar, Alert, TextInput } from "react-native";
 import { styles } from "./styles";
 import ProfilePicture from "../../components/ProfilePicture";
 import SettingsOption from "../../components/SettingsOption";
@@ -21,7 +21,7 @@ export default function ProfileScreen({ navigation }: Props) {
 
   const localImage = require('../../../assets/profile-icon.png');
   const [modalVisible, setModalVisible] = useState(false);
-  const [newPassword, setNewPassword] = useState('');
+  const [Password, setPassword] = useState('');
   const [modalType, setModalType] = useState<'passwordReset' | 'logoutConfirmation'>('passwordReset');
   const [user, setUser] = useState<IuserLogin>();
   const [userLogin, setUserLogin] = useState<IuserLogin>();
@@ -34,50 +34,58 @@ export default function ProfileScreen({ navigation }: Props) {
 }, []);
 
 const loadUserFromStorage = async () => {
-    try {
-        const storedUser = await AsyncStorage.getItem("user");
-        if (storedUser) {
-            const user = JSON.parse(storedUser);
-            setNomeUsuario(user.nomeUsuario); // Atualiza o nome do usuário
-        }
-    } catch (error) {
-        console.error("Erro ao carregar usuário do AsyncStorage:", error);
-    }
+  try {
+      const storedUser = await AsyncStorage.getItem("user");
+      if (storedUser) {
+          setUserLogin(JSON.parse(storedUser));
+          console.log("Usuário do AsyncStorage:", storedUser);
+      }
+  } catch (error) {
+      console.error("Erro ao obter dados do AsyncStorage:", error);
+  }
 };
-
-
 
   // Função para carregar os dados do usuário	
   const loadUser = async (id: number) => {
     try {
+      console.log("Iniciando a função loadUser com ID:", id);
       const response = await axios.get(`${BACKEND_API_URL}/users/${id}`);
       const userData = response.data[0];
-      setUserData(userData);
-      setNewPassword(userData.password);
+      setUserData(userData.nomeUsuario);
+      setPassword(userData.password);
+      setUser(userData); // Certifique-se de definir o usuário aqui
+      console.log("Dados do usuário carregados:", userData);
     } catch (error) {
       console.log("ERRO ao buscar dados do usuário", error);
     }
   };
 
   useEffect(() => {
+    const fetchData = async () => {
+        await loadUserFromStorage();
+    };
+
+    fetchData();
+}, []);
+
+  useEffect(() => {
     if (userLogin) {
+      console.log("Chamando loadUser com userLogin ID:", userLogin.id);
       loadUser(parseInt(userLogin.id));
     }
   }, [userLogin]);
 
   const updateStorage = async () => {
-    const myUser = { id: userLogin?.id, nomeUsuario: nomeUsuario, email: userLogin?.email };
+    const myUser = { id: userLogin?.id, nomeUsuario: nomeUsuario, email: userLogin?.email }
     try {
-      await AsyncStorage.setItem("user", JSON.stringify(myUser));
-      console.log("Dados do usuário atualizados no AsyncStorage:", myUser);
+        await AsyncStorage.setItem("user", JSON.stringify(myUser));
+        console.log("Dados do usuário atualizados no AsyncStorage:", myUser);
     } catch (error) {
-      console.error("Erro ao atualizar AsyncStorage:", error);
+        console.error("Erro ao atualizar AsyncStorage:", error);
     }
-  };
+};
 
   // Fim da função para carregar os dados do usuário
-
-
   const passwordReset = () => {
     setModalType('passwordReset');
     setModalVisible(true);
@@ -86,10 +94,15 @@ const loadUserFromStorage = async () => {
   const handlePasswordChange = async () => {
     try {
       console.log('Iniciando a função handlePasswordChange');
-
-      const url = `${BACKEND_API_URL}/profile/${user?.id}`;
+      if (!user?.id) {
+        console.error('ID do usuário não está definido');
+        Alert.alert('Erro', 'ID do usuário não está definido');
+        return;
+      }
+      console.log('ID Veio?', user.id);
+      const url = `${BACKEND_API_URL}/edit-profile-password/${userLogin?.id}`;
       const body = JSON.stringify({
-        password: newPassword,
+        password: Password,
       });
 
       console.log('URL:', url);
@@ -106,10 +119,12 @@ const loadUserFromStorage = async () => {
       console.log('Resposta recebida:', response);
 
       const data = await response.json();
+      updateStorage()
 
       console.log('Dados recebidos:', data);
 
       if (response.ok) {
+        updateStorage();
         Alert.alert('Sucesso', data.message);
       } else {
         Alert.alert('Erro', data.message);
@@ -178,8 +193,8 @@ const loadUserFromStorage = async () => {
                 style={styles.input}
                 placeholder=""
                 secureTextEntry
-                value={newPassword}
-                onChangeText={setNewPassword}
+                value={Password}
+                onChangeText={setPassword}
               />
             </>
           ) : (
@@ -194,3 +209,4 @@ const loadUserFromStorage = async () => {
     </SafeAreaView>
   );
 }
+//

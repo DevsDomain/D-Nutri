@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import pg from "../databases/postgres";
 import MetricasController from "./MetricasController";
 
+/*
 class ProfileController {
   // Atualizar a senha de um usuário
   async updateUserPassword(req: Request, res: Response): Promise<Response> {
@@ -45,3 +46,4 @@ class ProfileController {
 }
 
 export default new ProfileController();
+*/

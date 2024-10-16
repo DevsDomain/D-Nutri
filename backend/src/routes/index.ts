@@ -1,7 +1,7 @@
 import UserRouter from "./userRoutes";
 import DataRouter from "./dataRoutes";
 import FoodRouter from "./alimento";
-import ProfileRouter from "./profileRoutes";
+//import ProfileRouter from "./profileRoutes";
 import editProfileController from "./editProfileRoutes";
 import CadastroRouter from "./cadastroRoutes";
 import DashboardRouter from "./dashboardRoutes";
@@ -16,7 +16,7 @@ router.use(cors());
 router.use(UserRouter);
 router.use(DataRouter);
 router.use(DashboardRouter);
-router.use(ProfileRouter);
+//router.use(ProfileRouter);
 router.use(editProfileController);
 router.use(CadastroRouter);
 router.use(LoginRouter);
