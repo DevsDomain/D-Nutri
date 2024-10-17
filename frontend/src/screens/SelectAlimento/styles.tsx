@@ -78,6 +78,18 @@ const styles = StyleSheet.create({
     position: 'relative',
     bottom: 15,
   },
+  alimentoItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  alimentoText: {
+    fontSize: 16,
+    color: '#333',
+  },
 });
 
 export default styles;

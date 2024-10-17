@@ -10,7 +10,7 @@ FoodRouter.get("/alimentos",AlimentoController.buscarAlimentos);
 FoodRouter.get("/findAlimento/:barcode",AlimentoController.findAlimento);
 FoodRouter.post("/addAlimento/",AlimentoController.addAlimento);
 FoodRouter.post("/consumidos",AlimentoController.alimentosConsumidos);
-
+FoodRouter.post("/favoritos/:id",AlimentoController.favoritarAlimentos);
 
 
 
