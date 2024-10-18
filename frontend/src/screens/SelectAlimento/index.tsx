@@ -21,32 +21,23 @@ export default function SelectAlimento() {
   const [showFavorites, setShowFavorites] = useState(false);
   const [favoritos, setFavoritos] = useState<IAlimentos[]>([]);
   const [alimentos, setAlimentos] = useState<IAlimentos[]>([]);
+  const [userId, setUserId] = useState<string | null>(null);
   const [isSearching, setIsSearching] = useState(false);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const loadUserFromStorage = async () => {
     try {
-      const storedUser = await AsyncStorage.getItem("user")
+      const storedUser = await AsyncStorage.getItem("user");
       if (storedUser) {
         const id = JSON.parse(storedUser).id;
-        await fetchFavoritos(id);
+        setUserId(id); // Armazena o ID do usuário no estado
+        await fetchFavoritos(id); // Passa o ID para buscar os favoritos
       }
     } catch (error) {
       console.log("Erro ao obter dados do AsyncStorage:", error);
     }
   };
 
-  // Função para buscar alimentos favoritos do backend
-  const fetchFavoritos = async (id: string) => {
-    try {
-      const response = await axios.post(`${BACKEND_API_URL}/favoritos/${id}`);
-      setFavoritos(response.data);
-      console.log("Favoritos:", response.data);
-    } catch (error) {
-      console.error("Erro ao buscar favoritos:", error);
-      Alert.alert("Erro", "Não foi possível carregar seus favoritos.");
-    }
-  };
 
   // Função para buscar todos os alimentos cadastrados
   const fetchAlimentosCadastrados = async () => {
@@ -91,12 +82,42 @@ export default function SelectAlimento() {
   };
 
 
+  // Função para buscar alimentos favoritos do backend
+  const fetchFavoritos = async (id: string) => {
+    try {
+      const response = await axios.post(`${BACKEND_API_URL}/favoritos/${id}`);
+      setFavoritos(response.data);
+      console.log("Favoritos:", response.data);
+    } catch (error) {
+      console.error("Erro ao buscar favoritos:", error);
+      Alert.alert("Erro", "Não foi possível carregar seus favoritos.");
+    }
+  };
+
+
   // Lógica de alternância de favoritos
-  const toggleFavorite = (food: IAlimentos) => {
-    if (favoritos.some((fav) => fav.idProduto === food.idProduto)) {
-      setFavoritos(favoritos.filter((fav) => fav.idProduto !== food.idProduto));
-    } else {
-      setFavoritos([...favoritos, food]);
+  const toggleFavorite = async (food: IAlimentos) => {
+    const isFavorite = favoritos.some((fav) => fav.idProduto === food.idProduto);
+
+    // Atualiza os favoritos localmente
+    const updatedFavorites = isFavorite
+      ? favoritos.filter((fav) => fav.idProduto !== food.idProduto)
+      : [...favoritos, food];
+
+    setFavoritos(updatedFavorites);
+
+    // Atualiza os favoritos no backend
+    if (userId) {
+      try {
+        await axios.post(`${BACKEND_API_URL}/addFavorito`, {
+          idProduto: food.idProduto,
+          idUsuario: userId,  // Usa o ID do estado
+          isFavorito: !isFavorite, // Indica se está favoritando ou desfavoritando
+        });
+      } catch (error) {
+        console.error("Erro ao adicionar favorito:", error);
+        Alert.alert("Erro", "Não foi possível atualizar seus favoritos.");
+      }
     }
   };
 
@@ -197,4 +218,3 @@ export default function SelectAlimento() {
     </View>
   );
 }
-//16/10/2024
