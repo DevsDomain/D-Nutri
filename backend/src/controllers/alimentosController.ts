@@ -9,30 +9,28 @@ import Data from "../models/mongo/Data";
 // Função para lidar com as operações relacionadas a Alimentos
 class AlimentosController {
   async buscarAlimentos(req: Request, res: Response): Promise<Response> {
-
-    const alimentos = await pg.query(
-      `SELECT * FROM "Alimentos"`
-    )
-    return res.status(201).json(alimentos.rows)
+    const alimentos = await pg.query(`SELECT * FROM "Alimentos"`);
+    return res.status(201).json(alimentos.rows);
   }
 
   async findAlimento(req: Request, res: Response): Promise<Response> {
     try {
-      console.log("RECEBIDO")
+      console.log("RECEBIDO");
       const { barcode } = req.params;
       console.log(barcode, "BARCODE BACK");
 
       const alimentos = await pg.query(
-        `SELECT * FROM "Alimentos" WHERE "barcode" = $1`, [barcode]);
-      console.log(alimentos.rows)
+        `SELECT * FROM "Alimentos" WHERE "barcode" = $1`,
+        [barcode]
+      );
+      console.log(alimentos.rows);
       if (alimentos.rows.length > 0) {
         return res.status(201).json(alimentos.rows[0]);
-      }
-      else {
-        return res.status(204).json({ message: "Alimento não encontrado" })
+      } else {
+        return res.status(204).json({ message: "Alimento não encontrado" });
       }
     } catch (error: any) {
-      return res.status(500).json(error.message)
+      return res.status(500).json(error.message);
     }
   }
 
@@ -207,7 +205,6 @@ class AlimentosController {
     }
   }
 
-
   async addAlimento(req: Request, res: Response): Promise<Response> {
     try {
       const { data } = req.body;
@@ -224,8 +221,8 @@ class AlimentosController {
         idUser,
         date,
         meal,
-        quantidade
-      } = data
+        quantidade,
+      } = data;
 
       // Convertendo valores que vêm como strings para números
       const proteinaNum = parseFloat(Proteina);
@@ -267,25 +264,23 @@ class AlimentosController {
       const userMongo = await User.findById(usuarioEncontrado.usuario);
 
       if (userMongo) {
-
         userMongo.macroReal.Caloria += caloriaNum;
         userMongo.macroReal.Carboidrato += carboidratoNum;
         userMongo.macroReal.Proteina += proteinaNum;
         userMongo.macroReal.acucar += acucarNum;
         userMongo.macroReal.gordura += gorduraNum;
         userMongo.macroReal.sodio += sodioNum;
-        userMongo.consumoAlimentos.push({ idAlimento: idProduto, quantidade: quantidadeNum, tipoRefeicao: meal })
+        userMongo.consumoAlimentos.push({
+          idAlimento: idProduto,
+          quantidade: quantidadeNum,
+          tipoRefeicao: meal,
+        });
         userMongo.save();
       }
 
-
-
-
-
-
       return res.status(201).json({
         message: "Alimento recebido com sucesso",
-        userMongo: userMongo
+        userMongo: userMongo,
       });
     } catch (error: any) {
       console.error("Erro ao adicionar alimento:", error);
@@ -298,7 +293,7 @@ class AlimentosController {
 
   async alimentosConsumidos(req: Request, res: Response): Promise<Response> {
     try {
-      console.log(req.body, "BODY")
+      console.log(req.body, "BODY");
       const { idUser, date } = req.body;
 
       const userMG = await User.find({ idUser: idUser });
@@ -328,9 +323,9 @@ class AlimentosController {
       }
 
       const userMongo = await User.findById(usuarioEncontrado.usuario);
-      const alimentosConsumidosArray: any[] = []
+      const alimentosConsumidosArray: any[] = [];
       if (userMongo) {
-        const alimentosConsumidos = userMongo.consumoAlimentos
+        const alimentosConsumidos = userMongo.consumoAlimentos;
         for (const alimentos of alimentosConsumidos) {
           const result = await pg.query(
             `SELECT "idProduto", "nomeProduto", "Proteina", "Caloria", "Carboidrato", gordura, sodio, acucar, 
@@ -345,13 +340,95 @@ class AlimentosController {
         return res.status(202).json(alimentosConsumidosArray);
       }
     } catch (error: any) {
-      console.error("ERRO AO BUSCAR ALIMENTOS CONSUMIDOS:", error.message)
-      return res.status(404).json({ "ERRO": error.message });
-
+      console.error("ERRO AO BUSCAR ALIMENTOS CONSUMIDOS:", error.message);
+      return res.status(404).json({ ERRO: error.message });
     }
     return res.status(404).json("ERRO");
-
   }
+
+  // Buscar alimentos favoritos
+  async favoritosAlimentos(req: Request, res: Response): Promise<Response> {
+    try {
+      const { id } = req.params; // Capturando o idUsuario dinamicamente
+
+      const query = `
+        SELECT DISTINCT A."nomeProduto", f."isFavorito"
+        FROM "Favoritos" f
+        INNER JOIN "Alimentos" A ON f."idProduto" = A."idProduto"
+        WHERE f."idUsuario" = $1 AND f."isFavorito" = true
+      `;
+
+      const values = [id]; // Passando os parâmetros de forma segura
+      const alimentosFavoritos = await pg.query(query, values);
+      console.log(alimentosFavoritos);
+
+      if (alimentosFavoritos.rows.length === 0) {
+        return res
+          .status(404)
+          .json({ message: "Nenhum alimento favorito encontrado." });
+      }
+
+      return res.status(200).json(alimentosFavoritos.rows);
+    } catch (error: any) {
+      console.error("Erro ao buscar alimentos favoritos:", error.message);
+      return res.status(500).json({
+        message: "Erro ao buscar alimentos favoritos",
+        error: error.message,
+      });
+    }
+  }
+
+
+// Add e Remove Favoritos
+async adicionarRemoverFavorito(req: Request, res: Response): Promise<Response> {
+  try {
+    const { idProduto, idUsuario, isFavorito } = req.body;
+
+    // Verifica se o favorito já existe no banco de dados
+    const checkFavoriteQuery = `
+      SELECT * FROM public."Favoritos"
+      WHERE "idProduto" = $1 AND "idUsuario" = $2
+    `;
+    const checkValues = [idProduto, idUsuario];
+    const result = await pg.query(checkFavoriteQuery, checkValues);
+
+    if (result.rows.length > 0) {
+      // Se o item já está nos favoritos e o usuário deseja remover (isFavorito = false)
+      if (!isFavorito) {
+        const deleteQuery = `
+          DELETE FROM public."Favoritos"
+          WHERE "idProduto" = $1 AND "idUsuario" = $2
+        `;
+        await pg.query(deleteQuery, checkValues);
+        return res.status(200).json({ message: "Favorito removido com sucesso!" });
+      } else {
+        // Se o item já está favoritado e o usuário não alterou o estado, não faz nada
+        return res.status(200).json({ message: "Este item já está nos favoritos." });
+      }
+    } else {
+      // Se o item não está nos favoritos e o usuário deseja adicioná-lo (isFavorito = true)
+      if (isFavorito) {
+        const insertQuery = `
+          INSERT INTO public."Favoritos" ("idProduto", "idUsuario", "isFavorito")
+          VALUES ($1, $2, $3)
+        `;
+        const insertValues = [idProduto, idUsuario, isFavorito];
+        await pg.query(insertQuery, insertValues);
+        return res.status(201).json({ message: "Favorito adicionado com sucesso!" });
+      } else {
+        // Se o item não está favoritado e o usuário deseja removê-lo, mas ele já não existe, não faz nada
+        return res.status(200).json({ message: "O item não estava nos favoritos." });
+      }
+    }
+  } catch (error: any) {
+    console.error("Erro ao atualizar favoritos:", error.message);
+    return res.status(500).json({
+      message: "Erro ao atualizar favoritos",
+      error: error.message,
+    });
+  }
+}
+
 }
 
 export default new AlimentosController();
