@@ -347,7 +347,6 @@ class AlimentosController {
   }
 
   // Buscar alimentos favoritos
-
   async favoritosAlimentos(req: Request, res: Response): Promise<Response> {
     try {
       const { id } = req.params; // Capturando o idUsuario dinamicamente
