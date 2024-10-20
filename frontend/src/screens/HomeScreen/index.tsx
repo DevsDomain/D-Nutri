@@ -23,6 +23,7 @@ import { RootStackParamList } from "../../../types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { IuserLogin } from "../../types/user";
 import { useNavigation } from '@react-navigation/native'; // Importação da navegação
+import { Alert } from 'react-native';
 type MainNavigationProp = StackNavigationProp<RootStackParamList, "Main">;
 type ItemData = {
   id: number;
@@ -54,7 +55,29 @@ const HomeScreen = ({ navigation }: Props) => {
     "AlimentacaoComponent"
   >;
 
-
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!userMG || !userPG) return;
+  
+      const isProfileIncomplete =
+        !userPG.nomeUsuario || !userPG.altura || !userPG.peso || !userPG.genero || !userPG.meta;
+  
+      if (isProfileIncomplete) {
+        Alert.alert(
+          "Cadastro Incompleto",
+          "Seu cadastro está incompleto. Você será redirecionado para completar o perfil.",
+          [
+            {
+              text: "OK",
+              onPress: () => navigation.navigate("EditProfile"), // Redireciona para a tela de edição de perfil
+            },
+          ]
+        );
+      }
+    }, 2000); // Executa a verificação após 2 segundos
+  
+    return () => clearTimeout(timer);
+  }, [userPG, navigation]);
 
 
   const formatDateTitle = (date: moment.Moment): string => {
