@@ -17,35 +17,32 @@ import Icon from "react-native-vector-icons/FontAwesome";
 
 const logo = require("../../../assets/logo.png");
 
-type LoginScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  "Login"
->;
+type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, "Login">;
 
 type Props = {
   navigation: LoginScreenNavigationProp;
 };
-
 
 export default function LoginScreen({ navigation }: Props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
   const loadUserFromStorage = async () => {
     try {
-      const storedUser = await AsyncStorage.getItem("user")
+      const storedUser = await AsyncStorage.getItem("user");
       if (storedUser) {
-        navigation.navigate("Main");
+        navigation.navigate("Main"); // Navega para HomeScreen se o usuário estiver no AsyncStorage
       }
     } catch (error: any) {
-      console.log("Necessário logar")
+      console.log("Necessário logar");
     }
   };
-  useEffect(() => {
-    loadUserFromStorage()
-  }, []);
 
+  useEffect(() => {
+    loadUserFromStorage();
+  }, []);
 
   const handleLogin = async () => {
     setLoading(true);
@@ -54,16 +51,10 @@ export default function LoginScreen({ navigation }: Props) {
         email,
         password,
       });
-
-
-
-
-
-
       const { message, user } = response.data;
       if (message === "Login realizado com sucesso!") {
         await AsyncStorage.setItem("user", JSON.stringify(user));
-        navigation.navigate("Main");
+        navigation.navigate("Main"); // Navega diretamente para a HomeScreen
       } else {
         Alert.alert("Erro", "Credenciais inválidas.");
       }
@@ -105,11 +96,7 @@ export default function LoginScreen({ navigation }: Props) {
             onChangeText={setPassword}
           />
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeButton}>
-            <Icon
-              name={showPassword ? "eye" : "eye-slash"}
-              size={24}
-              color="#13440c"
-            />
+            <Icon name={showPassword ? "eye" : "eye-slash"} size={24} color="#13440c" />
           </TouchableOpacity>
         </View>
 
@@ -202,8 +189,8 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   eyeButton: {
-    alignSelf: 'flex-start', // Alinha à esquerda
-    marginTop: 5, // Espaço acima do ícone
+    alignSelf: "flex-start",
+    marginTop: 5,
   },
   button: {
     width: "100%",

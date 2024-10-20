@@ -23,6 +23,8 @@ import { RootStackParamList } from "../../../types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { IuserLogin } from "../../types/user";
 import { useNavigation } from '@react-navigation/native'; // Importação da navegação
+import { Alert } from 'react-native'; // Certifique-se de que isso está no topo do arquivo
+
 type MainNavigationProp = StackNavigationProp<RootStackParamList, "Main">;
 type ItemData = {
   id: number;
@@ -114,7 +116,29 @@ const HomeScreen = ({ navigation }: Props) => {
     })
   }, [navigation])
 
-
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!userMG || !userPG) return;
+  
+      const isProfileIncomplete =
+        !userPG.nomeUsuario || !userPG.altura || !userPG.peso || !userPG.genero || !userPG.meta;
+  
+      if (isProfileIncomplete) {
+        Alert.alert(
+          "Cadastro Incompleto",
+          "Seu cadastro está incompleto. Você será redirecionado para completar o perfil.",
+          [
+            {
+              text: "OK",
+              onPress: () => navigation.navigate("EditProfile"), // Redireciona para a tela de edição de perfil
+            },
+          ]
+        );
+      }
+    }, 5000); // Executa a verificação após 10 segundos
+  
+    return () => clearTimeout(timer);
+  }, [userPG, navigation]);
 
   // Gera mais 2 datas
   const loadDatas = () => {
@@ -154,24 +178,23 @@ const HomeScreen = ({ navigation }: Props) => {
   };
 
   const loadDashboard = async (myUser: any, date: string) => {
-    try {
-      const response = await axios.post(
-        `${BACKEND_API_URL}/dashboard/${myUser.id}`,
-        {
-          data: date,
-        }
-      )
-      await setDataStorage(date);
-      return response.data
-
-    } catch (error: any) {
-      console.log("ERRO ao buscar dados dashboard, criando nova data...");
-      if (user) {
-        createDate(date, parseInt(user.id));
-      }
-      setLoading(false);
+  try {
+    const response = await axios.post(
+      `${BACKEND_API_URL}/dashboard/${myUser.id}`,
+      { data: date }
+    );
+    
+    // Verifica se a resposta da API contém os dados necessários
+    if (response.data && response.data.userMG && response.data.userPG) {
+      setUserMG(response.data.userMG);  // Garante que userMG esteja definido
+      setUserPG(response.data.userPG);  // Garante que userPG esteja definido
+    } else {
+      console.error("Os dados do usuário estão indefinidos.");
     }
-  };
+  } catch (error) {
+    console.log("Erro ao carregar dashboard:", error);
+  }
+};
 
   const setDataStorage = async (date: string) => {
     await AsyncStorage.setItem("date", JSON.stringify(date));
