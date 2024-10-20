@@ -82,10 +82,10 @@ export default function ProfileScreen({ navigation }: Props) {
 
   useEffect(() => {
     if (userLogin) {
-      console.log("Chamando loadUser com userLogin ID:", userLogin.id);
       loadUser(parseInt(userLogin.id));
+      setUserLogin(userLogin)
     }
-  }, [userLogin]);
+  }, []);
 
   const updateStorage = async () => {
     const myUser = {
@@ -182,7 +182,7 @@ export default function ProfileScreen({ navigation }: Props) {
       </View>
 
       <ScrollView>
-        <ProfilePicture name={nomeUsuario || "User"} localImage={localImage} />
+        <ProfilePicture name={user?.nomeUsuario || userLogin?.nomeUsuario || "User"} localImage={localImage} />
         <SettingsOption
           label="Editar Perfil"
           icon="user"
