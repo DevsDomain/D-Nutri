@@ -74,7 +74,7 @@ const HomeScreen = ({ navigation }: Props) => {
           ]
         );
       }
-    }, 10000); // Executa a verificação após 10 segundos
+    }, 2000); // Executa a verificação após 2 segundos
   
     return () => clearTimeout(timer);
   }, [userPG, navigation]);
