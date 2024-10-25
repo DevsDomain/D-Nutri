@@ -7,13 +7,16 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { IAlimentos } from "../../types/AlimentosPG";
 import { IuserLogin } from "../../types/user";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { StackNavigationProp } from '@react-navigation/stack';
+import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../types";
-type ProductScreenNavigationProp = StackNavigationProp<RootStackParamList, "Profile">;
+type ProductScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "Profile"
+>;
 
 export default function ProductDetailsScreenPG() {
   const route = useRoute();
-  const { barcode, meal } = route.params as { barcode: string, meal: string };
+  const { barcode, meal } = route.params as { barcode: string; meal: string };
   const [product, setProduct] = useState<IAlimentos | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [weight, setWeight] = useState(100);
@@ -21,11 +24,10 @@ export default function ProductDetailsScreenPG() {
   const [myDate, setData] = useState("");
   const navigation = useNavigation<ProductScreenNavigationProp>();
 
-
   const loadUserFromStorage = async () => {
     try {
-      const storedUser = await AsyncStorage.getItem("user")
-      const dataSelected = await AsyncStorage.getItem("date")
+      const storedUser = await AsyncStorage.getItem("user");
+      const dataSelected = await AsyncStorage.getItem("date");
 
       if (storedUser) {
         setUser(JSON.parse(storedUser));
@@ -33,15 +35,13 @@ export default function ProductDetailsScreenPG() {
       }
 
       if (dataSelected) {
-        setData(dataSelected)
+        setData(dataSelected);
         console.log("DATA RECEBIDA PELO STORAGE", dataSelected);
       }
-
     } catch (error) {
       console.error("Erro ao obter dados do AsyncStorage:", error);
     }
   };
-
 
   const handleIncreaseQuantity = () => setQuantity((prev) => prev + 1);
   const handleDecreaseQuantity = () =>
@@ -89,6 +89,8 @@ export default function ProductDetailsScreenPG() {
           gordura: productData.nutriments.fat_100g?.toString() || "0",
           sodio: productData.nutriments.sodium_100g?.toString() || "0",
           acucar: productData.nutriments.sugars_100g?.toString() || "0",
+          tiporefeicao: meal,
+          quantidade: quantity.toString(),
         });
       } else {
         Alert.alert("Erro", "Produto não encontrado.");
@@ -101,7 +103,7 @@ export default function ProductDetailsScreenPG() {
 
   useEffect(() => {
     if (barcode) {
-      loadUserFromStorage()
+      loadUserFromStorage();
       fetchProductFromBackend();
     }
   }, [barcode]);
@@ -115,14 +117,14 @@ export default function ProductDetailsScreenPG() {
     const data = formatResponse();
 
     const response = await axios.post(`${BACKEND_API_URL}/addAlimento`, {
-      data
-    })
+      data,
+    });
 
     if (response.status === 201) {
-      Alert.alert("Tudo certo!", "Alimento adicionado a dieta do dia.")
-      navigation.navigate("SelectAlimento")
+      Alert.alert("Tudo certo!", "Alimento adicionado a dieta do dia.");
+      navigation.navigate("SelectAlimento");
     }
-  }
+  };
 
   const formatResponse = () => {
     if (product) {
@@ -140,35 +142,32 @@ export default function ProductDetailsScreenPG() {
         idUser: user?.id,
         date: myDate,
         meal: meal,
-        quantidade: quantity
-      }
-      return data
-
+        quantidade: quantity,
+      };
+      return data;
     }
-    const data = {}
-    return data
-  }
+    const data = {};
+    return data;
+  };
 
   const handleRegister = async () => {
     if (!product) return;
 
     try {
-
-      const findAlimento = await axios.get(`${BACKEND_API_URL}/findAlimento/${product.barcode}`) // VERIFICA SE O ALIMENTO JÁ EXISTE NO BANCO
+      const findAlimento = await axios.get(
+        `${BACKEND_API_URL}/findAlimento/${product.barcode}`
+      ); // VERIFICA SE O ALIMENTO JÁ EXISTE NO BANCO
 
       if (findAlimento.status !== 201) {
-
         try {
           const data = formatResponse();
           const response = await axios.post(`${BACKEND_API_URL}/alimentos`, {
-            data
+            data,
           });
 
           addAlimentoToUserDiary();
           return;
-
-        }
-        catch (error) {
+        } catch (error) {
           console.error("Erro ao registrar o produto:", error);
           Alert.alert("Erro", "Falha ao registrar o produto.");
         }
