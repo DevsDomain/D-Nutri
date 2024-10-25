@@ -16,6 +16,21 @@ import { BACKEND_API_URL } from "@env";
 import { IAlimentos } from "../../types/AlimentosPG";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+// Interface para os produtos externos (API OpenFoodFacts)
+interface ExternalProduct {
+  idProduto: string | null;
+  code: number;
+  product_name: string;
+  image_url: string | null;
+  nutriments: {
+    proteins: number;
+    energy: number;
+    carbohydrates: number;
+    fat: number;
+    sodium: number;
+    sugars: number;
+  };
+}
 
 export default function SelectAlimento() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -23,30 +38,40 @@ export default function SelectAlimento() {
   const [favoritos, setFavoritos] = useState<IAlimentos[]>([]);
   const [alimentos, setAlimentos] = useState<IAlimentos[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
-
   const [isSearching, setIsSearching] = useState(false);
+  const [page, setPage] = useState(1);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
+  useEffect(() => {
+    fetchAlimentosCadastrados();
+    loadUserFromStorage();
+  }, []);
 
+  useEffect(() => {
+    if (searchTerm.length === 0) {
+      fetchAndCombineAlimentos();
+    }
+  }, [searchTerm]);
+
+  // Função para carregar o ID do usuário do AsyncStorage
   const loadUserFromStorage = async () => {
     try {
       const storedUser = await AsyncStorage.getItem("user");
       if (storedUser) {
         const id = JSON.parse(storedUser).id;
-        setUserId(id); // Armazena o ID do usuário no estado
-        await fetchFavoritos(id); // Passa o ID para buscar os favoritos
+        setUserId(id);
+        await fetchFavoritos(id);
       }
     } catch (error) {
       console.log("Erro ao obter dados do AsyncStorage:", error);
     }
   };
 
-
-  // Função para buscar todos os alimentos cadastrados
-  const fetchAlimentosCadastrados = async () => {
+  // Função para buscar alimentos cadastrados no backend
+  const fetchAlimentosCadastrados = async (): Promise<IAlimentos[]> => {
     try {
       const response = await axios.get(`${BACKEND_API_URL}/alimentos`);
-      const alimentosFormatados = response.data.map((item: IAlimentos) => ({
+      return response.data.map((item: IAlimentos) => ({
         Caloria: parseFloat(item.Caloria),
         Carboidrato: parseFloat(item.Carboidrato),
         Proteina: parseFloat(item.Proteina),
@@ -58,101 +83,103 @@ export default function SelectAlimento() {
         nomeProduto: item.nomeProduto,
         sodio: parseFloat(item.sodio),
       }));
-      setAlimentos(alimentosFormatados);
     } catch (error) {
       console.error("Erro ao buscar alimentos cadastrados:", error);
       Alert.alert("Erro", "Não foi possível buscar os alimentos.");
+      return [];
     }
   };
 
+  // Função para buscar produtos da API OpenFoodFacts
+  const searchExternalProducts = async (): Promise<IAlimentos[]> => {
+    try {
+      const response = await axios.get(
+        `https://br.openfoodfacts.org/cgi/search.pl?search_terms=${searchTerm}&search_simple=1&action=process&json=1&page=${page}`
+      );
 
-  // Carregar alimentos cadastrados na montagem do componente
-  useEffect(() => {
-    fetchAlimentosCadastrados();
-    loadUserFromStorage();
-  }, []);
+      return response.data.products.map((product: ExternalProduct) => ({
+        Caloria: product.nutriments.energy,
+        Carboidrato: product.nutriments.carbohydrates,
+        Proteina: product.nutriments.proteins,
+        acucar: product.nutriments.sugars,
+        barcode: product.code.toString(),
+        gordura: product.nutriments.fat,
+        idProduto: 0, // Valor fictício, pois a API externa não fornece esse dado
+        imageSrc: product.image_url,
+        nomeProduto: product.product_name,
+        sodio: product.nutriments.sodium,
+      }));
+    } catch (error) {
+      console.error("Erro ao buscar produtos externos:", error);
+      Alert.alert("Erro", "Não foi possível buscar os produtos.");
+      return [];
+    }
+  };
 
+  // Função para combinar alimentos do backend e da API externa
+  const fetchAndCombineAlimentos = async () => {
+    const alimentosCadastrados = await fetchAlimentosCadastrados();
+    const externalProducts = await searchExternalProducts();
+    setAlimentos([...alimentosCadastrados, ...externalProducts]);
+  };
 
-  // Função para buscar alimentos favoritos do backend
+  // Função para buscar favoritos do usuário
   const fetchFavoritos = async (id: string) => {
     try {
       const response = await axios.get(`${BACKEND_API_URL}/favoritos/${id}`);
-  
       if (response.status === 200 && response.data.length > 0) {
-        // Se a resposta for 200 e houver favoritos, define os favoritos
         setFavoritos(response.data);
-        console.log("Favoritos:", response.data);
-      } else if (response.status === 200 && response.data.length === 0) {
-        // Se a resposta for 200, mas não houver favoritos
+      } else {
         console.log("Nenhum alimento favorito encontrado.");
       }
     } catch (error: any) {
       if (error.response && error.response.status === 404) {
-        // Se o erro for 404, loga a mensagem sem alertar o usuário
-        console.log("Nenhum alimento favorito encontrado.");
       } else {
-        // Para outros tipos de erro, mostra o alert
         console.error("Erro ao buscar favoritos:", error);
-        Alert.alert("Erro", "Não foi possível carregar seus favoritos.");
       }
     }
   };
-  
-
-
-  // Exibir favoritos ao clicar no botão "Meus Favoritos"
-  const handleShowFavorites = async () => {
-    setShowFavorites(true);
-    //await fetchFavoritos();
-  };
-
 
   // Lógica de alternância de favoritos
   const toggleFavorite = async (food: IAlimentos) => {
-    const isFavorite = favoritos.some((fav) => fav.idProduto === food.idProduto);
+    const isFavorite = favoritos.some(
+      (fav) => fav.idProduto === food.idProduto
+    );
     const updatedFavorites = isFavorite
-    ? favoritos.filter((fav) => fav.idProduto !== food.idProduto)
-    : [...favoritos, food];
-    
-    setFavoritos(updatedFavorites); // Atualiza os favoritos localmente
+      ? favoritos.filter((fav) => fav.idProduto !== food.idProduto)
+      : [...favoritos, food];
 
+    setFavoritos(updatedFavorites);
 
-    // Atualiza os favoritos no backend
     if (userId) {
       try {
         await axios.post(`${BACKEND_API_URL}/addFavorito`, {
           idProduto: food.idProduto,
-          idUsuario: userId,  // Usa o ID do estado
-          isFavorito: !isFavorite, // Indica se está favoritando ou desfavoritando
+          idUsuario: userId,
+          isFavorito: !isFavorite,
         });
       } catch (error) {
         console.error("Erro ao adicionar favorito:", error);
-        Alert.alert("Erro", "Não foi possível atualizar seus favoritos.");
       }
     }
   };
 
+  // Função para navegar ao selecionar um alimento
+  const handleSelect = (product: IAlimentos) => {
+    navigation.navigate("SelectRefeicao", { barcode: product.barcode });
+  };
 
   // Filtrar alimentos com base na exibição (favoritos ou todos)
   const filteredAlimentos = showFavorites
     ? alimentos.filter((product) =>
-      favoritos.some((fav) => fav.nomeProduto === product.nomeProduto)
-    )
+        favoritos.some((fav) => fav.nomeProduto === product.nomeProduto)
+      )
     : alimentos;
-
-
-  // Função para navegar para outra tela ao selecionar um alimento
-  const handleSelect = (product: IAlimentos) => {
-    if (navigation) {
-      navigation.navigate("SelectRefeicao", { barcode: product.barcode });
-    }
-  };
-
 
   return (
     <View style={styles.container}>
       <View style={styles.searchContainer}>
-        <TouchableOpacity onPress={fetchAlimentosCadastrados}>
+        <TouchableOpacity onPress={fetchAndCombineAlimentos}>
           <Ionicons name="search" size={24} color="#777" />
         </TouchableOpacity>
         <TextInput
@@ -189,7 +216,7 @@ export default function SelectAlimento() {
             showFavorites ? styles.activeButton : styles.inactiveButton,
             { borderTopRightRadius: 16, borderBottomRightRadius: 16 },
           ]}
-          onPress={handleShowFavorites}
+          onPress={() => setShowFavorites(true)}
         >
           <Text
             style={
@@ -211,29 +238,24 @@ export default function SelectAlimento() {
             onPress={() => handleSelect(product)}
           >
             <Text style={styles.itemText}>{product.nomeProduto}</Text>
-            <TouchableOpacity
-              onPress={() => toggleFavorite(product)} // Passa o objeto `product` completo
-            >
+            <TouchableOpacity onPress={() => toggleFavorite(product)}>
               <Ionicons
                 name={
                   favoritos.some((fav) => fav.idProduto === product.idProduto)
-                    ? "heart"         // Ícone de coração preenchido para favoritos
-                    : "heart-outline" // Ícone de coração contornado para não favoritos
+                    ? "heart"
+                    : "heart-outline"
                 }
                 size={24}
                 color={
                   favoritos.some((fav) => fav.idProduto === product.idProduto)
-                    ? "#FF9385" // Cor para itens favoritos
-                    : "#FFF8EE" // Cor para itens não favoritos
+                    ? "#FF9385"
+                    : "#FFF8EE"
                 }
               />
             </TouchableOpacity>
           </TouchableOpacity>
         ))}
-
       </ScrollView>
-
     </View>
   );
 }
-//18-10-2024
