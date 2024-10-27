@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import styles from "../SelectAlimento/styles";
@@ -14,6 +15,7 @@ import { RootStackParamList } from "../../types";
 import axios from "axios";
 import { BACKEND_API_URL } from "@env";
 import { IAlimentos } from "../../types/AlimentosPG";
+import { FlatList } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Interface para os produtos externos (API OpenFoodFacts)
@@ -35,23 +37,35 @@ interface ExternalProduct {
 export default function SelectAlimento() {
   const [searchTerm, setSearchTerm] = useState("");
   const [showFavorites, setShowFavorites] = useState(false);
-  const [favoritos, setFavoritos] = useState<IAlimentos[]>([]);
   const [alimentos, setAlimentos] = useState<IAlimentos[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
   const [isSearching, setIsSearching] = useState(false);
   const [page, setPage] = useState(1);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [loading,setLoading] = useState(true);
+  const [quantity, setQuantity] = useState(25)
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   useEffect(() => {
-    fetchAlimentosCadastrados();
-    loadUserFromStorage();
+    const initializeData = async () => {
+      await loadUserFromStorage();
+    };
+    initializeData();
   }, []);
-
+  
   useEffect(() => {
-    if (searchTerm.length === 0) {
-      fetchAndCombineAlimentos();
-    }
-  }, [searchTerm]);
+    const fetchData = async () => {
+      if (userId && searchTerm.length === 0) {
+        const data = await fetchAlimentosCadastrados(quantity);
+        setAlimentos(data);
+        setLoading(false)
+
+      }
+    };
+    fetchData();
+  }, [userId,searchTerm]);
+
+  
 
   // Função para carregar o ID do usuário do AsyncStorage
   const loadUserFromStorage = async () => {
@@ -60,7 +74,6 @@ export default function SelectAlimento() {
       if (storedUser) {
         const id = JSON.parse(storedUser).id;
         setUserId(id);
-        await fetchFavoritos(id);
       }
     } catch (error) {
       console.log("Erro ao obter dados do AsyncStorage:", error);
@@ -68,9 +81,10 @@ export default function SelectAlimento() {
   };
 
   // Função para buscar alimentos cadastrados no backend
-  const fetchAlimentosCadastrados = async (): Promise<IAlimentos[]> => {
+  const fetchAlimentosCadastrados = async (quantity:number): Promise<IAlimentos[]> => {
+    setLoading(true)
     try {
-      const response = await axios.get(`${BACKEND_API_URL}/alimentos`);
+      const response = await axios.get(`${BACKEND_API_URL}/alimentos/${userId}/${quantity}`);
       return response.data.map((item: IAlimentos) => ({
         Caloria: parseFloat(item.Caloria),
         Carboidrato: parseFloat(item.Carboidrato),
@@ -82,6 +96,7 @@ export default function SelectAlimento() {
         imageSrc: item.imageSrc,
         nomeProduto: item.nomeProduto,
         sodio: parseFloat(item.sodio),
+        isFavorito: item.isFavorito,
       }));
     } catch (error) {
       console.error("Erro ao buscar alimentos cadastrados:", error);
@@ -89,6 +104,16 @@ export default function SelectAlimento() {
       return [];
     }
   };
+
+  const buscarAlimentoCadastrado = async():Promise<IAlimentos[]> =>{
+    try{
+      const response = await axios.get(`${BACKEND_API_URL}/findAlimento/${userId}/${searchTerm}`)
+      return response.data
+    }catch(error:any){
+      console.log("Não encontrou no banco",error.message)
+      return []
+    }
+  }
 
   // Função para buscar produtos da API OpenFoodFacts
   const searchExternalProducts = async (): Promise<IAlimentos[]> => {
@@ -108,6 +133,7 @@ export default function SelectAlimento() {
         imageSrc: product.image_url,
         nomeProduto: product.product_name,
         sodio: product.nutriments.sodium,
+        isFavorito: false,
       }));
     } catch (error) {
       console.error("Erro ao buscar produtos externos:", error);
@@ -118,45 +144,40 @@ export default function SelectAlimento() {
 
   // Função para combinar alimentos do backend e da API externa
   const fetchAndCombineAlimentos = async () => {
-    const alimentosCadastrados = await fetchAlimentosCadastrados();
-    const externalProducts = await searchExternalProducts();
-    setAlimentos([...alimentosCadastrados, ...externalProducts]);
-  };
-
-  // Função para buscar favoritos do usuário
-  const fetchFavoritos = async (id: string) => {
     try {
-      const response = await axios.get(`${BACKEND_API_URL}/favoritos/${id}`);
-      if (response.status === 200 && response.data.length > 0) {
-        setFavoritos(response.data);
-      } else {
-        console.log("Nenhum alimento favorito encontrado.");
-      }
-    } catch (error: any) {
-      if (error.response && error.response.status === 404) {
-      } else {
-        console.error("Erro ao buscar favoritos:", error);
-      }
+      setLoading(true);
+  
+      const databaseProducts = await buscarAlimentoCadastrado();
+      const externalProducts = await searchExternalProducts();
+      setAlimentos([])
+      const combineProducts = [...databaseProducts,...externalProducts]
+   
+      setAlimentos(combineProducts);
+    } catch (error) {
+      console.error("Error fetching alimentos:", error);
+      Alert.alert("Error", "An error occurred while fetching alimentos. Please try again later.");
+    } finally {
+      setLoading(false);
     }
   };
+  
+  
 
   // Lógica de alternância de favoritos
   const toggleFavorite = async (food: IAlimentos) => {
-    const isFavorite = favoritos.some(
-      (fav) => fav.idProduto === food.idProduto
+    const updatedFavorites = alimentos.map((item) =>
+      item.idProduto === food.idProduto
+        ? { ...item, isFavorito: !item.isFavorito }
+        : item
     );
-    const updatedFavorites = isFavorite
-      ? favoritos.filter((fav) => fav.idProduto !== food.idProduto)
-      : [...favoritos, food];
-
-    setFavoritos(updatedFavorites);
+    setAlimentos(updatedFavorites);
 
     if (userId) {
       try {
         await axios.post(`${BACKEND_API_URL}/addFavorito`, {
           idProduto: food.idProduto,
           idUsuario: userId,
-          isFavorito: !isFavorite,
+          isFavorito: !food.isFavorito,
         });
       } catch (error) {
         console.error("Erro ao adicionar favorito:", error);
@@ -169,26 +190,50 @@ export default function SelectAlimento() {
     navigation.navigate("SelectRefeicao", { barcode: product.barcode });
   };
 
+
   // Filtrar alimentos com base na exibição (favoritos ou todos)
   const filteredAlimentos = showFavorites
-    ? alimentos.filter((product) =>
-        favoritos.some((fav) => fav.nomeProduto === product.nomeProduto)
-      )
+    ? alimentos.filter((product) => product.isFavorito)
     : alimentos;
+
+    const loadMoreAlimentos = async () => {
+      if (!loadingMore) {
+        if(quantity > 100 && alimentos.length > 45){
+          return false;
+        }
+        setLoading(true)
+        setLoadingMore(true);
+        const newQuantity = quantity + 10;
+        setQuantity(newQuantity);
+        
+        // Chamar `fetchAlimentosCadastrados` com o valor atualizado de `newQuantity`
+        const moreAlimentos = await fetchAlimentosCadastrados(newQuantity);
+        
+        // Atualizar a lista de alimentos com o novo conjunto carregado
+        setAlimentos(moreAlimentos);
+        setLoadingMore(false);
+        setLoading(false)
+      }
+      
+    };
+    
+      
+  useEffect(() => {
+    console.log("Filtered Alimentos:", filteredAlimentos);
+  }, [filteredAlimentos]);
 
   return (
     <View style={styles.container}>
       <View style={styles.searchContainer}>
-        <TouchableOpacity onPress={fetchAndCombineAlimentos}>
-          <Ionicons name="search" size={24} color="#777" />
-        </TouchableOpacity>
         <TextInput
           style={styles.searchBar}
           placeholder="Buscar alimento..."
           value={searchTerm}
           onChangeText={setSearchTerm}
         />
-        <MaterialIcons name="tune" size={24} color="#777" />
+        <TouchableOpacity onPress={fetchAndCombineAlimentos}>
+          <Ionicons name="search" size={24} color="#777" />
+        </TouchableOpacity>
       </View>
 
       <View style={styles.buttonContainer}>
@@ -230,32 +275,32 @@ export default function SelectAlimento() {
         </TouchableOpacity>
       </View>
 
-      <ScrollView style={styles.scrollView}>
-        {filteredAlimentos.map((product, index) => (
+
+      <FlatList
+        data={filteredAlimentos}
+        renderItem={({ item }) => (
           <TouchableOpacity
-            key={index}
             style={styles.item}
-            onPress={() => handleSelect(product)}
+            onPress={() => handleSelect(item)}
           >
-            <Text style={styles.itemText}>{product.nomeProduto}</Text>
-            <TouchableOpacity onPress={() => toggleFavorite(product)}>
+            <Text style={styles.itemText}>{item.nomeProduto}</Text>
+            <TouchableOpacity onPress={() => toggleFavorite(item)}>
               <Ionicons
-                name={
-                  favoritos.some((fav) => fav.idProduto === product.idProduto)
-                    ? "heart"
-                    : "heart-outline"
-                }
+                name={item.isFavorito ? "heart" : "heart-outline"}
                 size={24}
-                color={
-                  favoritos.some((fav) => fav.idProduto === product.idProduto)
-                    ? "#FF9385"
-                    : "#FFF8EE"
-                }
+                color={item.isFavorito ? "#FF9385" : "#0303032b"}
               />
             </TouchableOpacity>
           </TouchableOpacity>
-        ))}
-      </ScrollView>
+        )}
+        keyExtractor={(key) => Math.random().toString()}
+        onEndReached={loadMoreAlimentos}
+        onEndReachedThreshold={0.01}
+        ListFooterComponent={loadingMore ? <Text>Loading more...</Text> : null}
+      />
+      {loading &&      
+     <ActivityIndicator size={"large"} color={"#0303032b"}/>
+}
     </View>
   );
 }

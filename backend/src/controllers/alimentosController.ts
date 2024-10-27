@@ -9,23 +9,38 @@ import Data from "../models/mongo/Data";
 // Função para lidar com as operações relacionadas a Alimentos
 class AlimentosController {
   async buscarAlimentos(req: Request, res: Response): Promise<Response> {
-    const alimentos = await pg.query(`SELECT * FROM "Alimentos"`);
+    const { id,quantity } = req.params; // Capturando o idUsuario dinamicamente
+
+    const alimentos = await pg.query(`
+    SELECT DISTINCT A."nomeProduto", A."idProduto" ,A.barcode,A."Proteina",A."Caloria", A."Carboidrato", A.gordura, A.sodio, A.acucar,
+     CASE 
+        WHEN f."isFavorito" IS NOT NULL THEN true 
+        ELSE false 
+    END AS "isFavorito"
+        FROM "Favoritos" f
+        right JOIN "Alimentos" A ON f."idProduto" = A."idProduto"
+        WHERE A."nomeProduto" is not null and (f."idUsuario" = ${id} or F."idUsuario" is null)
+        LIMIT ${quantity}`);
     return res.status(201).json(alimentos.rows);
   }
 
   async findAlimento(req: Request, res: Response): Promise<Response> {
     try {
-      console.log("RECEBIDO");
-      const { barcode } = req.params;
-      console.log(barcode, "BARCODE BACK");
+      const { id,nomeProduto } = req.params;
+      console.log(nomeProduto, "BUSCANDO ESSE ALIMENTO NO BANCO");
 
       const alimentos = await pg.query(
-        `SELECT * FROM "Alimentos" WHERE "barcode" = $1`,
-        [barcode]
+        ` SELECT DISTINCT A."nomeProduto", A."idProduto" ,A.barcode,A."Proteina",A."Caloria", A."Carboidrato", A.gordura, A.sodio, A.acucar,
+     CASE 
+        WHEN f."isFavorito" IS NOT NULL THEN true 
+        ELSE false 
+    END AS "isFavorito"
+        FROM "Favoritos" f
+        right JOIN "Alimentos" A ON f."idProduto" = A."idProduto"
+        WHERE A."nomeProduto" LIKE '%${nomeProduto}%' and (f."idUsuario" = ${id} or F."idUsuario" is null)`,
       );
-      console.log(alimentos.rows);
       if (alimentos.rows.length > 0) {
-        return res.status(201).json(alimentos.rows[0]);
+        return res.status(201).json(alimentos.rows);
       } else {
         return res.status(204).json({ message: "Alimento não encontrado" });
       }
@@ -36,6 +51,8 @@ class AlimentosController {
 
   // Inserir alimento na tabela "Alimentos"
   async createAlimento(req: Request, res: Response): Promise<Response> {
+    const { data } = req.body;
+
     const {
       barcode,
       nomeProduto,
@@ -46,7 +63,7 @@ class AlimentosController {
       gordura,
       sodio,
       acucar,
-    } = req.body;
+    } = data;
 
     try {
       const result = await pg.query(
@@ -83,7 +100,10 @@ class AlimentosController {
   // Listar todos os alimentos
   async getAllAlimentos(req: Request, res: Response): Promise<Response> {
     try {
-      const result = await pg.query(`SELECT * FROM "Alimentos"`);
+      const result = await pg.query(`SELECT distinct "nomeProduto","idProduto", barcode, "imageSrc", "Proteina", "Caloria", "Carboidrato", gordura, sodio, acucar
+FROM public."Alimentos" where "nomeProduto" is not null order by "nomeProduto" ;
+
+"`);
       return res.status(200).json({
         message: "Lista de alimentos",
         alimentos: result.rows,

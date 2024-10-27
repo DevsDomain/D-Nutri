@@ -6,8 +6,8 @@ import AlimentoController from "../controllers/alimentosController";
 const FoodRouter = Router();
 
 FoodRouter.post("/alimentos", AlimentoController.createAlimento);
-FoodRouter.get("/alimentos", AlimentoController.buscarAlimentos);
-FoodRouter.get("/findAlimento/:barcode", AlimentoController.findAlimento);
+FoodRouter.get("/alimentos/:id/:quantity", AlimentoController.buscarAlimentos);
+FoodRouter.get("/findAlimento/:id/:nomeProduto", AlimentoController.findAlimento);
 FoodRouter.post("/addAlimento/", AlimentoController.addAlimento);
 FoodRouter.post("/consumidos", AlimentoController.alimentosConsumidos);
 FoodRouter.get("/favoritos/:id", AlimentoController.favoritosAlimentos);

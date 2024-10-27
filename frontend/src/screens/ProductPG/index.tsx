@@ -91,6 +91,7 @@ export default function ProductDetailsScreenPG() {
           acucar: productData.nutriments.sugars_100g?.toString() || "0",
           tiporefeicao: meal,
           quantidade: quantity.toString(),
+          isFavorito:false
         });
       } else {
         Alert.alert("Erro", "Produto não encontrado.");

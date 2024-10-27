@@ -127,17 +127,9 @@ export default function AlimentosConsumidosScreen({ navigation }: Props) {
                             </View>
                         ))}
                     </ScrollView>
-                    <View style={styles.footer}>
-                 <View style={styles.footer}>
-  <Text style={styles.footerText}>Calorias: {totals.calorias.toFixed(2)} kcal</Text>
-  <Text style={styles.footerText}>Carboidratos: {totals.carboidrato.toFixed(2)}g</Text>
-  <Text style={styles.footerText}>Açúcares: {totals.acucar.toFixed(2)}g</Text>
-  <Text style={styles.footerText}>Proteínas: {totals.proteina.toFixed(2)}g</Text>
-  <Text style={styles.footerText}>Gordura: {totals.gordura.toFixed(2)}g</Text>
-  <Text style={styles.footerText}>Sódio: {totals.sodio.toFixed(2)}mg</Text>
-</View>
 
-                    </View>
+
+                
 
                 </>
             }
