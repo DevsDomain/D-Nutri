@@ -23,7 +23,7 @@ const EditProfile: React.FC = () => {
     const [userData, setUserData] = useState<IUserData>();
     const [nomeUsuario, setNomeUsuario] = useState('');
     const [userLogin, setUserLogin] = useState<IuserLogin>();
-    
+
     const [altura, setAltura] = useState('');
     const [genero, setGenero] = useState(''); // Mantém o estado do gênero
     const [peso, setPeso] = useState('');
@@ -35,7 +35,7 @@ const EditProfile: React.FC = () => {
     const closeMenu = () => setGeneroMenuVisible(false);
     const openMetaMenu = () => setMetaMenuVisible(true);
     const closeMetaMenu = () => setMetaMenuVisible(false);
-    
+
 
     const loadUserFromStorage = async () => {
         try {
@@ -119,7 +119,7 @@ const EditProfile: React.FC = () => {
             } else {
                 Alert.alert('Erro', data.message);
             }
-            
+
         } catch (error) {
             console.log('Erro na função handleSaveChanges:', error);
             Alert.alert('Erro', 'Não foi possível atualizar o perfil');
@@ -163,9 +163,8 @@ const EditProfile: React.FC = () => {
                                 <Button onPress={() => setGeneroMenuVisible(true)} mode="outlined" style={styles.picker}>
                                     {genero || 'Selecione o gênero'}
                                 </Button>
-                            }
-                        >
-                            <Menu.Item onPress={() => { setGenero('Outros'); setGeneroMenuVisible(false); }} title="Outros"  /> 
+                            } >
+                            <Menu.Item onPress={() => { setGenero('Outros'); setGeneroMenuVisible(false); }} title="Outros" />
                             <Menu.Item onPress={() => { setGenero('Masculino'); setGeneroMenuVisible(false); }} title="Masculino" />
                             <Menu.Item onPress={() => { setGenero('Feminino'); setGeneroMenuVisible(false); }} title="Feminino" />
                         </Menu>
@@ -194,9 +193,8 @@ const EditProfile: React.FC = () => {
                             }
                         >
                             <Menu.Item onPress={() => { setMeta('Ganho de massa'); setMetaMenuVisible(false); }} title="Ganho de massa" />
-                            <Menu.Item onPress={() => { setMeta('Emagrecimento'); setMetaMenuVisible(false); }} title="Emagrecimento" />
                             <Menu.Item onPress={() => { setMeta('Manter Peso'); setMetaMenuVisible(false); }} title="Manter Peso" />
-                            <Menu.Item onPress={() => { setMeta('Perder Peso'); setMetaMenuVisible(false); }} title="Perder Peso" />
+                            <Menu.Item onPress={() => { setMeta('Emagrecimento'); setMetaMenuVisible(false); }} title="Emagrecimento" />
                         </Menu>
 
                     </SettingsOption>

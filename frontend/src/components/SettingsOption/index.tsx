@@ -42,6 +42,7 @@ interface SettingsOptionProps {
     onChangeText?: (text: string) => void;
     style?: ViewStyle;
     children?: React.ReactNode;
+    keyboardType?: "numeric" | "default";
 }
 
 const SettingsOption: React.FC<SettingsOptionProps> = ({ label, icon, onPress, value, onChangeText, style, editable, children }) => {
@@ -69,6 +70,7 @@ const SettingsOption: React.FC<SettingsOptionProps> = ({ label, icon, onPress, v
                         style={styles.textInput}
                         value={value}
                         onChangeText={onChangeText}
+                        keyboardType="numeric"
                     />
                 )
             ) : null}

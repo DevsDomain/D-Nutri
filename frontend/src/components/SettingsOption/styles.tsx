@@ -1,24 +1,26 @@
 import { Dimensions, StyleSheet } from "react-native";
 
 const { width, height } = Dimensions.get('window');
-const adaptivePadding = width * 0.015; // % da largura da tela
+const adaptivePadding = width * 0.020; // % da largura da tela
 
 export const styles = StyleSheet.create({
     container: {
         flexDirection: "row",
         alignItems: "center",
-        paddingVertical: 20,
+        paddingVertical: 15,
         paddingHorizontal: 20,
         borderBottomWidth: 1,
         borderBottomColor: "#ddd",
     },
     iconContainer: {
-        marginRight: 20,
+        marginRight: 5,
+        marginLeft: 5,
     },
     label: {
         fontSize: 18,
         flex: 1,
         fontFamily: "Signika_400Regular",
+
     },
     fontAwesome: {
         fontFamily: "FontAwesome",

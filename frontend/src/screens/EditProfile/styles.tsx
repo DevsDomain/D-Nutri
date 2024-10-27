@@ -51,8 +51,6 @@ export const styles = StyleSheet.create({
         color: '#000', // Cor do texto
     },
     menuItemText: {
-        fontFamily: 'Signika_400Regular',
         color: '#000',
-        fontSize: 16,
     },
 });
