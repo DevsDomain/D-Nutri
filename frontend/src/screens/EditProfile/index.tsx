@@ -157,10 +157,12 @@ const EditProfile: React.FC = () => {
                     <SettingsOption
                         label="Altura em cm"
                         icon="expand"
+                        keyboardType='numeric'
                         onPress={() => { }}
                         editable={true}
                         value={altura}
                         onChangeText={setAltura}
+
                     />
                     <SettingsOption
                         label="Gênero"
@@ -171,7 +173,7 @@ const EditProfile: React.FC = () => {
                             visible={generoMenuVisible}  // Agora usando generoMenuVisible para visibilidade
                             onDismiss={() => setGeneroMenuVisible(false)}  // Fecha o menu
                             anchor={
-                                <Button onPress={() => setGeneroMenuVisible(true)} mode="outlined" style={styles.picker}>
+                                <Button onPress={() => setGeneroMenuVisible(true)} mode="outlined" style={styles.menu}>
                                     {genero || 'Selecione o gênero'}
                                 </Button>
                             }
@@ -199,7 +201,7 @@ const EditProfile: React.FC = () => {
                             visible={metaMenuVisible}  // Agora usando metaMenuVisible para visibilidade
                             onDismiss={() => setMetaMenuVisible(false)}  // Fecha o menu
                             anchor={
-                                <Button onPress={() => setMetaMenuVisible(true)} mode="outlined" style={styles.picker}>
+                                <Button onPress={() => setMetaMenuVisible(true)} mode="outlined" style={styles.menu}>
                                     {meta || 'Selecione a meta'}  {/* Mostra a meta selecionada ou um valor padrão */}
                                 </Button>
                             }

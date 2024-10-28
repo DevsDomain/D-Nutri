@@ -1,29 +1,39 @@
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
+  // Container principal
   container: {
     flex: 1,
-    backgroundColor: "#ececec",
+    backgroundColor: '#ececec',
     padding: 0,
   },
+
+  // Header
   header: {
-    width: "100%",
-    padding: 45,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#BBDEB5",
+    width: '100%',
+    padding: 35,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#BBDEB5',
   },
   headerTitle: {
-    fontSize: 22,
+    fontSize: 20,
+    color: 'black',
+    fontWeight: "600",
   },
 
   // Modal
   modalContainer: {
-    flex: 1,
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  passwordContainer: {
+    flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    width: "100%",
   },
   modalView: {
     width: "80%",
@@ -46,7 +56,10 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 10,
   },
+
+  // Input e botão
   input: {
+    flex: 0,
     width: "100%",
     borderWidth: 1,
     borderColor: "#ccc",
@@ -55,6 +68,15 @@ export const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: "center",
   },
+  eyeButton: {
+    alignSelf: "flex-start",
+    paddingLeft: 0,
+    paddingRight: 10,
+    marginTop: 10,
+    fontSize: 30,
+  },
+
+  // Container de botão
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -65,7 +87,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     padding: 10,
     marginRight: 5,
-    backgroundColor: "#f2f2f2",
+    backgroundColor: "transparent",
     borderRadius: 5,
   },
   cancelButtonText: {
@@ -82,5 +104,22 @@ export const styles = StyleSheet.create({
   okButtonText: {
     color: "#fff",
     fontWeight: "bold",
+  },
+
+  // Ações adicionais
+  actionRow: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    marginTop: 10,
+  },
+  confirmButton: {
+    padding: 10,
+  },
+  cancelText: {
+    color: "red",
+  },
+  confirmText: {
+    color: "green",
   },
 });

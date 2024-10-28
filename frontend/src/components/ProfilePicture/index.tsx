@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { View, Text, Image } from 'react-native';
 import { styles } from './styles';
-import { useFonts, Signika_700Bold } from '@expo-google-fonts/signika';
+import { useFonts, Signika_700Bold, Signika_600SemiBold } from '@expo-google-fonts/signika';
 import * as SplashScreen from 'expo-splash-screen';
 
 interface ProfilePictureProps {

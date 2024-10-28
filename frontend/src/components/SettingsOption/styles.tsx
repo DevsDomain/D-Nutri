@@ -1,7 +1,6 @@
 import { Dimensions, StyleSheet } from "react-native";
 
 const { width, height } = Dimensions.get('window');
-const adaptivePadding = width * 0.020; // % da largura da tela
 
 export const styles = StyleSheet.create({
     container: {
@@ -14,26 +13,29 @@ export const styles = StyleSheet.create({
     },
     iconContainer: {
         marginRight: 5,
+        width: width * 0.11,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
-    label: {
-        fontSize: 18,
-        flex: 1,
-        fontFamily: "Signika_400Regular",
-
-    },
-    fontAwesome: {
+        fontAwesome: {
         fontFamily: "FontAwesome",
         color: "#FF9385",
-        padding: adaptivePadding,
+        padding: width * 0.02,
+    },
+    label: {
+        flex: 1,
+        fontFamily: "Signika_400Regular",
+        fontSize: Math.max(width * 0.04, 14), // Define tamanho mínimo para legibilidade
     },
     textInput: {
+        fontFamily: "Signika_400Regular",
+        fontSize: Math.max(width * 0.04, 14), // Define tamanho mínimo para legibilidade
         flex: 1,
         borderWidth: 1,
         borderColor: '#ececec',
-        padding: 2,
+        padding: Math.max(2, width * 0.02), // Define padding adaptável com valor mínimo
         borderRadius: 5,
         height: 40,
         color: '#000',
     },
-    
 });

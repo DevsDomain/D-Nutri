@@ -7,6 +7,7 @@ import {
   StatusBar,
   Alert,
   TextInput,
+  TouchableOpacity,
 } from "react-native";
 import { styles } from "./styles";
 import ProfilePicture from "../../components/ProfilePicture";
@@ -19,6 +20,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BACKEND_API_URL } from "@env";
 import axios from "axios";
 import { UserContext } from "../../context/userContext";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 type ProfileScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -33,6 +35,7 @@ export default function ProfileScreen({ navigation }: Props) {
   const localImage = require("../../../assets/profile-icon.png");
   const [modalVisible, setModalVisible] = useState(false);
   const [Password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [modalType, setModalType] = useState<
     "passwordReset" | "logoutConfirmation"
   >("passwordReset");
@@ -225,13 +228,19 @@ export default function ProfileScreen({ navigation }: Props) {
           modalType === "passwordReset" ? (
             <>
               <Text style={styles.modalText}>Digite a Nova senha:</Text>
-              <TextInput
-                style={styles.input}
-                placeholder=""
-                secureTextEntry
-                value={Password}
-                onChangeText={setPassword}
-              />
+              <View style={styles.passwordContainer}>
+                {/* Botão de olho para alternar a visibilidade */}
+                <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeButton}>
+                  <Icon name={showPassword ? "eye" : "eye-slash"} size={18}/>
+                </TouchableOpacity>
+                <TextInput
+                  style={[styles.input, { flex: 1 }]} // Flex 1 para ocupar a largura restante
+                  placeholder=""
+                  secureTextEntry={!showPassword} // Alterna a visibilidade da senha
+                  value={Password}
+                  onChangeText={setPassword}
+                />
+              </View>
             </>
           ) : (
             <Text style={styles.modalText}>
