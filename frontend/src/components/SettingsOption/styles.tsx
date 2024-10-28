@@ -21,6 +21,7 @@ export const styles = StyleSheet.create({
         fontFamily: "FontAwesome",
         color: "#FF9385",
         padding: width * 0.02,
+        
     },
     label: {
         flex: 1,
@@ -33,7 +34,7 @@ export const styles = StyleSheet.create({
         flex: 1,
         borderWidth: 1,
         borderColor: '#ececec',
-        padding: Math.max(2, width * 0.02), // Define padding adaptável com valor mínimo
+        padding: 1, // Define padding adaptável com valor mínimo
         borderRadius: 5,
         height: 40,
         color: '#000',
