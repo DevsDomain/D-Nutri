@@ -11,12 +11,14 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
     marginBottom: 20,
+    marginTop:20,
+    maxWidth:400
   },
   searchBar: {
     flex: 1,
-    marginLeft: 10,
+    marginRight: 30,
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 5,

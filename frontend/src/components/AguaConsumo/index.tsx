@@ -3,6 +3,7 @@ import { View, Text, Dimensions, StyleSheet, SafeAreaView, Image, TouchableOpaci
 import { IUser } from '../../types/userDiary';
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../../types";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 type AguaComponentNavigationProp = StackNavigationProp<RootStackParamList, "AguaComponent">;
 
 interface UserProps {
@@ -15,7 +16,6 @@ const screenWidth = Dimensions.get('window').width;
 const logo = require("../../../assets/add.png");
 
 export default function AguaConsumo({ userMG, navigation }: UserProps) {
-
     let aguaIdeal = userMG?.ingestaoAgua?.ingestaoIdeal || 0
     let aguaReal = userMG?.ingestaoAgua?.ingestaoAtual || 0
     let idealMetrica = "ml"

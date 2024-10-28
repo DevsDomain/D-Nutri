@@ -37,8 +37,7 @@ export default function CadastroScreen({ navigation }: Props) {
     try {
       const storedUser = await AsyncStorage.getItem("user")
       if (storedUser) {
-        navigation.navigate("Main");
-      }
+        navigation.navigate("Main", { user: JSON.parse(storedUser) });      }
     } catch (error) {
       console.error("Erro ao obter dados do AsyncStorage:", error);
     }
@@ -76,20 +75,15 @@ export default function CadastroScreen({ navigation }: Props) {
         }),
       });
 
-      const data = await response.json();
 
+      
       if (response.ok) {
-        const firstDate = await axios.post(`${BACKEND_API_URL}/data/${data.idUserPostgres}`,
-          { data: moment().utc().format("YYYY-MM-DD") }
-        )
-        if (firstDate.status == 200) {
-          Alert.alert("Conta criada com sucesso!");
-
-        }
+        Alert.alert("Success", "Cadastro Realizado com suceeso.");
+        console.log("cadastro com sucesso",response)
         navigation.navigate("Login");
       }
-    } catch (error) {
-      console.error("Erro ao cadastrar usuário:", error);
+    } catch (error:any) {
+      console.log("Erro ao cadastrar usuário:", error.message);
       Alert.alert("Erro", "Erro ao cadastrar usuário. Tente novamente.");
     }
   };

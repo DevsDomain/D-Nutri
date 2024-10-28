@@ -11,6 +11,7 @@ class DashboardController {
       const { data } = req.body;
       const { userId } = req.params;
 
+
       const data_atual = moment(data).format("YYYY-MM-DD");
       const userPG = await User.find({ idUser: userId });
 
@@ -27,6 +28,7 @@ class DashboardController {
           data_atual: data_atual,
           usuario: usersPG?.id,
         });
+
         if (buscandoUsuario) {
           usuarioEncontrado = buscandoUsuario;
         }
@@ -40,8 +42,7 @@ class DashboardController {
 
       const userMongo = await User.findById(usuarioEncontrado.usuario);
       const userPotsgres = await pg.query(
-        `select "nomeUsuario",peso,altura,genero,meta,"TMB" FROM "User" WHERE "idUsuario" = $1`,
-        [userMongo?.idUser]
+        `select "nomeUsuario",peso,altura,genero,meta,"TMB" FROM "User" WHERE "idUsuario" = ${userId}`,
       );
 
       return res

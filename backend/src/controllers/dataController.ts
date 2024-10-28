@@ -3,7 +3,7 @@ import pg from '../databases/postgres'
 import Data from "../models/mongo/Data";
 import User from "../models/mongo/User";
 import moment from 'moment';
-
+import MetricasController, { MetricasProps } from "./MetricasController";
 class DataController {
 
   public dayOfTheWeek = (day: number): string => {
@@ -41,7 +41,7 @@ class DataController {
       const { userId } = req.params;
       const { data } = req.body
       const data_atual = moment(data).format("YYYY-MM-DD")
-      console.log("RECEBIDO!",data_atual,userId)
+      console.log("RECEBIDO!", data_atual, userId)
 
       // VERIFICA SE O USUÁRIO EXISTE NA TABELA POSTGRESQL
       const users = await pg.query(`SELECT * FROM "User" WHERE "idUsuario" = $1`, [userId]);
@@ -49,16 +49,18 @@ class DataController {
         return res.status(404).json({ message: "Usuário não encontrado" });
       }
 
+      const metricasData: MetricasProps | undefined = await MetricasController.calculateMetricas(userId);
+
       const userData = await new User({
         idUser: userId,
         consumoAlimentos: [],
         macroIdeal: {
-          Proteina: 300,
-          Caloria: 300,
-          Carboidrato: 300,
-          gordura: 300,
+          Proteina: metricasData?.proteinas,
+          Caloria: metricasData?.calorias,
+          Carboidrato: metricasData?.carboidrato,
+          gordura: metricasData?.gordura,
           sodio: 300,
-          acucar: 300,
+          acucar: metricasData?.acucar,
         },
         macroReal: {
           Proteina: 0,
@@ -71,11 +73,11 @@ class DataController {
         metrica: {
           ImcAtual: 0,
           TmbAtual: 0,
-          ImcIdeal: 0,
-          TmbIdeal: 0,
+          ImcIdeal: metricasData?.IMC,
+          TmbIdeal: metricasData?.TMB,
         },
         ingestaoAgua: {
-          ingestaoIdeal: 3000,
+          ingestaoIdeal: metricasData?.aguaIdeal,
           ingestaoAtual: 0,
         },
       }).save();

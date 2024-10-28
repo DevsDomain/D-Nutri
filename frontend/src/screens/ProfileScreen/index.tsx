@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -18,6 +18,7 @@ import { IuserLogin } from "../../types/user";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BACKEND_API_URL } from "@env";
 import axios from "axios";
+import { UserContext } from "../../context/userContext";
 
 type ProfileScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -39,7 +40,9 @@ export default function ProfileScreen({ navigation }: Props) {
   const [userLogin, setUserLogin] = useState<IuserLogin>();
   const [userData, setUserData] = useState<IuserLogin>();
   const [nomeUsuario, setNomeUsuario] = useState("");
-
+  const userContexto = useContext(UserContext);
+  const userContextoProfile = userContexto?.user
+  const setUserContexto = userContexto?.setUser
   useEffect(() => {
     loadUserFromStorage(); // Carrega os dados do AsyncStorage, inclusive o nome do usuário
   }, []);
@@ -163,11 +166,18 @@ export default function ProfileScreen({ navigation }: Props) {
   };
 
   const handleLogout = async () => {
-    console.log("Saindo da conta...");
-    setModalVisible(false); // Fechar o modal após a confirmação de logout
-    await AsyncStorage.clear().then(() => {
-      navigation.navigate("Login");
-    });
+    try {
+      console.log("Saindo da conta...");
+
+      // Limpar AsyncStorage
+      await AsyncStorage.clear();
+      if (setUserContexto) {
+        setUserContexto(null)
+      }
+
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error);
+    }
   };
 
   const handleCancel = () => {
@@ -182,7 +192,7 @@ export default function ProfileScreen({ navigation }: Props) {
       </View>
 
       <ScrollView>
-        <ProfilePicture name={user?.nomeUsuario || userLogin?.nomeUsuario || "User"} localImage={localImage} />
+        <ProfilePicture name={userContexto?.user?.nomeUsuario || "User"} localImage={localImage} />
         <SettingsOption
           label="Editar Perfil"
           icon="user"

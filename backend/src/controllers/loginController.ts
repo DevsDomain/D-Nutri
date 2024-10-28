@@ -20,6 +20,7 @@ class LoginController {
 
       // Verificar se o usuário existe
       if (user.rows.length === 0) {
+        console.log("USUÁRIO NÃO ENCONTRADO!")
         return res.status(404).json({ message: "Usuário não encontrado" });
       }
 
@@ -37,6 +38,9 @@ class LoginController {
           id: foundUser.idUsuario,
           nomeUsuario: foundUser.nomeUsuario,
           email: foundUser.email,
+          peso: foundUser.peso,
+          altura:foundUser.altura,
+          genero:foundUser.genero
         },
       });
     } catch (error) {

@@ -11,6 +11,7 @@ export interface IAlimentos {
     acucar: string;
     tiporefeicao:string;
     quantidade:string;
+    isFavorito:boolean;
 
 }
 

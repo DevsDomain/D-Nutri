@@ -1,6 +1,15 @@
 import User from "../models/mongo/User";
 import pg from "../databases/postgres";
-
+export interface MetricasProps {
+    calorias: number;
+    proteinas: number;
+    gordura: number;
+    carboidrato: number;
+    acucar: number;
+    IMC: number;
+    TMB: number;
+    aguaIdeal: number;
+}
 class MetricasController {
     // Criar um novo usuário
     async calculateMetricas(idUsuario: string) {
@@ -30,23 +39,29 @@ class MetricasController {
             const carboidrato = parseFloat((peso * 4.25).toFixed(2));
             const acucar = parseFloat((peso / 0.66).toFixed(2));
 
-            for (const users of userMongo) {
-                users.macroIdeal.Caloria = calorias;
-                users.macroIdeal.Proteina = proteinas;
-                users.macroIdeal.gordura = gordura;
-                users.macroIdeal.Carboidrato = carboidrato;
-                users.macroIdeal.acucar = acucar;
-                users.metrica.ImcIdeal = IMC;
-                users.metrica.TmbIdeal = TMB;
-                users.ingestaoAgua.ingestaoIdeal = aguaIdeal;
-                users.save();
+            const MetricasValues: MetricasProps = {
+                calorias,
+                proteinas,
+                gordura,
+                carboidrato,
+                acucar,
+                IMC,
+                TMB,
+                aguaIdeal
+
             }
+
+
+            return MetricasValues
 
         } catch (error) {
             console.error("Erro ao calcular as métricas do usuário:", error);
             return
         }
     }
+
+
+    
 
 
 }

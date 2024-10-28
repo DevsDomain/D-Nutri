@@ -5,10 +5,7 @@ const DashboardRouter = express.Router();
 
 // Rotas para dados diários
 //DashboardRouter.get("/data/:userId/", DataController.getDataById);
-DashboardRouter.post(
-  "/dashboard/:userId",
-  dashboardController.getUserDataByDate
-);
+DashboardRouter.post("/dashboard/:userId",dashboardController.getUserDataByDate);
 //DashboardRouter.delete("/data/:userId", DataController.deleteData);
 
 export default DashboardRouter;

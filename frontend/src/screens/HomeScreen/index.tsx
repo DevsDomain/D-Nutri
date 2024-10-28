@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import axios from "axios";
 import moment from "moment";
 import { IUser, IUserData } from "../../types/userDiary";
@@ -22,8 +22,9 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../../types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { IuserLogin } from "../../types/user";
-import { useNavigation } from '@react-navigation/native'; // Importação da navegação
+import { useNavigation, useRoute } from '@react-navigation/native'; // Importação da navegação
 import { Alert } from 'react-native';
+import { UserContext } from "../../context/userContext";
 type MainNavigationProp = StackNavigationProp<RootStackParamList, "Main">;
 type ItemData = {
   id: number;
@@ -33,16 +34,17 @@ type ItemData = {
 type Props = {
   navigation: MainNavigationProp;
 };
-const HomeScreen = ({ navigation }: Props) => {
+const Main = ({ navigation }: Props) => {
   const navigationMetrica = useNavigation<MetricasComponentNavigationProp>();
   const [selectedId, setSelectedId] = useState<number>();
   const [loading, setLoading] = useState(false);
   const [loadingPast, setLoadingPast] = useState(false);
   const [dataList, setDataList] = useState<ItemData[]>([]);
-  const [userMG, setUserMG] = useState<IUser>();
-  const [user, setUser] = useState<IuserLogin>();
+  const [userMG, setUserMG] = useState<IUser>() || null;
   const [userPG, setUserPG] = useState<IUserData>();
-
+  const userContexto = useContext(UserContext);
+  const user = userContexto?.user
+  const setUser = userContexto?.setUser
 
   type AguaComponentNavigationProp = StackNavigationProp<
     RootStackParamList,
@@ -55,30 +57,30 @@ const HomeScreen = ({ navigation }: Props) => {
     "AlimentacaoComponent"
   >;
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!userMG || !userPG) return;
-  
-      const isProfileIncomplete =
-        !userPG.nomeUsuario || !userPG.altura || !userPG.peso || !userPG.genero || !userPG.meta;
-  
-      if (isProfileIncomplete) {
-        Alert.alert(
-          "Cadastro Incompleto",
-          "Seu cadastro está incompleto. Você será redirecionado para completar o perfil.",
-          [
-            {
-              text: "OK",
-              onPress: () => navigation.navigate("EditProfile"), // Redireciona para a tela de edição de perfil
-            },
-          ]
-        );
-      }
-    }, 2000); // Executa a verificação após 2 segundos
-  
-    return () => clearTimeout(timer);
-  }, [userPG, navigation]);
 
+
+  useEffect(() => {
+    if (!userContexto) return;
+
+    console.log("USEEFFET", user)
+    const isProfileIncomplete =
+      !user?.nomeUsuario || !user.altura || !user.peso || !user.genero;
+
+    if (isProfileIncomplete) {
+      Alert.alert(
+        "Cadastro Incompleto",
+        "Seu cadastro está incompleto. Você será redirecionado para completar o perfil.",
+        [
+          {
+            text: "OK",
+            onPress: () => navigation.navigate("EditProfile"), // Redireciona para a tela de edição de perfil
+          },
+        ]
+      );
+    }
+    // Executa a verificação após 2 segundos
+
+  }, [userPG, navigation]);
 
   const formatDateTitle = (date: moment.Moment): string => {
     return `${date.format("ddd")}\n${date.format("DD/MM")}`;
@@ -106,20 +108,6 @@ const HomeScreen = ({ navigation }: Props) => {
   };
 
 
-  const loadUserFromStorage = async () => {
-    try {
-      const storedUser = await AsyncStorage.getItem("user")
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-        await loadDashboard(JSON.parse(storedUser), moment().utc().format("YYYY-MM-DD")).then((response: any) => {
-          setUserMG(response.userMG);
-          setUserPG(response.userPG);
-        })
-      }
-    } catch (error) {
-      console.log("Erro ao obter dados do AsyncStorage:", error);
-    }
-  };
   useEffect(() => {
     navigation.addListener('focus', async () => {
       const initialData: ItemData[] = [];
@@ -132,9 +120,14 @@ const HomeScreen = ({ navigation }: Props) => {
         });
       }
       setDataList(initialData);
-      setSelectedId(initialData[2].id);
-      await loadUserFromStorage() // Load user from AsyncStorage
-    })
+      setSelectedId(initialData[2].id)
+
+      await loadDashboard(user?.id, moment.utc().format("YYYY-MM-DD"))
+
+
+    }
+    )
+
   }, [navigation])
 
 
@@ -155,6 +148,7 @@ const HomeScreen = ({ navigation }: Props) => {
     }
 
     setDataList((prevList) => [...prevList, ...newDates]);
+
     setLoading(false);
   };
 
@@ -163,42 +157,41 @@ const HomeScreen = ({ navigation }: Props) => {
       const response = await axios.post(`${BACKEND_API_URL}/data/${idUser}`, {
         data: date,
       });
-      const newItem: ItemData = {
-        date: date,
-        id: Math.random(),
-        title: response.data.data,
-      };
+      console.log("nova data gerada", date)
 
       setUserMG(response.data.user);
+      setLoading(false);
 
     } catch (error: any) {
       console.error("ERROR:", error.message);
     }
   };
+  const setDataStorage = async (date: string) => {
+    await AsyncStorage.setItem("date", JSON.stringify(date));
+
+  }
 
   const loadDashboard = async (myUser: any, date: string) => {
-    try {
-      const response = await axios.post(
-        `${BACKEND_API_URL}/dashboard/${myUser.id}`,
-        {
-          data: date,
-        }
-      )
-      await setDataStorage(date);
-      return response.data
 
-    } catch (error: any) {
+
+    try {
+      const response = await axios.post(`${BACKEND_API_URL}/dashboard/${myUser}`, {
+        data: date,
+      });
+      await AsyncStorage.setItem(`dashboard-${myUser}-${date}`, JSON.stringify(response.data));
+
+      setUserMG(response.data.userMG);
+      setUserPG(response.data.userPG);
+      await setDataStorage(date);
+    } catch (error) {
       console.log("ERRO ao buscar dados dashboard, criando nova data...");
       if (user) {
         createDate(date, parseInt(user.id));
+        setLoading(false);
       }
-      setLoading(false);
     }
   };
 
-  const setDataStorage = async (date: string) => {
-    await AsyncStorage.setItem("date", JSON.stringify(date));
-  }
 
   const handleDatePress = async (item: ItemData) => {
     setSelectedId(item.id);
@@ -207,7 +200,7 @@ const HomeScreen = ({ navigation }: Props) => {
     if (user) {
       try {
         const response = await axios.post(
-          `${BACKEND_API_URL}/dashboard/${user.id}`,
+          `${BACKEND_API_URL}/dashboard/${user?.id}`,
           {
             data: item.date,
           }
@@ -220,7 +213,7 @@ const HomeScreen = ({ navigation }: Props) => {
       } catch (error: any) {
         console.log("ERRO ao buscar dados dashboard, criando nova data...");
         if (user) {
-          createDate(item.date, parseInt(user.id));
+          createDate(item.date, parseInt(user?.id));
         }
       }
     }
@@ -232,6 +225,7 @@ const HomeScreen = ({ navigation }: Props) => {
   const renderItem = ({ item }: { item: ItemData }) => {
     const backgroundColor = item.id === selectedId ? "#91C788" : "#FF9385";
     const color = item.id === selectedId ? "#fff" : "#ffffff9e";
+
 
 
     return (
@@ -248,7 +242,7 @@ const HomeScreen = ({ navigation }: Props) => {
     <SafeAreaView style={styles.container}>
       {!userMG ?
         <View style={[styles.loadingWait, styles.loadingHorizontal]}>
-          <ActivityIndicator size={"large"} color={"#97cc74"}/>
+          <ActivityIndicator size={"large"} color={"#97cc74"} />
         </View>
         :
         <ScrollView>
@@ -268,7 +262,7 @@ const HomeScreen = ({ navigation }: Props) => {
                 ListHeaderComponent={renderHeader}
                 ListFooterComponent={renderFooter}
                 onScroll={({ nativeEvent }) => {
-                  if (nativeEvent.contentOffset.x <= 10) {
+                  if (nativeEvent.contentOffset.x <= 0.1) {
                     loadPastDates();
                   }
                 }}
@@ -352,4 +346,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default HomeScreen;
+export default Main;

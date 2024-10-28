@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { StatusBar, ScrollView, View, Text, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
 import { Menu, Button, Provider } from 'react-native-paper';
 import ProfilePicture from '../../components/ProfilePicture';
@@ -12,6 +12,7 @@ import { IuserLogin } from '../../types/user';
 import { RootStackParamList } from '../../types';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
+import { UserContext } from '../../context/userContext';
 
 
 type EditProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, "Profile">;
@@ -23,18 +24,16 @@ const EditProfile: React.FC = () => {
     const [userData, setUserData] = useState<IUserData>();
     const [nomeUsuario, setNomeUsuario] = useState('');
     const [userLogin, setUserLogin] = useState<IuserLogin>();
-
     const [altura, setAltura] = useState('');
     const [genero, setGenero] = useState(''); // Mantém o estado do gênero
     const [peso, setPeso] = useState('');
     const [meta, setMeta] = useState('Selecione a meta');
     const [generoMenuVisible, setGeneroMenuVisible] = useState(false);
     const [metaMenuVisible, setMetaMenuVisible] = useState(false);
+    const userContexto = useContext(UserContext);
+    const userContextoProfile = userContexto?.user
+    const setUserContexto = userContexto?.setUser
 
-    const openMenu = () => setGeneroMenuVisible(true);
-    const closeMenu = () => setGeneroMenuVisible(false);
-    const openMetaMenu = () => setMetaMenuVisible(true);
-    const closeMetaMenu = () => setMetaMenuVisible(false);
 
 
     const loadUserFromStorage = async () => {
@@ -82,12 +81,24 @@ const EditProfile: React.FC = () => {
     }, [userLogin]);
 
     const updateStorage = async () => {
-        const myUser = { id: userLogin?.id, nomeUsuario: nomeUsuario, email: userLogin?.email }
-        try {
-            await AsyncStorage.setItem("user", JSON.stringify(myUser));
-            console.log("Dados do usuário atualizados no AsyncStorage:", myUser);
-        } catch (error) {
-            console.error("Erro ao atualizar AsyncStorage:", error);
+        if (userData && userLogin) {
+            try {
+                const myUser: IuserLogin = {
+                    nomeUsuario: nomeUsuario,
+                    altura: userData.altura.toString(), peso: userData.peso.toString(), genero: userData.genero, email: userLogin.email, id: userLogin.id,
+                    profileCompleted: true
+                }
+                await AsyncStorage.setItem("user", JSON.stringify(myUser))
+                console.log("Dados do usuário atualizados no AsyncStorage:", myUser);
+                setUserLogin(myUser)
+                if(setUserContexto)
+                setUserContexto(myUser);
+            
+            }
+
+            catch (error) {
+                console.error("Erro ao atualizar AsyncStorage:", error);
+            }
         }
     }
     const handleSaveChanges = async () => {
@@ -110,12 +121,12 @@ const EditProfile: React.FC = () => {
             });
 
             const data = await response.json();
-            updateStorage()
 
             if (response.ok) {
-                updateStorage();
+                await updateStorage();
                 Alert.alert('Sucesso', data.message);
-                navigation.navigate('ProfileScreen'); // Salva e volta para ProfileScreen
+                navigation.goBack();
+                // Salva e volta para ProfileScreen
             } else {
                 Alert.alert('Erro', data.message);
             }
@@ -163,7 +174,8 @@ const EditProfile: React.FC = () => {
                                 <Button onPress={() => setGeneroMenuVisible(true)} mode="outlined" style={styles.picker}>
                                     {genero || 'Selecione o gênero'}
                                 </Button>
-                            } >
+                            }
+                        >
                             <Menu.Item onPress={() => { setGenero('Outros'); setGeneroMenuVisible(false); }} title="Outros" />
                             <Menu.Item onPress={() => { setGenero('Masculino'); setGeneroMenuVisible(false); }} title="Masculino" />
                             <Menu.Item onPress={() => { setGenero('Feminino'); setGeneroMenuVisible(false); }} title="Feminino" />

@@ -25,8 +25,8 @@ class CadastroController {
       return res
         .status(201)
         .json({ message: "Usuário criado com sucesso!", idUserPostgres });
-    } catch (error) {
-      console.error("Erro ao criar usuário:", error);
+    } catch (error:any) {
+      console.error("Erro ao criar usuário:", error.message);
       return res.status(500).json({ message: "Erro ao criar usuário", error });
     }
   }
