@@ -42,7 +42,7 @@ export default function SelectAlimento() {
   const [isSearching, setIsSearching] = useState(false);
   const [page, setPage] = useState(1);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [loading,setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(25)
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
@@ -52,7 +52,7 @@ export default function SelectAlimento() {
     };
     initializeData();
   }, []);
-  
+
   useEffect(() => {
     const fetchData = async () => {
       if (userId && searchTerm.length === 0) {
@@ -63,9 +63,9 @@ export default function SelectAlimento() {
       }
     };
     fetchData();
-  }, [userId,searchTerm]);
+  }, [userId, searchTerm]);
 
-  
+
 
   // Função para carregar o ID do usuário do AsyncStorage
   const loadUserFromStorage = async () => {
@@ -81,7 +81,7 @@ export default function SelectAlimento() {
   };
 
   // Função para buscar alimentos cadastrados no backend
-  const fetchAlimentosCadastrados = async (quantity:number): Promise<IAlimentos[]> => {
+  const fetchAlimentosCadastrados = async (quantity: number): Promise<IAlimentos[]> => {
     setLoading(true)
     try {
       const response = await axios.get(`${BACKEND_API_URL}/alimentos/${userId}/${quantity}`);
@@ -105,12 +105,12 @@ export default function SelectAlimento() {
     }
   };
 
-  const buscarAlimentoCadastrado = async():Promise<IAlimentos[]> =>{
-    try{
-      const response = await axios.get(`${BACKEND_API_URL}/findAlimento/${userId}/${searchTerm}`)
+  const buscarAlimentoCadastrado = async (): Promise<IAlimentos[]> => {
+    try {
+      const response = await axios.get(`${BACKEND_API_URL}/searchAlimentoByName/${userId}/${searchTerm}`)
       return response.data
-    }catch(error:any){
-      console.log("Não encontrou no banco",error.message)
+    } catch (error: any) {
+      console.log("Não encontrou no banco", error.message)
       return []
     }
   }
@@ -146,12 +146,12 @@ export default function SelectAlimento() {
   const fetchAndCombineAlimentos = async () => {
     try {
       setLoading(true);
-  
+
       const databaseProducts = await buscarAlimentoCadastrado();
       const externalProducts = await searchExternalProducts();
       setAlimentos([])
-      const combineProducts = [...databaseProducts,...externalProducts]
-   
+      const combineProducts = [...databaseProducts, ...externalProducts]
+
       setAlimentos(combineProducts);
     } catch (error) {
       console.error("Error fetching alimentos:", error);
@@ -160,8 +160,8 @@ export default function SelectAlimento() {
       setLoading(false);
     }
   };
-  
-  
+
+
 
   // Lógica de alternância de favoritos
   const toggleFavorite = async (food: IAlimentos) => {
@@ -196,31 +196,27 @@ export default function SelectAlimento() {
     ? alimentos.filter((product) => product.isFavorito)
     : alimentos;
 
-    const loadMoreAlimentos = async () => {
-      if (!loadingMore) {
-        if(quantity > 100 && alimentos.length > 45){
-          return false;
-        }
-        setLoading(true)
-        setLoadingMore(true);
-        const newQuantity = quantity + 10;
-        setQuantity(newQuantity);
-        
-        // Chamar `fetchAlimentosCadastrados` com o valor atualizado de `newQuantity`
-        const moreAlimentos = await fetchAlimentosCadastrados(newQuantity);
-        
-        // Atualizar a lista de alimentos com o novo conjunto carregado
-        setAlimentos(moreAlimentos);
-        setLoadingMore(false);
-        setLoading(false)
+  const loadMoreAlimentos = async () => {
+    if (!loadingMore) {
+      if (quantity > 100 && alimentos.length > 45) {
+        return false;
       }
-      
-    };
-    
-      
-  useEffect(() => {
-    console.log("Filtered Alimentos:", filteredAlimentos);
-  }, [filteredAlimentos]);
+      setLoading(true)
+      setLoadingMore(true);
+      const newQuantity = quantity + 10;
+      setQuantity(newQuantity);
+
+      // Chamar `fetchAlimentosCadastrados` com o valor atualizado de `newQuantity`
+      const moreAlimentos = await fetchAlimentosCadastrados(newQuantity);
+
+      // Atualizar a lista de alimentos com o novo conjunto carregado
+      setAlimentos(moreAlimentos);
+      setLoadingMore(false);
+      setLoading(false)
+    }
+
+  };
+
 
   return (
     <View style={styles.container}>
@@ -296,11 +292,11 @@ export default function SelectAlimento() {
         keyExtractor={(key) => Math.random().toString()}
         onEndReached={loadMoreAlimentos}
         onEndReachedThreshold={0.01}
-        ListFooterComponent={loadingMore ? <Text>Loading more...</Text> : null}
+
       />
-      {loading &&      
-     <ActivityIndicator size={"large"} color={"#0303032b"}/>
-}
+      {loading &&
+        <ActivityIndicator size={"large"} color={"#0303032b"} />
+      }
     </View>
   );
 }

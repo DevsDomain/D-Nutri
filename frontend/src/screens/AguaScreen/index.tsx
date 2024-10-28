@@ -24,6 +24,7 @@ export default function Agua() {
     // Check if userId and date are provided
     if (userId && date) {
       try {
+        await AsyncStorage.removeItem(`dashboard-${userId}-${date}`);
         // Make PUT request to update the water quantity for the user
         const response = await axios.post(`${BACKEND_API_URL}/agua/${userId}`, {
           date: date,
@@ -31,6 +32,7 @@ export default function Agua() {
         });
         // Update the saved quantity state
         setSavedQuantity(quantity);
+
 
         // Show a success alert to the user
         Alert.alert("Quantidade salva", `Você salvou ${quantity} ml.`, [

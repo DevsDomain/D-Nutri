@@ -26,8 +26,28 @@ class AlimentosController {
 
   async findAlimento(req: Request, res: Response): Promise<Response> {
     try {
+      console.log("RECEBIDO");
+      const { barcode } = req.params;
+      console.log(barcode, "BARCODE BACK");
+
+      const alimentos = await pg.query(
+        `SELECT * FROM "Alimentos" WHERE "barcode" = $1`,
+        [barcode]
+      );
+      console.log(alimentos.rows);
+      if (alimentos.rows.length > 0) {
+        return res.status(201).json(alimentos.rows[0]);
+      } else {
+        return res.status(204).json({ message: "Alimento não encontrado" });
+      }
+    } catch (error: any) {
+      return res.status(500).json(error.message);
+    }
+  }
+
+  async searchAlimentoByName(req: Request, res: Response): Promise<Response> {
+    try {
       const { id,nomeProduto } = req.params;
-      console.log(nomeProduto, "BUSCANDO ESSE ALIMENTO NO BANCO");
 
       const alimentos = await pg.query(
         ` SELECT DISTINCT A."nomeProduto", A."idProduto" ,A.barcode,A."Proteina",A."Caloria", A."Carboidrato", A.gordura, A.sodio, A.acucar,

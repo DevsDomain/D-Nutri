@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -14,6 +14,8 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../../types";
 import { BACKEND_API_URL } from "@env";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { IuserLogin } from "../../types/user";
+import { UserContext } from "../../context/userContext";
 
 const logo = require("../../../assets/logo.png");
 
@@ -28,12 +30,17 @@ export default function LoginScreen({ navigation }: Props) {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const ContextUser = useContext(UserContext);
+  
 
   const loadUserFromStorage = async () => {
     try {
       const storedUser = await AsyncStorage.getItem("user");
       if (storedUser) {
-        navigation.navigate("Main"); // Navega para HomeScreen se o usuário estiver no AsyncStorage
+        const user: IuserLogin = JSON.parse(storedUser)
+        ContextUser?.setUser(user)
+        
+        // Navega para HomeScreen se o usuário estiver no AsyncStorage
       }
     } catch (error: any) {
       console.log("Necessário logar");
@@ -54,13 +61,15 @@ export default function LoginScreen({ navigation }: Props) {
       const { message, user } = response.data;
       if (message === "Login realizado com sucesso!") {
         await AsyncStorage.setItem("user", JSON.stringify(user));
-        navigation.navigate("Main"); // Navega diretamente para a HomeScreen
+        ContextUser?.setUser(user);
+
+
       } else {
         Alert.alert("Erro", "Credenciais inválidas.");
       }
-    } catch (error) {
+    } catch (error: any) {
       Alert.alert("Erro", "Não foi possível realizar o login.");
-      console.error("Erro de login:", error);
+      console.error("Erro de login:", error.message);
     } finally {
       setLoading(false);
     }

@@ -2,7 +2,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createStackNavigator } from "@react-navigation/stack";
 import { useState, useEffect } from "react";
 import AguaScreen from "../screens/AguaScreen";
-import CadastroScreen from "../screens/CadastroScreen";
 import LoginScreen from "../screens/LoginScreen";
 import OnboardingScreen from "../screens/OnboardingScreen";
 import TabRoutes from "./tab.routes";
@@ -15,11 +14,12 @@ import { StatusBar, TouchableOpacity, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import ScannerScreen from "../screens/BarcodeScreen";
 import ProductDetailsScreen from "../screens/ProductScreen";
-import Dashboard from "../screens/HomeScreen";
 import React from "react";
 import ProductDetailsScreenPG from "../screens/ProductPG";
 import AlimentosConsumidosScreen from "../screens/AlimentosConsumidosScreen";
 import SelectRefeicao from "../screens/SelectRefeicao";
+import Main from "../screens/HomeScreen";
+import { IuserLogin } from "../types/user";
 
 const Stack = createStackNavigator();
 
@@ -27,15 +27,19 @@ export default function StackRoutes() {
   const [isOnboardingCompleted, setIsOnboardingCompleted] = useState<
     null | boolean
   >(null);
+  const [user,setUser] = useState<IuserLogin>();
 
   useEffect(() => {
     const checkOnboardingStatus = async () => {
       const completed = await AsyncStorage.getItem("onboardingCompleted");
       setIsOnboardingCompleted(completed === "true");
+
+      const userData = await AsyncStorage.getItem("user"); 
+      setUser(userData ? JSON.parse(userData) : null);
     };
 
     checkOnboardingStatus();
-  }, []);
+  }, [user?.profileCompleted]);
 
   if (isOnboardingCompleted === null) {
     return null; // Exibe um loading ou algo enquanto verifica o AsyncStorage
@@ -43,11 +47,11 @@ export default function StackRoutes() {
 
   return (
     <Stack.Navigator
-      initialRouteName={isOnboardingCompleted ? "Login" : "Onboarding"}
+      initialRouteName={isOnboardingCompleted ? "Main" : "Onboarding"}
       screenOptions={({ navigation, route }) => ({
         headerShown: !(route.name === "Onboarding"),
         headerLeft:
-          route.name === "Login" || route.name === "Cadastro"
+          route.name === "Main"
             ? () => (
                 <TouchableOpacity
                   onPress={() => navigation.goBack()}
@@ -67,42 +71,13 @@ export default function StackRoutes() {
       {!isOnboardingCompleted && (
         <Stack.Screen
           name="Onboarding"
-          component={OnboardingScreen}
+          component={TabRoutes}
           options={{ headerShown: false }}
         />
       )}
 
-      <Stack.Screen
-        name="Login"
-        component={LoginScreen}
-        options={{
-          headerShown: true,
-          headerTitle: "",
-        }}
-      />
-
-      <Stack.Screen
-        name="Cadastro"
-        component={CadastroScreen}
-        options={{
-          headerShown: true,
-          headerTitle: "",
-        }}
-      />
-      <Stack.Screen
-        name="Main"
-        component={TabRoutes}
-        options={{
-          headerShown: false,
-          title: "Selecione o tipo de Refeição",
-          headerStyle: {
-            backgroundColor: "#BBDEB5", // Cor de fundo do cabeçalho
-          },
-          headerTitleStyle: {
-            color: "#000000", // Cor do título, ajustada para melhor contraste com o fundo
-          },
-        }}
-      />
+    
+ 
 
 <Stack.Screen
         name="SelectRefeicao"
@@ -232,6 +207,8 @@ export default function StackRoutes() {
             color: "#000000", // Cor do título, ajustada para melhor contraste com o fundo
           },
         }}/>
+
+
 
       <Stack.Screen name="scanner" component={ScannerScreen} />
       <Stack.Screen name="ProductDetails" component={ProductDetailsScreen} />

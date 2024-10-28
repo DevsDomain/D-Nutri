@@ -33,7 +33,8 @@ export interface IAgua {
 }
 
 // Interface para User
-interface IUser {
+export interface IUser {
+  id:Schema.Types.ObjectId
   idUser:number;
   consumoAlimentos: IAlimento[];
   macroIdeal: IMacroNutrientes;

@@ -1,4 +1,5 @@
 import { ParamListBase } from "@react-navigation/native";
+import { IuserLogin } from "./user";
 
 export interface RootStackParamList extends ParamListBase {
   Home: undefined; // A tela Home não espera parâmetros
@@ -8,7 +9,7 @@ export interface RootStackParamList extends ParamListBase {
   Settings: undefined;
   Login: undefined;
   Cadastro: undefined;
-  Main: undefined;
+  Main: {user:IuserLogin};
   Onboarding: undefined;
   Agua: undefined;
   Alimentacao: undefined;

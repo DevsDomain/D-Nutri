@@ -1,23 +1,23 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { StatusBar } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import HomeScreen from "../screens/HomeScreen";
-import AddScreen from "../screens/AddScreen";
 import AlimentosConsumidosScreen from "../screens/AlimentosConsumidosScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import SelectAlimento from "../screens/SelectAlimento";
 import ScannerScreen from "../screens/BarcodeScreen";
+import Main from "../screens/HomeScreen";
 
 const Tab = createBottomTabNavigator();
 
 export default function TabRoutes() {
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName: string = "";
 
-          if (route.name === "Home") {
+          if (route.name === "Dashboard") {
             iconName = "home";
           } else if (route.name === "Search") {
             iconName = "search";
@@ -42,8 +42,8 @@ export default function TabRoutes() {
       })}
     >
       <Tab.Screen
-        name="Home"
-        component={HomeScreen}
+        name="Dashboard"
+        component={Main}
         options={{
           tabBarIconStyle: { marginTop: -8 },
           headerShown: false,
