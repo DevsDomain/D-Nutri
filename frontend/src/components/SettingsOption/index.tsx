@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { View, Text, TouchableOpacity, ViewStyle, TextInput } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { styles } from './styles';
-import { Signika_400Regular, useFonts } from '@expo-google-fonts/signika';
+import { Signika_400Regular, Signika_500Medium, useFonts } from '@expo-google-fonts/signika';
 import * as SplashScreen from 'expo-splash-screen';
 
 type FontAwesomeIconNames =
@@ -42,6 +42,7 @@ interface SettingsOptionProps {
     onChangeText?: (text: string) => void;
     style?: ViewStyle;
     children?: React.ReactNode;
+    keyboardType?: "numeric" | "default";
 }
 
 const SettingsOption: React.FC<SettingsOptionProps> = ({ label, icon, onPress, value, onChangeText, style, editable, children }) => {

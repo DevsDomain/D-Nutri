@@ -8,22 +8,24 @@ export const styles = StyleSheet.create({
     },
     header: {
         width: '100%',
-        padding: 45,
+        padding: 35,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#BBDEB5',
     },
     headerTitle: {
-        fontSize: 22,
+        fontSize: 20,
+        color: 'black',
+        fontWeight: "600"
     },
     settingsOption: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: 10,
+        padding: 15,
         marginHorizontal: 10,
-        marginVertical: 10,
+        marginVertical: 5,
         backgroundColor: 'white',
     },
     button: {
@@ -37,10 +39,11 @@ export const styles = StyleSheet.create({
     },
     buttonText: {
         color: "white",
-        fontSize: 20,
+        fontSize: 18,
+        fontWeight: "600",
         textAlign: 'center',
     },
-    picker: {
+    menu: {
         flex: 1, // Para ocupar o espaço adequadamente
         height: 50, // Altura semelhante aos outros componentes
         backgroundColor: 'transparent', // Fundo branco para manter a consistência
@@ -49,10 +52,5 @@ export const styles = StyleSheet.create({
         borderRadius: 8, // Bordas arredondadas, similar ao botão
         paddingHorizontal: 30, // Espaçamento interno
         color: '#000', // Cor do texto
-    },
-    menuItemText: {
-        fontFamily: 'Signika_400Regular',
-        color: '#000',
-        fontSize: 16,
     },
 });
