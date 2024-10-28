@@ -14,7 +14,6 @@ export const styles = StyleSheet.create({
     },
     iconContainer: {
         marginRight: 5,
-        marginLeft: 5,
     },
     label: {
         fontSize: 18,
