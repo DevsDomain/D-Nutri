@@ -90,6 +90,46 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
+
+  brands: {
+    fontSize: 18,
+    marginBottom: 20,
+    color: "#4C956C",
+    fontStyle: "italic",
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "100%",
+    marginBottom: 20,
+  },
+  column: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  valueText: {
+    fontSize: 16,
+    marginVertical: 10,
+    color: "#4C956C",
+  },
+  table: {
+    width: "100%",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 20,
+  },
+ 
+  headerText: {
+    fontWeight: "bold",
+    fontSize: 16,
+    color: "#4C956C",
+  },
+  tableText: {
+    color: "#4C956C",
+  },
+
 });
 
   export default styles

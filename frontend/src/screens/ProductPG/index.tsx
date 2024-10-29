@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import axios from "axios";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { BACKEND_API_URL } from "@env";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { IAlimentos } from "../../types/AlimentosPG";
-import { IuserLogin } from "../../types/user";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../types";
+import { DateContext } from "../../context/dateContext";
+import { UserContext } from "../../context/userContext";
+import styles from "./style";
 type ProductScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   "Profile"
@@ -20,28 +21,11 @@ export default function ProductDetailsScreenPG() {
   const [product, setProduct] = useState<IAlimentos | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [weight, setWeight] = useState(100);
-  const [user, setUser] = useState<IuserLogin>();
-  const [myDate, setData] = useState("");
   const navigation = useNavigation<ProductScreenNavigationProp>();
-
-  const loadUserFromStorage = async () => {
-    try {
-      const storedUser = await AsyncStorage.getItem("user");
-      const dataSelected = await AsyncStorage.getItem("date");
-
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-        console.log("Usuário do AsyncStorage:", storedUser);
-      }
-
-      if (dataSelected) {
-        setData(dataSelected);
-        console.log("DATA RECEBIDA PELO STORAGE", dataSelected);
-      }
-    } catch (error) {
-      console.error("Erro ao obter dados do AsyncStorage:", error);
-    }
-  };
+  const userContexto = useContext(UserContext);
+  const dateContexto = useContext(DateContext);
+  const user = userContexto?.user
+  const dates = dateContexto?.date
 
   const handleIncreaseQuantity = () => setQuantity((prev) => prev + 1);
   const handleDecreaseQuantity = () =>
@@ -104,7 +88,6 @@ export default function ProductDetailsScreenPG() {
 
   useEffect(() => {
     if (barcode) {
-      loadUserFromStorage();
       fetchProductFromBackend();
     }
   }, [barcode]);
@@ -141,7 +124,7 @@ export default function ProductDetailsScreenPG() {
         sodio: calculateNutrients(parseFloat(product.sodio)),
         acucar: calculateNutrients(parseFloat(product.acucar)),
         idUser: user?.id,
-        date: myDate,
+        date: dates,
         meal: meal,
         quantidade: quantity,
       };
@@ -276,73 +259,3 @@ export default function ProductDetailsScreenPG() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#EAF4E3",
-    padding: 20,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    color: "#4C956C",
-  },
-  brands: {
-    fontSize: 18,
-    marginBottom: 20,
-    color: "#4C956C",
-    fontStyle: "italic",
-  },
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    width: "100%",
-    marginBottom: 20,
-  },
-  column: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  circleButton: {
-    padding: 10,
-  },
-  valueText: {
-    fontSize: 16,
-    marginVertical: 10,
-    color: "#4C956C",
-  },
-  table: {
-    width: "100%",
-    backgroundColor: "#FFFFFF",
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 20,
-  },
-  rowTable: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 10,
-  },
-  headerText: {
-    fontWeight: "bold",
-    fontSize: 16,
-    color: "#4C956C",
-  },
-  tableText: {
-    color: "#4C956C",
-  },
-  registerButton: {
-    backgroundColor: "#4C956C",
-    borderRadius: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-  },
-  registerButtonText: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-});

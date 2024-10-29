@@ -6,8 +6,6 @@ import { BACKEND_API_URL } from "@env";
 import {
   FlatList,
   SafeAreaView,
-  StatusBar,
-  StyleSheet,
   Text,
   TouchableOpacity,
   ActivityIndicator,
@@ -25,6 +23,8 @@ import { IuserLogin } from "../../types/user";
 import { useNavigation, useRoute } from '@react-navigation/native'; // Importação da navegação
 import { Alert } from 'react-native';
 import { UserContext } from "../../context/userContext";
+import { DateContext } from "../../context/dateContext";
+import { styles } from "./styles";
 type MainNavigationProp = StackNavigationProp<RootStackParamList, "Main">;
 type ItemData = {
   id: number;
@@ -43,8 +43,11 @@ const Main = ({ navigation }: Props) => {
   const [userMG, setUserMG] = useState<IUser>() || null;
   const [userPG, setUserPG] = useState<IUserData>();
   const userContexto = useContext(UserContext);
+  const dateContexto = useContext(DateContext);
   const user = userContexto?.user
-  const setUser = userContexto?.setUser
+  const dates = dateContexto?.date
+  const setUser = userContexto?.setUser;
+  const setDate = dateContexto?.setDate;
 
   type AguaComponentNavigationProp = StackNavigationProp<
     RootStackParamList,
@@ -58,11 +61,13 @@ const Main = ({ navigation }: Props) => {
   >;
 
 
+  const formatDateTitle = (date: moment.Moment): string => {
+    return `${date.format("ddd")}\n${date.format("DD/MM")}`;
+  };
+
 
   useEffect(() => {
     if (!userContexto) return;
-
-    console.log("USEEFFET", user)
     const isProfileIncomplete =
       !user?.nomeUsuario || !user.altura || !user.peso || !user.genero;
 
@@ -82,9 +87,7 @@ const Main = ({ navigation }: Props) => {
 
   }, [userPG, navigation]);
 
-  const formatDateTitle = (date: moment.Moment): string => {
-    return `${date.format("ddd")}\n${date.format("DD/MM")}`;
-  };
+
 
   const loadPastDates = async () => {
     if (loadingPast || dataList.length === 0) return;
@@ -120,9 +123,10 @@ const Main = ({ navigation }: Props) => {
         });
       }
       setDataList(initialData);
-      setSelectedId(initialData[2].id)
+      setSelectedId(initialData[2].id);
 
-      await loadDashboard(user?.id, moment.utc().format("YYYY-MM-DD"))
+      await loadDashboard(user?.id, initialData[2].date)
+
 
 
     }
@@ -157,7 +161,6 @@ const Main = ({ navigation }: Props) => {
       const response = await axios.post(`${BACKEND_API_URL}/data/${idUser}`, {
         data: date,
       });
-      console.log("nova data gerada", date)
 
       setUserMG(response.data.user);
       setLoading(false);
@@ -166,14 +169,9 @@ const Main = ({ navigation }: Props) => {
       console.error("ERROR:", error.message);
     }
   };
-  const setDataStorage = async (date: string) => {
-    await AsyncStorage.setItem("date", JSON.stringify(date));
 
-  }
 
   const loadDashboard = async (myUser: any, date: string) => {
-
-
     try {
       const response = await axios.post(`${BACKEND_API_URL}/dashboard/${myUser}`, {
         data: date,
@@ -182,7 +180,8 @@ const Main = ({ navigation }: Props) => {
 
       setUserMG(response.data.userMG);
       setUserPG(response.data.userPG);
-      await setDataStorage(date);
+      if (setDate)
+        setDate(date)
     } catch (error) {
       console.log("ERRO ao buscar dados dashboard, criando nova data...");
       if (user) {
@@ -194,9 +193,12 @@ const Main = ({ navigation }: Props) => {
 
 
   const handleDatePress = async (item: ItemData) => {
-    setSelectedId(item.id);
-    await setDataStorage(item.date);
     setLoading(true);
+    setSelectedId(item.id);
+
+    if (setDate)
+      setDate(item.date);
+
     if (user) {
       try {
         const response = await axios.post(
@@ -286,64 +288,5 @@ const Main = ({ navigation }: Props) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
-    gap: 20,
-    marginBottom: 12
-  },
-  metricas: {
-    borderRadius: 30,
-    paddingBottom: 30,
-    backgroundColor: "#fff",
-    shadowColor: "#000",
-    shadowOffset: { width: 10, height: 0 },
-  },
-  item: {
-    padding: 5,
-    margin: 10,
-    width: 80,
-    maxHeight: 60,
-    borderRadius: 10,
-    backgroundColor: "rgba(38, 87, 215, 0.25)",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 6,
-  },
-  title: {
-    fontSize: 15,
-    textAlign: "center",
-    margin: "auto",
-  },
-  loading: {
-    alignSelf: "center",
-    marginTop: 35,
-  },
-  userTitle: {
-    fontSize: 21,
-    fontWeight: "700",
-    textAlign: "center",
-    marginVertical: 10,
-  },
-  userSubTitle: {
-    fontSize: 18,
-    fontWeight: "500",
-    textAlign: "center",
-    marginVertical: 5,
-  },
-  loadingWait: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  loadingHorizontal: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    padding: 10
-  }
-});
 
 export default Main;

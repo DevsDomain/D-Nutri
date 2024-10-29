@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import styles from "./styles";
@@ -6,12 +6,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { BACKEND_API_URL } from "@env";
 import { useNavigation } from '@react-navigation/native'; // Importa o hook de navegação
+import { DateContext } from "../../context/dateContext";
+import { UserContext } from "../../context/userContext";
 
 export default function Agua() {
   const [quantity, setQuantity] = useState(150);
   const [savedQuantity, setSavedQuantity] = useState<number | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
-  const [date, setDate] = useState<string | null>(null);
+  const { date } = useContext(DateContext)!;
+  const { user } = useContext(UserContext)!;
 
   const MAX_QUANTITY = 1000;
 
@@ -22,11 +24,10 @@ export default function Agua() {
 
   const handleSave = async () => {
     // Check if userId and date are provided
-    if (userId && date) {
+    if (user?.id && date) {
       try {
-        await AsyncStorage.removeItem(`dashboard-${userId}-${date}`);
         // Make PUT request to update the water quantity for the user
-        const response = await axios.post(`${BACKEND_API_URL}/agua/${userId}`, {
+        const response = await axios.post(`${BACKEND_API_URL}/agua/${user.id}`, {
           date: date,
           quantify: quantity
         });
@@ -49,24 +50,6 @@ export default function Agua() {
     }
   };
 
-  const loadUserFromStorage = async () => {
-    try {
-      const storedUser = await AsyncStorage.getItem("user");
-      const storedDate = await AsyncStorage.getItem("date");
-
-      if (storedUser && storedDate) {
-        const user = JSON.parse(storedUser);
-        setUserId(user.id);
-        setDate(JSON.parse(storedDate));
-      }
-    } catch (error) {
-      console.error("Erro ao obter dados do AsyncStorage:", error);
-    }
-  };
-
-  useEffect(() => {
-    loadUserFromStorage();
-  }, []);
 
   return (
     <View style={styles.container}>
