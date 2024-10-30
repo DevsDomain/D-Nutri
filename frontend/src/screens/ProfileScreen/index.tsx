@@ -106,9 +106,10 @@ export default function ProfileScreen({ navigation }: Props) {
       console.error("Erro ao atualizar AsyncStorage:", error);
     }
   };
-
   // Fim da função para carregar os dados do usuário
+
   const passwordReset = () => {
+    setPassword(''); // Limpar o campo de senha antes de abrir o modal
     setModalType("passwordReset");
     setModalVisible(true);
   };
@@ -167,33 +168,34 @@ export default function ProfileScreen({ navigation }: Props) {
     setModalType("logoutConfirmation");
     setModalVisible(true);
   };
-
+  
   const handleLogout = async () => {
     try {
       console.log("Saindo da conta...");
-
+  
       // Limpar AsyncStorage
       await AsyncStorage.clear();
       if (setUserContexto) {
-        setUserContexto(null)
+        setUserContexto(null);
       }
-
+      
+      setModalVisible(false); // Fechar modal após logout
     } catch (error) {
       console.error("Erro ao fazer logout:", error);
     }
   };
-
+  
   const handleCancel = () => {
     setModalVisible(false);
   };
-
+  
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="default" />
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Configurações</Text>
       </View>
-
+  
       <ScrollView>
         <ProfilePicture name={userContexto?.user?.nomeUsuario || "User"} localImage={localImage} />
         <SettingsOption
@@ -207,18 +209,18 @@ export default function ProfileScreen({ navigation }: Props) {
           onPress={passwordReset}
         />
         <SettingsOption
-          label="Terms & Privacy Policy"
+          label="Termos de Uso & Privacidade"
           icon="file-text"
           onPress={() => navigation.navigate("termsOfUse")}
         />
         <SettingsOption
           label="Sair da Conta"
           icon="sign-out"
-          onPress={() => handleLogout()}
+          onPress={logoutConfirmation} // Abre o modal de confirmação
         />
       </ScrollView>
-
-      {/* Modal para Redefinir Senha */}
+  
+      {/* Modal para Redefinir Senha ou Logout */}
       <CustomModal
         visible={modalVisible}
         title={
@@ -229,14 +231,13 @@ export default function ProfileScreen({ navigation }: Props) {
             <>
               <Text style={styles.modalText}>Digite a Nova senha:</Text>
               <View style={styles.passwordContainer}>
-                {/* Botão de olho para alternar a visibilidade */}
                 <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeButton}>
                   <Icon name={showPassword ? "eye" : "eye-slash"} size={18}/>
                 </TouchableOpacity>
                 <TextInput
-                  style={[styles.input, { flex: 1 }]} // Flex 1 para ocupar a largura restante
+                  style={[styles.input, { flex: 1 }]}
                   placeholder=""
-                  secureTextEntry={!showPassword} // Alterna a visibilidade da senha
+                  secureTextEntry={!showPassword}
                   value={Password}
                   onChangeText={setPassword}
                 />
@@ -258,4 +259,3 @@ export default function ProfileScreen({ navigation }: Props) {
     </SafeAreaView>
   );
 }
-//

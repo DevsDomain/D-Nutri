@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StatusBar, ScrollView, View, Text, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
+import { StatusBar, ScrollView, View, Text, SafeAreaView, TouchableOpacity, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { Menu, Button, Provider } from 'react-native-paper';
 import ProfilePicture from '../../components/ProfilePicture';
 import SettingsOption from '../../components/SettingsOption';
@@ -91,9 +91,9 @@ const EditProfile: React.FC = () => {
                 await AsyncStorage.setItem("user", JSON.stringify(myUser))
                 console.log("Dados do usuário atualizados no AsyncStorage:", myUser);
                 setUserLogin(myUser)
-                if(setUserContexto)
-                setUserContexto(myUser);
-            
+                if (setUserContexto)
+                    setUserContexto(myUser);
+
             }
 
             catch (error) {
@@ -138,7 +138,12 @@ const EditProfile: React.FC = () => {
     };
 
     return (
-        <Provider>
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            //Move o conteúdo para cima ao exibir o teclado, especial iOS lixo.
+            behavior={Platform.OS === "ios" ? "padding" : undefined}
+            keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0} // ajustável
+        >
             <SafeAreaView style={styles.container}>
                 <StatusBar barStyle="default" />
                 <View style={styles.header}>
@@ -220,7 +225,7 @@ const EditProfile: React.FC = () => {
                     </TouchableOpacity>
                 </ScrollView>
             </SafeAreaView>
-        </Provider>
+        </KeyboardAvoidingView>
     );
 };
 
