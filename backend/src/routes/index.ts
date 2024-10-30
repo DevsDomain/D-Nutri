@@ -9,6 +9,7 @@ import cors from "cors";
 import express from "express";
 import LoginRouter from "./loginRoutes";
 import AguaRouter from "./agua";
+import ProcessImage from "./processImage";
 
 const router = express.Router();
 
@@ -22,5 +23,6 @@ router.use(CadastroRouter);
 router.use(LoginRouter);
 router.use(FoodRouter);
 router.use(AguaRouter);
+router.use(ProcessImage);
 
 export default router;
