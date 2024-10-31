@@ -4,6 +4,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useFonts, Signika_400Regular } from "@expo-google-fonts/signika";
 import { UserProvider } from "./src/context/userContext";
 import { DateProvider } from "./src/context/dateContext";
+import { PaperProvider } from "react-native-paper";
 SplashScreen.preventAutoHideAsync(); // Manter a splash screen até as fontes serem carregadas
 
 export default function App() {
@@ -23,11 +24,13 @@ export default function App() {
     return null; // Retorna null enquanto as fontes estão carregando
   }
   return (
-    <UserProvider>
-      <DateProvider>
-        <Routes />
-      </DateProvider>
-    </UserProvider>
+    <PaperProvider>
+      <UserProvider>
+        <DateProvider>
+          <Routes />
+        </DateProvider>
+      </UserProvider>
+    </PaperProvider>
 
   )
 }

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { StatusBar, ScrollView, View, Text, SafeAreaView, TouchableOpacity, Alert, KeyboardAvoidingView, Platform } from 'react-native';
-import { Menu, Button, Provider } from 'react-native-paper';
+import { Menu, Button } from 'react-native-paper';
 import ProfilePicture from '../../components/ProfilePicture';
 import SettingsOption from '../../components/SettingsOption';
 import { styles } from './styles';
@@ -187,7 +187,6 @@ const EditProfile: React.FC = () => {
                             <Menu.Item onPress={() => { setGenero('Masculino'); setGeneroMenuVisible(false); }} title="Masculino" />
                             <Menu.Item onPress={() => { setGenero('Feminino'); setGeneroMenuVisible(false); }} title="Feminino" />
                         </Menu>
-
                     </SettingsOption>
                     <SettingsOption
                         label="Peso em Kg"
@@ -207,7 +206,7 @@ const EditProfile: React.FC = () => {
                             onDismiss={() => setMetaMenuVisible(false)}  // Fecha o menu
                             anchor={
                                 <Button onPress={() => setMetaMenuVisible(true)} mode="outlined" style={styles.menu}>
-                                    {meta || 'Selecione a meta'}  {/* Mostra a meta selecionada ou um valor padrão */}
+                                    {meta || 'Selecione a meta'}
                                 </Button>
                             }
                         >
@@ -215,6 +214,7 @@ const EditProfile: React.FC = () => {
                             <Menu.Item onPress={() => { setMeta('Manter Peso'); setMetaMenuVisible(false); }} title="Manter Peso" />
                             <Menu.Item onPress={() => { setMeta('Emagrecimento'); setMetaMenuVisible(false); }} title="Emagrecimento" />
                         </Menu>
+
 
                     </SettingsOption>
                     <TouchableOpacity
