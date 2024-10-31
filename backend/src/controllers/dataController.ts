@@ -71,10 +71,10 @@ class DataController {
           acucar: 0,
         },
         metrica: {
-          ImcAtual: 0,
-          TmbAtual: 0,
-          ImcIdeal: metricasData?.IMC,
-          TmbIdeal: metricasData?.TMB,
+          ImcAtual: metricasData?.ImcAtual,
+          TmbAtual: metricasData?.TmbAtual,
+          ImcIdeal: metricasData?.ImcIdeal,
+          TmbIdeal: metricasData?.TmbIdeal,
         },
         ingestaoAgua: {
           ingestaoIdeal: metricasData?.aguaIdeal,

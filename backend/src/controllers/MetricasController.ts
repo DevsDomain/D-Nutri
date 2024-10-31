@@ -6,8 +6,10 @@ export interface MetricasProps {
     gordura: number;
     carboidrato: number;
     acucar: number;
-    IMC: number;
-    TMB: number;
+    ImcAtual: number;
+    TmbAtual: number;
+    ImcIdeal: number;
+    TmbIdeal: number;
     aguaIdeal: number;
 }
 class MetricasController {
@@ -24,16 +26,33 @@ class MetricasController {
             const { peso, altura, genero } = userPostgres;
             const alturaCM = altura / 100
 
-            const IMC = peso / (alturaCM ** 2)
-            let TMB = 10 * peso + 6.25 * alturaCM + 5
-            const aguaIdeal = parseFloat((peso * 35).toFixed(2))
+            // Cálculo do IMC Atual
+            const ImcAtual = parseFloat((peso / (alturaCM ** 2)).toFixed(2));
 
-            if (genero == 'Feminino') {
-                TMB = 10 * peso + 6.25 * alturaCM - 161
+            // Cálculo do IMC Ideal baseado na altura
+            const imcIdealReferencia = 22; // Referência do IMC ideal
+            const pesoIdeal = imcIdealReferencia * (alturaCM ** 2);
+            const ImcIdeal = parseFloat((pesoIdeal / (alturaCM ** 2)).toFixed(2));
+
+            // Cálculo do TMB Ideal
+            let TmbIdeal = 10 * peso + 6.25 * alturaCM + 5;
+            const aguaIdeal = parseFloat((peso * 35).toFixed(2));
+
+            if (genero === 'Feminino') {
+                TmbIdeal = 10 * peso + 6.25 * alturaCM - 161;
+            }
+
+            // Cálculo do TMB Atual com base no gênero
+            let TmbAtual;
+            if (genero === 'Feminino') {
+                TmbAtual = parseFloat(((10 * peso) + (6.25 * altura) - 161).toFixed(2));
+            } else {
+                TmbAtual = parseFloat(((10 * peso) + (6.25 * altura) + 5).toFixed(2));
             }
 
 
-            const calorias = parseFloat((TMB * 3.5).toFixed(2));
+
+            const calorias = parseFloat((TmbIdeal * 3.5).toFixed(2));
             const proteinas = parseFloat((peso * 2.5).toFixed(2));
             const gordura = parseFloat((peso * 4.65).toFixed(2));
             const carboidrato = parseFloat((peso * 4.25).toFixed(2));
@@ -45,8 +64,10 @@ class MetricasController {
                 gordura,
                 carboidrato,
                 acucar,
-                IMC,
-                TMB,
+                ImcAtual,
+                TmbAtual,
+                ImcIdeal,
+                TmbIdeal,
                 aguaIdeal
 
             }
@@ -61,7 +82,7 @@ class MetricasController {
     }
 
 
-    
+
 
 
 }

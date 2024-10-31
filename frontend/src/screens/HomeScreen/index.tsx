@@ -25,6 +25,7 @@ import { Alert } from 'react-native';
 import { UserContext } from "../../context/userContext";
 import { DateContext } from "../../context/dateContext";
 import { styles } from "./styles";
+import MetricasConsumo from "../../components/MetricasConsumo";
 type MainNavigationProp = StackNavigationProp<RootStackParamList, "Main">;
 type ItemData = {
   id: number;
@@ -283,6 +284,7 @@ const Main = ({ navigation }: Props) => {
 
           <AguaConsumo userMG={userMG} navigation={navigationAgua} />
           <AlimentacaoConsumo userMG={userMG} navigation={navigationMetrica} />
+          <MetricasConsumo userMG={userMG} navigation={navigationMetrica as MetricasComponentNavigationProp} />
         </ScrollView>
       }
     </SafeAreaView>
