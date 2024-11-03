@@ -75,12 +75,15 @@ export default function CadastroScreen({ navigation }: Props) {
         }),
       });
 
-
+      const data = await response.json(); // Captura a resposta em JSON
       
       if (response.ok) {
         Alert.alert("Success", "Cadastro Realizado com suceeso.");
         console.log("cadastro com sucesso",response)
         navigation.navigate("Login");
+      } else {
+        // Caso a resposta não seja ok, exibe a mensagem de erro vinda do backend
+        Alert.alert("Erro", data.message || "Erro ao cadastrar usuário. Tente novamente.");
       }
     } catch (error:any) {
       console.log("Erro ao cadastrar usuário:", error.message);
