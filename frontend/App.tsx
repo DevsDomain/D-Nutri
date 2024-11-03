@@ -3,8 +3,9 @@ import React, { useEffect } from "react";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts, Signika_400Regular } from "@expo-google-fonts/signika";
 import { UserProvider } from "./src/context/userContext";
-import { DateProvider } from "./src/context/dateContext";
 import { PaperProvider } from "react-native-paper";
+import {Provider} from 'react-redux'
+import { store } from "./src/store/store";
 SplashScreen.preventAutoHideAsync(); // Manter a splash screen até as fontes serem carregadas
 
 export default function App() {
@@ -25,11 +26,11 @@ export default function App() {
   }
   return (
     <PaperProvider>
+      <Provider store={store}>
       <UserProvider>
-        <DateProvider>
           <Routes />
-        </DateProvider>
       </UserProvider>
+      </Provider>
     </PaperProvider>
 
   )

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import {
     View,
     Text,
@@ -14,15 +14,22 @@ import styles from "./styles";
 import { IAlimentos } from "../../types/AlimentosPG";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { IuserLogin } from "../../types/user";
-import { useNavigation } from '@react-navigation/native'; // Importação da navegação
+import { useFocusEffect, useNavigation } from '@react-navigation/native'; // Importação da navegação
 import { RootStackParamList } from "../../../types";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { useSelector } from "react-redux";
+import { selectDate } from "../../dateSlice";
+import { UserContext } from "../../context/userContext";
 
 type ConsumidosNavigationProp = StackNavigationProp<RootStackParamList, "AlimentacaoComponent">;
 type Props = {
     navigation: ConsumidosNavigationProp;
 };
 export default function AlimentosConsumidosScreen({ navigation }: Props) {
+    const dates = useSelector(selectDate);
+    const { user } = useContext(UserContext)!;
+
+
 
     const [alimentosConsumidos, setAlimentosConsumidos] = useState<IAlimentos[]>([]);
     const [totals, setTotals] = useState({
@@ -34,26 +41,12 @@ export default function AlimentosConsumidosScreen({ navigation }: Props) {
         sodio: 0,
     });
 
-    const loadUserFromStorage = async () => {
-        try {
-            const storedUser = await AsyncStorage.getItem("user");
-            const storedDate = await AsyncStorage.getItem("date");
 
-            if (storedUser && storedDate) {
-                const user: IuserLogin = JSON.parse(storedUser)
-                const date = JSON.parse(storedDate);
-                await fetchAlimentos(user.id, date);
-            }
-
-        } catch (error) {
-            console.error("Erro ao obter dados do AsyncStorage:", error);
-        }
-    };
-    const fetchAlimentos = async (id: string, date: string) => {
+    const fetchAlimentos = async () => {
         try {
             const response = await axios.post(`${BACKEND_API_URL}/consumidos`, {
-                idUser: id,
-                date: date
+                idUser: user?.id,
+                date: dates
             });
             const alimentos = response.data
 
@@ -89,12 +82,13 @@ export default function AlimentosConsumidosScreen({ navigation }: Props) {
         }
     };
 
-    useEffect(() => {
-        navigation.addListener('focus', async () => {
+    useFocusEffect(
+        useCallback(() => {
+            fetchAlimentos();
+        },
+            [dates])
+    );
 
-            await loadUserFromStorage();
-        })
-    }, [navigation]);
 
     return (
         <SafeAreaView style={styles.container}>
@@ -129,7 +123,7 @@ export default function AlimentosConsumidosScreen({ navigation }: Props) {
                     </ScrollView>
 
 
-                
+
 
                 </>
             }

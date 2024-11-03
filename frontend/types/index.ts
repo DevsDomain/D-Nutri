@@ -16,5 +16,8 @@ export interface RootStackParamList extends ParamListBase {
   AguaComponent: undefined;
   AlimentacaoComponent: undefined;
   scanner: undefined;
-  ProductDetails: { barcode: string };
+  ProductDetails: { barcode: string ,meal:string};
+  ProductDetailsScreenPG: { barcode: string ,meal:string};
+  SelectRefeicao:{ barcode: string };
+
 }

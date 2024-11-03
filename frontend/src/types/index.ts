@@ -17,4 +17,7 @@ export interface RootStackParamList extends ParamListBase {
   TabelaNutricional: { alimento: string };
   scanner: undefined;
   ProductDetails: { barcode: string };
+  SelectRefeicao:{ barcode: string};
+  ProductDetailsScreenPG: { barcode: string ,meal:string};
+
 }

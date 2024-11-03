@@ -146,6 +146,7 @@ export default function SelectAlimento() {
   const fetchAndCombineAlimentos = async () => {
     try {
       setLoading(true);
+      setIsSearching(true)
 
       const databaseProducts = await buscarAlimentoCadastrado();
       const externalProducts = await searchExternalProducts();

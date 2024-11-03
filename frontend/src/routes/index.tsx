@@ -1,6 +1,5 @@
 import StackRoutes from "./stack.routes";
 import { NavigationContainer } from "@react-navigation/native";
-import TabRoutes from "./tab.routes";
 import { UserContext } from "../context/userContext";
 import { useContext } from "react";
 import AuthRoutes from "./auth.routes";

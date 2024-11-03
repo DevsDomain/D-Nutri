@@ -18,7 +18,6 @@ import React from "react";
 import ProductDetailsScreenPG from "../screens/ProductPG";
 import AlimentosConsumidosScreen from "../screens/AlimentosConsumidosScreen";
 import SelectRefeicao from "../screens/SelectRefeicao";
-import Main from "../screens/HomeScreen";
 import { IuserLogin } from "../types/user";
 
 const Stack = createStackNavigator();
@@ -27,14 +26,14 @@ export default function StackRoutes() {
   const [isOnboardingCompleted, setIsOnboardingCompleted] = useState<
     null | boolean
   >(null);
-  const [user,setUser] = useState<IuserLogin>();
+  const [user, setUser] = useState<IuserLogin>();
 
   useEffect(() => {
     const checkOnboardingStatus = async () => {
       const completed = await AsyncStorage.getItem("onboardingCompleted");
       setIsOnboardingCompleted(completed === "true");
 
-      const userData = await AsyncStorage.getItem("user"); 
+      const userData = await AsyncStorage.getItem("user");
       setUser(userData ? JSON.parse(userData) : null);
     };
 
@@ -46,40 +45,17 @@ export default function StackRoutes() {
   }
 
   return (
-    <Stack.Navigator
-      initialRouteName={isOnboardingCompleted ? "Main" : "Onboarding"}
-      screenOptions={({ navigation, route }) => ({
-        headerShown: !(route.name === "Onboarding"),
-        headerLeft:
-          route.name === "Main"
-            ? () => (
-                <TouchableOpacity
-                  onPress={() => navigation.goBack()}
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginLeft: 10,
-                  }}
-                >
-                  <Ionicons name="arrow-back" size={24} color="black" />
-                  <Text style={{ marginLeft: 5, fontSize: 18 }}>Voltar</Text>
-                </TouchableOpacity>
-              )
-            : undefined,
-      })}
-    >
-      {!isOnboardingCompleted && (
-        <Stack.Screen
-          name="Onboarding"
-          component={TabRoutes}
-          options={{ headerShown: false }}
-        />
-      )}
+    <Stack.Navigator>
 
-    
- 
+      <Stack.Screen
+        name="Main"
+        component={TabRoutes}
+        options={{ headerShown: false }}
+      />
 
-<Stack.Screen
+
+
+      <Stack.Screen
         name="SelectRefeicao"
         component={SelectRefeicao}
         options={{
@@ -160,7 +136,7 @@ export default function StackRoutes() {
           },
         }}
       />
-   <Stack.Screen
+      <Stack.Screen
         name="AlimentosConsumidosScreen"
         component={AlimentosConsumidosScreen}
         options={{
@@ -173,7 +149,7 @@ export default function StackRoutes() {
             color: "#000000", // Cor do título, ajustada para melhor contraste com o fundo
           },
         }}
-      />  
+      />
       <Stack.Screen
         name="termsOfUse"
         component={TermsOfUse}
@@ -194,10 +170,10 @@ export default function StackRoutes() {
         }}
       />
 
-      <Stack.Screen 
-      name="ProfileScreen" 
-      component={ProfileScreen}
-      options={{
+      <Stack.Screen
+        name="ProfileScreen"
+        component={ProfileScreen}
+        options={{
           headerShown: false,
           title: "Profile",
           headerStyle: {
@@ -206,7 +182,7 @@ export default function StackRoutes() {
           headerTitleStyle: {
             color: "#000000", // Cor do título, ajustada para melhor contraste com o fundo
           },
-        }}/>
+        }} />
 
 
 

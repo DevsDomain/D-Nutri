@@ -7,12 +7,13 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { IAlimentos } from "../../types/AlimentosPG";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../types";
-import { DateContext } from "../../context/dateContext";
 import { UserContext } from "../../context/userContext";
 import styles from "./style";
+import { useSelector } from "react-redux";
+import { selectDate } from "../../dateSlice";
 type ProductScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
-  "Profile"
+  "ProductDetailsScreenPG"
 >;
 
 export default function ProductDetailsScreenPG() {
@@ -23,9 +24,9 @@ export default function ProductDetailsScreenPG() {
   const [weight, setWeight] = useState(100);
   const navigation = useNavigation<ProductScreenNavigationProp>();
   const userContexto = useContext(UserContext);
-  const dateContexto = useContext(DateContext);
+  const dates = useSelector(selectDate);
+
   const user = userContexto?.user
-  const dates = dateContexto?.date
 
   const handleIncreaseQuantity = () => setQuantity((prev) => prev + 1);
   const handleDecreaseQuantity = () =>
@@ -90,7 +91,7 @@ export default function ProductDetailsScreenPG() {
     if (barcode) {
       fetchProductFromBackend();
     }
-  }, [barcode]);
+  }, [barcode,dates]);
 
   const calculateNutrients = (nutrientPer100g: number | undefined) => {
     if (nutrientPer100g === undefined) return "0.00";

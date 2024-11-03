@@ -18,20 +18,21 @@ import AguaConsumo from "../../components/AguaConsumo";
 import AlimentacaoConsumo from "../../components/AlimentacaoConsumo";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../../types";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { IuserLogin } from "../../types/user";
-import { useNavigation, useRoute } from '@react-navigation/native'; // Importação da navegação
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'; // Importação da navegação
 import { Alert } from 'react-native';
 import { UserContext } from "../../context/userContext";
-import { DateContext } from "../../context/dateContext";
 import { styles } from "./styles";
 import MetricasConsumo from "../../components/MetricasConsumo";
+import { useDispatch, useSelector } from "react-redux";
+import { selectDate, setNewDate } from "../../dateSlice";
 type MainNavigationProp = StackNavigationProp<RootStackParamList, "Main">;
+
 type ItemData = {
   id: number;
   title: string;
   date: string;
 };
+
 type Props = {
   navigation: MainNavigationProp;
 };
@@ -44,11 +45,12 @@ const Main = ({ navigation }: Props) => {
   const [userMG, setUserMG] = useState<IUser>() || null;
   const [userPG, setUserPG] = useState<IUserData>();
   const userContexto = useContext(UserContext);
-  const dateContexto = useContext(DateContext);
   const user = userContexto?.user
-  const dates = dateContexto?.date
   const setUser = userContexto?.setUser;
-  const setDate = dateContexto?.setDate;
+
+  // REDUX LOGIC
+  const dataSelecionada = useSelector(selectDate);
+  const dispatch = useDispatch();
 
   type AguaComponentNavigationProp = StackNavigationProp<
     RootStackParamList,
@@ -112,28 +114,28 @@ const Main = ({ navigation }: Props) => {
   };
 
 
-  useEffect(() => {
-    navigation.addListener('focus', async () => {
+  useFocusEffect(
+    useCallback(() => {
       const initialData: ItemData[] = [];
       for (let i = -2; i <= 1; i++) {
         const date = moment().add(i, "days");
+        let id = Math.random();
         initialData.push({
-          id: Math.random(),
+          id,
           title: formatDateTitle(date),
           date: date.format("YYYY-MM-DD"),
         });
+        if (moment(date).format("YYYY-MM-DD") === dataSelecionada) {
+          setSelectedId(id);
+        }
       }
       setDataList(initialData);
-      setSelectedId(initialData[2].id);
+      if (selectedId === null) setSelectedId(initialData[2].id);
 
-      await loadDashboard(user?.id, initialData[2].date)
+      loadDashboard(user?.id, dataSelecionada);
+    }, [dataSelecionada])
+  );
 
-
-
-    }
-    )
-
-  }, [navigation])
 
 
 
@@ -177,12 +179,9 @@ const Main = ({ navigation }: Props) => {
       const response = await axios.post(`${BACKEND_API_URL}/dashboard/${myUser}`, {
         data: date,
       });
-      await AsyncStorage.setItem(`dashboard-${myUser}-${date}`, JSON.stringify(response.data));
-
       setUserMG(response.data.userMG);
       setUserPG(response.data.userPG);
-      if (setDate)
-        setDate(date)
+
     } catch (error) {
       console.log("ERRO ao buscar dados dashboard, criando nova data...");
       if (user) {
@@ -196,9 +195,7 @@ const Main = ({ navigation }: Props) => {
   const handleDatePress = async (item: ItemData) => {
     setLoading(true);
     setSelectedId(item.id);
-
-    if (setDate)
-      setDate(item.date);
+    dispatch(setNewDate(item.date))
 
     if (user) {
       try {
@@ -226,8 +223,8 @@ const Main = ({ navigation }: Props) => {
   const renderHeader = () => (loadingPast ? <ActivityIndicator /> : null);
 
   const renderItem = ({ item }: { item: ItemData }) => {
-    const backgroundColor = item.id === selectedId ? "#91C788" : "#FF9385";
-    const color = item.id === selectedId ? "#fff" : "#ffffff9e";
+    const backgroundColor = item.date === dataSelecionada ? "#91C788" : "#FF9385";
+    const color = item.date === dataSelecionada ? "#fff" : "#ffffff9e";
 
 
 

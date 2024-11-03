@@ -2,18 +2,19 @@ import React, { useState, useEffect, useContext } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import styles from "./styles";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { BACKEND_API_URL } from "@env";
 import { useNavigation } from '@react-navigation/native'; // Importa o hook de navegação
-import { DateContext } from "../../context/dateContext";
 import { UserContext } from "../../context/userContext";
+import { useSelector } from "react-redux";
+import { selectDate } from "../../dateSlice";
 
 export default function Agua() {
   const [quantity, setQuantity] = useState(150);
   const [savedQuantity, setSavedQuantity] = useState<number | null>(null);
-  const { date } = useContext(DateContext)!;
   const { user } = useContext(UserContext)!;
+    // REDUX LOGIC
+    const dataSelecionada = useSelector(selectDate);
 
   const MAX_QUANTITY = 1000;
 
@@ -24,11 +25,11 @@ export default function Agua() {
 
   const handleSave = async () => {
     // Check if userId and date are provided
-    if (user?.id && date) {
+    if (user?.id && dataSelecionada) {
       try {
         // Make PUT request to update the water quantity for the user
         const response = await axios.post(`${BACKEND_API_URL}/agua/${user.id}`, {
-          date: date,
+          date: dataSelecionada,
           quantify: quantity
         });
         // Update the saved quantity state
