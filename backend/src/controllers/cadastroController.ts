@@ -8,6 +8,15 @@ class CadastroController {
     try {
       const { nomeUsuario, email, password } = req.body;
 
+                  // Verifica se o e-mail já está em uso
+                  const emailCheckQuery = `SELECT * FROM public."User" WHERE email = $1`;
+                  const emailCheckValues = [email];
+                  const existingUser = await pg.query(emailCheckQuery, emailCheckValues);
+            
+                  if (existingUser.rows.length > 0) {
+                    return res.status(400).json({ message: "E-mail já está em uso!" });
+                  }
+
       const query = `INSERT INTO public."User" 
                       ("nomeUsuario", email, password) 
                       VALUES ($1, $2, $3) 
