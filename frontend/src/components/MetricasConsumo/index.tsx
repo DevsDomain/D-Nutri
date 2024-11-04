@@ -27,22 +27,13 @@ export default function MetricasConsumo({ userMG, navigation }: UserProps) {
                         <Text>IMC Atual</Text>
                         <Text style={styles.subtitle}>{ImcAtual !== 0 ? ImcAtual.toFixed(2) : ImcAtual}</Text>
                     </View>
-
-                    <View style={styles.metricContainer}>
-                        <Text>TMB Atual</Text>
-                        <Text style={styles.subtitle}>{TmbAtual !== 0 ? TmbAtual.toFixed(2) : TmbAtual}</Text>
-                    </View>
-                </View>
-
-                <View style={styles.metricas}>
                     <View style={styles.metricContainer}>
                         <Text>IMC Ideal</Text>
                         <Text style={styles.subtitle}>{ImcIdeal !== 0 ? ImcIdeal.toFixed(2) : ImcIdeal}</Text>
                     </View>
-
                     <View style={styles.metricContainer}>
-                        <Text>TMB Ideal</Text>
-                        <Text style={styles.subtitle}>{TmbIdeal !== 0 ? TmbIdeal.toFixed(2) : TmbIdeal}</Text>
+                        <Text>TMB </Text>
+                        <Text style={styles.subtitle}>{TmbAtual !== 0 ? TmbAtual.toFixed(2) : TmbAtual}</Text>
                     </View>
                 </View>
 
@@ -93,7 +84,7 @@ const styles = StyleSheet.create({
         width: 25,
         height: 25,
         resizeMode: "contain",
-        marginTop: -70, // Mantém a posição do botão na mesma altura
+        marginTop: -30, // Mantém a posição do botão na mesma altura
         marginRight: 10,
         alignSelf: 'flex-end', // Posiciona à direita
     },
