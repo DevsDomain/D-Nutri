@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
     color: "#4C956C",
     textAlign: "center",
     marginBottom: 20,
-    marginTop:20
+    marginTop: 20,
   },
   subtitle: {
     fontSize: 18,
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     padding: 15,
     marginBottom: 10,
-    marginHorizontal:10,
+    marginHorizontal: 10,
     borderRadius: 10,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -83,14 +83,24 @@ const styles = StyleSheet.create({
   },
   loadingWait: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   loadingHorizontal: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    padding: 10
-  }
+    flexDirection: "row",
+    justifyContent: "space-around",
+    padding: 10,
+  },
+  deleteButton: {
+    backgroundColor: "#ff4d4d",
+    padding: 8,
+    borderRadius: 5,
+    alignItems: "center",
+    marginTop: 10,
+  },
+  deleteButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
 });
 
-  
-  export default styles;
+export default styles;

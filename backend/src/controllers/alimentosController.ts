@@ -9,7 +9,7 @@ import Data from "../models/mongo/Data";
 // Função para lidar com as operações relacionadas a Alimentos
 class AlimentosController {
   async buscarAlimentos(req: Request, res: Response): Promise<Response> {
-    const { id,quantity } = req.params; // Capturando o idUsuario dinamicamente
+    const { id, quantity } = req.params; // Capturando o idUsuario dinamicamente
 
     const alimentos = await pg.query(`
     SELECT DISTINCT A."nomeProduto", A."idProduto" ,A.barcode,A."Proteina",A."Caloria", A."Carboidrato", A.gordura, A.sodio, A.acucar,
@@ -47,7 +47,7 @@ class AlimentosController {
 
   async searchAlimentoByName(req: Request, res: Response): Promise<Response> {
     try {
-      const { id,nomeProduto } = req.params;
+      const { id, nomeProduto } = req.params;
 
       const alimentos = await pg.query(
         ` SELECT DISTINCT A."nomeProduto", A."idProduto" ,A.barcode,A."Proteina",A."Caloria", A."Carboidrato", A.gordura, A.sodio, A.acucar,
@@ -57,7 +57,7 @@ class AlimentosController {
     END AS "isFavorito"
         FROM "Favoritos" f
         right JOIN "Alimentos" A ON f."idProduto" = A."idProduto"
-        WHERE A."nomeProduto" LIKE '%${nomeProduto}%' and (f."idUsuario" = ${id} or F."idUsuario" is null)`,
+        WHERE A."nomeProduto" LIKE '%${nomeProduto}%' and (f."idUsuario" = ${id} or F."idUsuario" is null)`
       );
       if (alimentos.rows.length > 0) {
         return res.status(201).json(alimentos.rows);
@@ -120,7 +120,8 @@ class AlimentosController {
   // Listar todos os alimentos
   async getAllAlimentos(req: Request, res: Response): Promise<Response> {
     try {
-      const result = await pg.query(`SELECT distinct "nomeProduto","idProduto", barcode, "imageSrc", "Proteina", "Caloria", "Carboidrato", gordura, sodio, acucar
+      const result =
+        await pg.query(`SELECT distinct "nomeProduto","idProduto", barcode, "imageSrc", "Proteina", "Caloria", "Carboidrato", gordura, sodio, acucar
 FROM public."Alimentos" where "nomeProduto" is not null order by "nomeProduto" ;
 
 "`);
@@ -418,57 +419,143 @@ FROM public."Alimentos" where "nomeProduto" is not null order by "nomeProduto" ;
     }
   }
 
+  // Add e Remove Favoritos
+  async adicionarRemoverFavorito(
+    req: Request,
+    res: Response
+  ): Promise<Response> {
+    try {
+      const { idProduto, idUsuario, isFavorito } = req.body;
 
-// Add e Remove Favoritos
-async adicionarRemoverFavorito(req: Request, res: Response): Promise<Response> {
-  try {
-    const { idProduto, idUsuario, isFavorito } = req.body;
-
-    // Verifica se o favorito já existe no banco de dados
-    const checkFavoriteQuery = `
+      // Verifica se o favorito já existe no banco de dados
+      const checkFavoriteQuery = `
       SELECT * FROM public."Favoritos"
       WHERE "idProduto" = $1 AND "idUsuario" = $2
     `;
-    const checkValues = [idProduto, idUsuario];
-    const result = await pg.query(checkFavoriteQuery, checkValues);
+      const checkValues = [idProduto, idUsuario];
+      const result = await pg.query(checkFavoriteQuery, checkValues);
 
-    if (result.rows.length > 0) {
-      // Se o item já está nos favoritos e o usuário deseja remover (isFavorito = false)
-      if (!isFavorito) {
-        const deleteQuery = `
+      if (result.rows.length > 0) {
+        // Se o item já está nos favoritos e o usuário deseja remover (isFavorito = false)
+        if (!isFavorito) {
+          const deleteQuery = `
           DELETE FROM public."Favoritos"
           WHERE "idProduto" = $1 AND "idUsuario" = $2
         `;
-        await pg.query(deleteQuery, checkValues);
-        return res.status(200).json({ message: "Favorito removido com sucesso!" });
+          await pg.query(deleteQuery, checkValues);
+          return res
+            .status(200)
+            .json({ message: "Favorito removido com sucesso!" });
+        } else {
+          // Se o item já está favoritado e o usuário não alterou o estado, não faz nada
+          return res
+            .status(200)
+            .json({ message: "Este item já está nos favoritos." });
+        }
       } else {
-        // Se o item já está favoritado e o usuário não alterou o estado, não faz nada
-        return res.status(200).json({ message: "Este item já está nos favoritos." });
-      }
-    } else {
-      // Se o item não está nos favoritos e o usuário deseja adicioná-lo (isFavorito = true)
-      if (isFavorito) {
-        const insertQuery = `
+        // Se o item não está nos favoritos e o usuário deseja adicioná-lo (isFavorito = true)
+        if (isFavorito) {
+          const insertQuery = `
           INSERT INTO public."Favoritos" ("idProduto", "idUsuario", "isFavorito")
           VALUES ($1, $2, $3)
         `;
-        const insertValues = [idProduto, idUsuario, isFavorito];
-        await pg.query(insertQuery, insertValues);
-        return res.status(201).json({ message: "Favorito adicionado com sucesso!" });
-      } else {
-        // Se o item não está favoritado e o usuário deseja removê-lo, mas ele já não existe, não faz nada
-        return res.status(200).json({ message: "O item não estava nos favoritos." });
+          const insertValues = [idProduto, idUsuario, isFavorito];
+          await pg.query(insertQuery, insertValues);
+          return res
+            .status(201)
+            .json({ message: "Favorito adicionado com sucesso!" });
+        } else {
+          // Se o item não está favoritado e o usuário deseja removê-lo, mas ele já não existe, não faz nada
+          return res
+            .status(200)
+            .json({ message: "O item não estava nos favoritos." });
+        }
       }
+    } catch (error: any) {
+      console.error("Erro ao atualizar favoritos:", error.message);
+      return res.status(500).json({
+        message: "Erro ao atualizar favoritos",
+        error: error.message,
+      });
     }
-  } catch (error: any) {
-    console.error("Erro ao atualizar favoritos:", error.message);
-    return res.status(500).json({
-      message: "Erro ao atualizar favoritos",
-      error: error.message,
-    });
   }
-}
 
+  // Excluir um alimento consumido pelo ID do produto e pelo ID do usuário
+  async deleteAlimentoConsumido(
+    req: Request,
+    res: Response
+  ): Promise<Response> {
+    const { idUser, idProduto } = req.body;
+
+    try {
+      // Busca o usuário no MongoDB
+      const userMongo = await User.findOne({ idUser: idUser });
+
+      if (!userMongo) {
+        return res.status(404).json({ message: "Usuário não encontrado." });
+      }
+
+      // Filtra o alimento consumido que possui o idProduto informado
+      const alimentoIndex = userMongo.consumoAlimentos.findIndex(
+        (alimento) => alimento.idAlimento === idProduto
+      );
+
+      if (alimentoIndex === -1) {
+        return res
+          .status(404)
+          .json({ message: "Alimento não encontrado nos consumidos." });
+      }
+
+      // Remove o alimento consumido da lista
+      const [alimentoRemovido] = userMongo.consumoAlimentos.splice(
+        alimentoIndex,
+        1
+      );
+
+      // Busca o alimento específico no banco de dados Postgres
+      const result = await pg.query(
+        `SELECT "Proteina", "Caloria", "Carboidrato", gordura, sodio, acucar 
+         FROM public."Alimentos" WHERE "idProduto" = $1`,
+        [idProduto]
+      );
+
+      if (!result.rows[0]) {
+        return res
+          .status(404)
+          .json({ message: "Alimento não encontrado no banco de dados." });
+      }
+
+      const alimentoDB = result.rows[0];
+
+      // Calcula os macros a serem subtraídos com base na quantidade removida
+      userMongo.macroReal.Caloria -=
+        alimentoDB.Caloria * alimentoRemovido.quantidade;
+      userMongo.macroReal.Carboidrato -=
+        alimentoDB.Carboidrato * alimentoRemovido.quantidade;
+      userMongo.macroReal.Proteina -=
+        alimentoDB.Proteina * alimentoRemovido.quantidade;
+      userMongo.macroReal.acucar -=
+        alimentoDB.acucar * alimentoRemovido.quantidade;
+      userMongo.macroReal.gordura -=
+        alimentoDB.gordura * alimentoRemovido.quantidade;
+      userMongo.macroReal.sodio -=
+        alimentoDB.sodio * alimentoRemovido.quantidade;
+
+      // Salva a atualização no MongoDB
+      await userMongo.save();
+
+      return res.status(200).json({
+        message: "Alimento consumido excluído com sucesso.",
+        alimentoRemovido: alimentoRemovido,
+      });
+    } catch (error: any) {
+      console.error("Erro ao excluir alimento consumido:", error);
+      return res.status(500).json({
+        message: "Erro ao excluir alimento consumido.",
+        error: error.message,
+      });
+    }
+  }
 }
 
 export default new AlimentosController();
