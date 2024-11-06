@@ -2,16 +2,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createStackNavigator } from "@react-navigation/stack";
 import { useState, useEffect } from "react";
 import AguaScreen from "../screens/AguaScreen";
-import LoginScreen from "../screens/LoginScreen";
-import OnboardingScreen from "../screens/OnboardingScreen";
 import TabRoutes from "./tab.routes";
 import SelectAlimento from "../screens/SelectAlimento";
 import TabelaNutricional from "../screens/TabelaNutricional"; // Importando TabelaNutricional
 import ProfileScreen from "../screens/ProfileScreen";
 import EditProfile from "../screens/EditProfile";
 import TermsOfUse from "../screens/Terms";
-import { StatusBar, TouchableOpacity, Text } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { StatusBar } from "react-native";
 import ScannerScreen from "../screens/BarcodeScreen";
 import ProductDetailsScreen from "../screens/ProductScreen";
 import React from "react";
@@ -95,7 +92,7 @@ export default function StackRoutes() {
         name="SelectAlimento"
         component={SelectAlimento}
         options={{
-          headerShown: true,
+          headerShown: false,
           title: "Selecione o Alimento",
           headerStyle: {
             backgroundColor: "#BBDEB5", // Cor de fundo do cabeçalho
@@ -111,7 +108,7 @@ export default function StackRoutes() {
         name="TabelaNutricional"
         component={TabelaNutricional}
         options={{
-          headerShown: true,
+          headerShown: false,
           title: "Tabela Nutricional",
           headerStyle: {
             backgroundColor: "#BBDEB5", // Cor de fundo do cabeçalho
@@ -140,7 +137,7 @@ export default function StackRoutes() {
         name="AlimentosConsumidosScreen"
         component={AlimentosConsumidosScreen}
         options={{
-          headerShown: true,
+          headerShown: false,
           title: "Meus Consumos",
           headerStyle: {
             backgroundColor: "#BBDEB5", // Cor de fundo do cabeçalho
