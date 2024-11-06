@@ -34,12 +34,14 @@ interface ExternalProduct {
   };
 }
 
+
 export default function SelectAlimento() {
   const [searchTerm, setSearchTerm] = useState("");
   const [showFavorites, setShowFavorites] = useState(false);
   const [alimentos, setAlimentos] = useState<IAlimentos[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
   const [isSearching, setIsSearching] = useState(false);
+  const [isExternalSearch, setIsExternalSearch] = useState(false);//*
   const [page, setPage] = useState(1);
   const [loadingMore, setLoadingMore] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -64,8 +66,6 @@ export default function SelectAlimento() {
     };
     fetchData();
   }, [userId, searchTerm]);
-
-
 
   // Função para carregar o ID do usuário do AsyncStorage
   const loadUserFromStorage = async () => {
@@ -105,6 +105,7 @@ export default function SelectAlimento() {
     }
   };
 
+  // Função para buscar alimentos cadastrados no backend
   const buscarAlimentoCadastrado = async (): Promise<IAlimentos[]> => {
     try {
       const response = await axios.get(`${BACKEND_API_URL}/searchAlimentoByName/${userId}/${searchTerm}`)
@@ -144,36 +145,31 @@ export default function SelectAlimento() {
 
   // Função para combinar alimentos do backend e da API externa
   const fetchAndCombineAlimentos = async () => {
+    setIsSearching(true);
+    setIsExternalSearch(true);
     try {
-      setLoading(true);
-      setIsSearching(true)
-
       const databaseProducts = await buscarAlimentoCadastrado();
       const externalProducts = await searchExternalProducts();
-      setAlimentos([])
-      const combineProducts = [...databaseProducts, ...externalProducts]
-
-      setAlimentos(combineProducts);
+      setAlimentos([...databaseProducts, ...externalProducts]);
     } catch (error) {
       console.error("Error fetching alimentos:", error);
       Alert.alert("Error", "An error occurred while fetching alimentos. Please try again later.");
     } finally {
-      setLoading(false);
+      setIsSearching(false);
     }
   };
 
-
-
   // Lógica de alternância de favoritos
   const toggleFavorite = async (food: IAlimentos) => {
-    const updatedFavorites = alimentos.map((item) =>
-      item.idProduto === food.idProduto
-        ? { ...item, isFavorito: !item.isFavorito }
-        : item
-    );
-    setAlimentos(updatedFavorites);
+    // Verifica se é um alimento da busca interna antes de prosseguir
+    if (food.idProduto && userId) {
+      const updatedFavorites = alimentos.map((item) =>
+        item.idProduto === food.idProduto
+          ? { ...item, isFavorito: !item.isFavorito }
+          : item
+      );
+      setAlimentos(updatedFavorites);
 
-    if (userId) {
       try {
         await axios.post(`${BACKEND_API_URL}/addFavorito`, {
           idProduto: food.idProduto,
@@ -182,6 +178,7 @@ export default function SelectAlimento() {
         });
       } catch (error) {
         console.error("Erro ao adicionar favorito:", error);
+        Alert.alert("Erro", "Não foi possível atualizar o favorito.");
       }
     }
   };
@@ -190,7 +187,6 @@ export default function SelectAlimento() {
   const handleSelect = (product: IAlimentos) => {
     navigation.navigate("SelectRefeicao", { barcode: product.barcode });
   };
-
 
   // Filtrar alimentos com base na exibição (favoritos ou todos)
   const filteredAlimentos = showFavorites
@@ -215,9 +211,32 @@ export default function SelectAlimento() {
       setLoadingMore(false);
       setLoading(false)
     }
-
   };
 
+  // Função para renderizar cada item da lista de alimentos
+  const renderAlimentoItem = ({ item }: { item: IAlimentos }) => (
+    <TouchableOpacity
+      style={styles.item}
+      onPress={() => handleSelect(item)}
+    >
+      <Text style={styles.itemText}>{item.nomeProduto || ''}</Text>
+      {!isSearching && item.idProduto ? ( // Usando operador ternário para renderização condicional
+        <TouchableOpacity
+          onPress={() => toggleFavorite(item)}
+          activeOpacity={0.7}
+        >
+          <Ionicons
+            name={item.isFavorito ? "heart" : "heart-outline"}
+            size={24}
+            color={item.isFavorito ? "#FF9385" : "#0303032b"}
+          />
+        </TouchableOpacity>
+      ) : (
+        // Renderiza um espaço vazio quando não deve mostrar o coração
+        <View style={{ width: 24 }} />
+      )}
+    </TouchableOpacity>
+  );
 
   return (
     <View style={styles.container}>
@@ -232,7 +251,6 @@ export default function SelectAlimento() {
           <Ionicons name="search" size={24} color="#777" />
         </TouchableOpacity>
       </View>
-
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={[
@@ -271,33 +289,15 @@ export default function SelectAlimento() {
           </Text>
         </TouchableOpacity>
       </View>
-
-
       <FlatList
         data={filteredAlimentos}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.item}
-            onPress={() => handleSelect(item)}
-          >
-            <Text style={styles.itemText}>{item.nomeProduto}</Text>
-            <TouchableOpacity onPress={() => toggleFavorite(item)}>
-              <Ionicons
-                name={item.isFavorito ? "heart" : "heart-outline"}
-                size={24}
-                color={item.isFavorito ? "#FF9385" : "#0303032b"}
-              />
-            </TouchableOpacity>
-          </TouchableOpacity>
-        )}
+        renderItem={renderAlimentoItem}
         keyExtractor={(key) => Math.random().toString()}
         onEndReached={loadMoreAlimentos}
         onEndReachedThreshold={0.01}
-
       />
-      {loading &&
-        <ActivityIndicator size={"large"} color={"#0303032b"} />
-      }
+      {loading && <ActivityIndicator size="large" color="#0303032b" />}
     </View>
   );
 }
+//FD 05-11-2024
