@@ -11,7 +11,7 @@ Cada entrega será realizada a partir da criação de uma **tag** Observe a rela
 |:--:|:----------:|:-------------------|:-------------------:|:-------------------:|:-------------------:|
 | 01 | 17/09/2024 | ✔️ Entregue | [Ver release 1](https://github.com/DevsDomain/D-Nutri/releases/tag/1.0) | [Ver Sprint 1](/docs/SPRINT1(Jira).pdf) | [Ver BurnDown 1](/docs/Sprint1-BURNDOWN.png) |
 | 02 | 08/10/2024 | ✔️ Entregue | [Ver release 2](https://github.com/DevsDomain/D-Nutri/releases/tag/2.0) | [Ver Sprint 2](/docs/SPRINT2.pdf) | [Ver BurnDown 2](/docs/Sprint2-BURNDOWN.png) |
-| 03 | 08/11/2024 | 🧑🏻‍💻 Em desenvolvimento | [Ver release 3]() | [Ver Sprint 3](https://github.com/orgs/DevsDomain/projects/37) | [Ver BurnDown 3]() |
+| 03 | 08/11/2024 | 🧑🏻‍💻 Em desenvolvimento | [Ver release 3](https://github.com/DevsDomain/D-Nutri/releases/tag/3.0) | [Ver Sprint 3](https://github.com/orgs/DevsDomain/projects/37) | [Ver BurnDown 3]() |
 
 
 ## 🗃 Backlog do Produto
