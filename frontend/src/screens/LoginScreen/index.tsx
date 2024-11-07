@@ -37,12 +37,10 @@ export default function LoginScreen({ navigation }: Props) {
     try {
       const storedUser = await AsyncStorage.getItem("user");
       if (storedUser) {
-        const user: IuserLogin = JSON.parse(storedUser)
-        ContextUser?.setUser(user)
-        
-        // Navega para HomeScreen se o usuário estiver no AsyncStorage
+        const user: IuserLogin = JSON.parse(storedUser);
+        ContextUser?.setUser(user);
       }
-    } catch (error: any) {
+    } catch (error) {
       console.log("Necessário logar");
     }
   };
@@ -52,6 +50,12 @@ export default function LoginScreen({ navigation }: Props) {
   }, []);
 
   const handleLogin = async () => {
+    // Validação de campos obrigatórios
+    if (!email || !password) {
+      Alert.alert("Erro", "Por favor, preencha todos os campos.");
+      return;
+    }
+
     setLoading(true);
     try {
       const response = await axios.post(`${BACKEND_API_URL}/login`, {
@@ -59,16 +63,32 @@ export default function LoginScreen({ navigation }: Props) {
         password,
       });
       const { message, user } = response.data;
+
       if (message === "Login realizado com sucesso!") {
         await AsyncStorage.setItem("user", JSON.stringify(user));
         ContextUser?.setUser(user);
-
-
+       // navigation.navigate("Home");
+      } else if (message === "Usuário não encontrado") {
+        Alert.alert("Erro", "Esse e-mail não existe.");
+      } else if (message === "Senha incorreta") {
+        Alert.alert("Erro", "Senha incorreta.");
       } else {
         Alert.alert("Erro", "Credenciais inválidas.");
       }
     } catch (error: any) {
-      Alert.alert("Erro", "Não foi possível realizar o login.");
+      if (error.response) {
+        // Erros que vêm da API (ex.: usuário não encontrado, senha incorreta)
+        if (error.response.status === 404) {
+          Alert.alert("Erro", "Esse e-mail não existe.");
+        } else if (error.response.status === 401) {
+          Alert.alert("Erro", "Senha incorreta.");
+        } else {
+          Alert.alert("Erro", "Erro inesperado no login.");
+        }
+      } else {
+        // Erros de conexão
+        Alert.alert("Erro", "Não foi possível conectar ao servidor.");
+      }
       console.error("Erro de login:", error.message);
     } finally {
       setLoading(false);
@@ -96,18 +116,20 @@ export default function LoginScreen({ navigation }: Props) {
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Senha</Text>
-          <TextInput
-            style={styles.passwordInput}
-            placeholder="Digite sua senha"
-            secureTextEntry={!showPassword}
-            value={password}
-            onChangeText={setPassword}
-          />
-          <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeButton}>
-            <Icon name={showPassword ? "eye" : "eye-slash"} size={24} color="#13440c" />
-          </TouchableOpacity>
-        </View>
+  <Text style={styles.label}>Senha</Text>
+  <View style={styles.passwordWrapper}>
+    <TextInput
+      style={styles.passwordInput}
+      placeholder="Digite sua senha"
+      secureTextEntry={!showPassword}
+      value={password}
+      onChangeText={setPassword}
+    />
+    <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeButton}>
+      <Icon name={showPassword ? "eye" : "eye-slash"} size={24} color="#13440c" />
+    </TouchableOpacity>
+  </View>
+</View>
 
         <TouchableOpacity
           style={styles.button}
@@ -196,10 +218,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#fff",
     backgroundColor: "white",
+    flex: 1,
   },
   eyeButton: {
     alignSelf: "flex-start",
     marginTop: 5,
+    position: "absolute",
+    right: 10,
+    padding: 10,
   },
   button: {
     width: "100%",
@@ -232,6 +258,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 20,
   },
+  passwordWrapper: {
+    position: "relative",
+    width: "100%",
+    borderWidth: 1,
+    borderColor: "#fff",
+    borderRadius: 5,
+    backgroundColor: "white",
+    flexDirection: "row",
+    alignItems: "center",
+  }
 });
-
-
