@@ -28,13 +28,11 @@ class AlimentosController {
     try {
       console.log("RECEBIDO");
       const { barcode } = req.params;
-      console.log(barcode, "BARCODE BACK");
 
       const alimentos = await pg.query(
         `SELECT * FROM "Alimentos" WHERE "barcode" = $1`,
         [barcode]
       );
-      console.log(alimentos.rows);
       if (alimentos.rows.length > 0) {
         return res.status(201).json(alimentos.rows[0]);
       } else {
@@ -334,7 +332,6 @@ FROM public."Alimentos" where "nomeProduto" is not null order by "nomeProduto" ;
 
   async alimentosConsumidos(req: Request, res: Response): Promise<Response> {
     try {
-      console.log(req.body, "BODY");
       const { idUser, date } = req.body;
 
       const userMG = await User.find({ idUser: idUser });
@@ -401,7 +398,6 @@ FROM public."Alimentos" where "nomeProduto" is not null order by "nomeProduto" ;
 
       const values = [id]; // Passando os parâmetros de forma segura
       const alimentosFavoritos = await pg.query(query, values);
-      console.log(alimentosFavoritos);
 
       if (alimentosFavoritos.rows.length === 0) {
         return res
@@ -485,71 +481,98 @@ FROM public."Alimentos" where "nomeProduto" is not null order by "nomeProduto" ;
     req: Request,
     res: Response
   ): Promise<Response> {
-    const { idUser, idProduto } = req.body;
-
+    const { idUser, idProduto, date } = req.body;
     try {
-      // Busca o usuário no MongoDB
-      const userMongo = await User.findOne({ idUser: idUser });
+      const userPG = await User.find({ idUser: idUser });
 
-      if (!userMongo) {
-        return res.status(404).json({ message: "Usuário não encontrado." });
+
+      if (!userPG) {
+        return res
+          .status(400)
+          .json({ message: "Erro ao buscar usuários no mongo!" });
       }
+
+      let usuarioEncontrado: any | string;
+
+      for (const usersPG of userPG) {
+        let buscandoUsuario = await Data.findOne({
+          data_atual: date,
+          usuario: usersPG?.id,
+        });
+
+        if (buscandoUsuario) {
+          usuarioEncontrado = buscandoUsuario;
+        }
+      }
+
+      if (!usuarioEncontrado) {
+        return res
+          .status(400)
+          .json({ message: "Erro ao buscar usuário no dashboardController!" });
+      }
+
+      const userMongo = await User.findById(usuarioEncontrado.usuario)
+
 
       // Filtra o alimento consumido que possui o idProduto informado
-      const alimentoIndex = userMongo.consumoAlimentos.findIndex(
-        (alimento) => alimento.idAlimento === parseInt(idProduto)
-      );
+      if (userMongo) {
+        const alimentoIndex = userMongo.consumoAlimentos.findIndex(
+          (alimento) => alimento.idAlimento === parseInt(idProduto)
+        );
 
-      if (alimentoIndex === -1) {
-        return res
-          .status(404)
-          .json({ message: "Alimento não encontrado nos consumidos." });
-      }
+        if (alimentoIndex === -1) {
+          return res
+            .status(400)
+            .json({ message: "Alimento não encontrado nos consumidos." });
+        }
 
-      // Remove o alimento consumido da lista
-      const [alimentoRemovido] = userMongo.consumoAlimentos.splice(
-        alimentoIndex,
-        1
-      );
+        // Remove o alimento consumido da lista
+        const [alimentoRemovido] = userMongo.consumoAlimentos.splice(
+          alimentoIndex,
+          1
+        );
 
-      // Busca o alimento específico no banco de dados Postgres
-      const result = await pg.query(
-        `SELECT "Proteina", "Caloria", "Carboidrato", gordura, sodio, acucar 
+
+        // Busca o alimento específico no banco de dados Postgres
+        const result = await pg.query(
+          `SELECT "Proteina", "Caloria", "Carboidrato", gordura, sodio, acucar 
          FROM public."Alimentos" WHERE "idProduto" = $1`,
-        [idProduto]
-      );
+          [idProduto]
+        );
 
-      if (!result.rows[0]) {
-        return res
-          .status(404)
-          .json({ message: "Alimento não encontrado no banco de dados." });
+        if (!result.rows[0]) {
+          return res
+            .status(400)
+            .json({ message: "Alimento não encontrado no banco de dados." });
+        }
+
+        const alimentoDB = result.rows[0];
+
+        // Calcula os macros a serem subtraídos com base na quantidade removida
+        userMongo.macroReal.Caloria -=
+          alimentoDB.Caloria * alimentoRemovido.quantidade;
+        userMongo.macroReal.Carboidrato -=
+          alimentoDB.Carboidrato * alimentoRemovido.quantidade;
+        userMongo.macroReal.Proteina -=
+          alimentoDB.Proteina * alimentoRemovido.quantidade;
+        userMongo.macroReal.acucar -=
+          alimentoDB.acucar * alimentoRemovido.quantidade;
+        userMongo.macroReal.gordura -=
+          alimentoDB.gordura * alimentoRemovido.quantidade;
+        userMongo.macroReal.sodio -=
+          alimentoDB.sodio * alimentoRemovido.quantidade;
+
+        // Salva a atualização no MongoDB
+        await userMongo.save();
+
+        return res.status(200).json({
+          message: "Alimento consumido excluído com sucesso.",
+          alimentoRemovido: alimentoRemovido,
+        });
       }
-
-      const alimentoDB = result.rows[0];
-
-      // Calcula os macros a serem subtraídos com base na quantidade removida
-      userMongo.macroReal.Caloria -=
-        alimentoDB.Caloria * alimentoRemovido.quantidade;
-      userMongo.macroReal.Carboidrato -=
-        alimentoDB.Carboidrato * alimentoRemovido.quantidade;
-      userMongo.macroReal.Proteina -=
-        alimentoDB.Proteina * alimentoRemovido.quantidade;
-      userMongo.macroReal.acucar -=
-        alimentoDB.acucar * alimentoRemovido.quantidade;
-      userMongo.macroReal.gordura -=
-        alimentoDB.gordura * alimentoRemovido.quantidade;
-      userMongo.macroReal.sodio -=
-        alimentoDB.sodio * alimentoRemovido.quantidade;
-
-      // Salva a atualização no MongoDB
-      await userMongo.save();
-
-      return res.status(200).json({
-        message: "Alimento consumido excluído com sucesso.",
-        alimentoRemovido: alimentoRemovido,
-      });
+      return res.status(400)
     } catch (error: any) {
-      console.error("Erro ao excluir alimento consumido:", error);
+      console.error("Erro ao excluir alimento consumido:", error.message);
       return res.status(500).json({
         message: "Erro ao excluir alimento consumido.",
         error: error.message,
@@ -557,5 +580,6 @@ FROM public."Alimentos" where "nomeProduto" is not null order by "nomeProduto" ;
     }
   }
 }
+
 
 export default new AlimentosController();
