@@ -169,7 +169,7 @@ const Main = ({ navigation }: Props) => {
       setLoading(false);
 
     } catch (error: any) {
-      console.error("ERROR:", error.message);
+      console.log("ERROR:", error.message);
     }
   };
 

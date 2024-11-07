@@ -76,7 +76,7 @@ export default function ProductDetailsScreenPG() {
           acucar: productData.nutriments.sugars_100g?.toString() || "0",
           tiporefeicao: meal,
           quantidade: quantity.toString(),
-          isFavorito:false
+          isFavorito: false
         });
       } else {
         Alert.alert("Erro", "Produto não encontrado.");
@@ -91,7 +91,7 @@ export default function ProductDetailsScreenPG() {
     if (barcode) {
       fetchProductFromBackend();
     }
-  }, [barcode,dates]);
+  }, [barcode, dates]);
 
   const calculateNutrients = (nutrientPer100g: number | undefined) => {
     if (nutrientPer100g === undefined) return "0.00";
@@ -107,7 +107,7 @@ export default function ProductDetailsScreenPG() {
 
     if (response.status === 201) {
       Alert.alert("Tudo certo!", "Alimento adicionado a dieta do dia.");
-      navigation.navigate("SelectAlimento");
+      navigation.navigate("Dashboard");
     }
   };
 
@@ -153,14 +153,14 @@ export default function ProductDetailsScreenPG() {
           addAlimentoToUserDiary();
           return;
         } catch (error) {
-          console.error("Erro ao registrar o produto:", error);
+          console.log("Erro ao registrar o produto:", error);
           Alert.alert("Erro", "Falha ao registrar o produto.");
         }
       }
 
       addAlimentoToUserDiary();
     } catch (error) {
-      console.error("Erro ao buscar produto", error);
+      console.log("Erro ao buscar produto", error);
     }
   };
 

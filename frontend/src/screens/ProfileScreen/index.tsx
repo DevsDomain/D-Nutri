@@ -93,19 +93,7 @@ export default function ProfileScreen({ navigation }: Props) {
     }
   }, []);
 
-  const updateStorage = async () => {
-    const myUser = {
-      id: userLogin?.id,
-      nomeUsuario: nomeUsuario,
-      email: userLogin?.email,
-    };
-    try {
-      await AsyncStorage.setItem("user", JSON.stringify(myUser));
-      console.log("Dados do usuário atualizados no AsyncStorage:", myUser);
-    } catch (error) {
-      console.error("Erro ao atualizar AsyncStorage:", error);
-    }
-  };
+ 
   // Fim da função para carregar os dados do usuário
 
   const passwordReset = () => {
@@ -146,12 +134,10 @@ export default function ProfileScreen({ navigation }: Props) {
       console.log("Resposta recebida:", response);
 
       const data = await response.json();
-      updateStorage();
 
       console.log("Dados recebidos:", data);
 
       if (response.ok) {
-        updateStorage();
         Alert.alert("Sucesso", data.message);
       } else {
         Alert.alert("Erro", data.message);
