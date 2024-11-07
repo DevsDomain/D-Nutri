@@ -20,8 +20,7 @@ class LoginController {
 
       // Verificar se o usuário existe
       if (user.rows.length === 0) {
-        console.log("USUÁRIO NÃO ENCONTRADO!")
-        return res.status(404).json({ message: "Usuário não encontrado" });
+        return res.status(404).json({ message: "E-mail não existe" });
       }
 
       const foundUser = user.rows[0];

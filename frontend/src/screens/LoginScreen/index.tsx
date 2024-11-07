@@ -31,7 +31,7 @@ export default function LoginScreen({ navigation }: Props) {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const ContextUser = useContext(UserContext);
-  
+
 
   const loadUserFromStorage = async () => {
     try {
@@ -39,7 +39,7 @@ export default function LoginScreen({ navigation }: Props) {
       if (storedUser) {
         const user: IuserLogin = JSON.parse(storedUser)
         ContextUser?.setUser(user)
-        
+
         // Navega para HomeScreen se o usuário estiver no AsyncStorage
       }
     } catch (error: any) {
@@ -62,13 +62,20 @@ export default function LoginScreen({ navigation }: Props) {
       if (message === "Login realizado com sucesso!") {
         await AsyncStorage.setItem("user", JSON.stringify(user));
         ContextUser?.setUser(user);
-
-
+        // Navegar para a página inicial ou outra página após o login
+        navigation.navigate("Home");  // Substitua "Home" pela sua rota inicial
       } else {
         Alert.alert("Erro", "Credenciais inválidas.");
       }
     } catch (error: any) {
-      Alert.alert("Erro", "Não foi possível realizar o login.");
+      const errorMessage = error.response?.data?.message || "Não foi possível realizar o login.";
+      if (errorMessage === "E-mail não existe") {
+        Alert.alert("Erro", "E-mail não encontrado. Por favor, verifique e tente novamente.");
+      } else if (errorMessage === "Senha incorreta") {
+        Alert.alert("Erro", "Senha incorreta. Por favor, verifique e tente novamente.");
+      } else {
+        Alert.alert("Erro", errorMessage);
+      }
       console.error("Erro de login:", error.message);
     } finally {
       setLoading(false);
