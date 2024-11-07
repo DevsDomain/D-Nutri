@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
-  ScrollView,
   Alert,
   ActivityIndicator,
 } from "react-native";
@@ -16,7 +15,8 @@ import axios from "axios";
 import { BACKEND_API_URL } from "@env";
 import { IAlimentos } from "../../types/AlimentosPG";
 import { FlatList } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { UserContext } from "../../context/userContext";
+
 
 // Interface para os produtos externos (API OpenFoodFacts)
 interface ExternalProduct {
@@ -39,7 +39,6 @@ export default function SelectAlimento() {
   const [searchTerm, setSearchTerm] = useState("");
   const [showFavorites, setShowFavorites] = useState(false);
   const [alimentos, setAlimentos] = useState<IAlimentos[]>([]);
-  const [userId, setUserId] = useState<string | null>(null);
   const [isSearching, setIsSearching] = useState(false);
   const [isExternalSearch, setIsExternalSearch] = useState(false);//*
   const [page, setPage] = useState(1);
@@ -47,17 +46,12 @@ export default function SelectAlimento() {
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(25)
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const { user } = useContext(UserContext)!;
 
-  useEffect(() => {
-    const initializeData = async () => {
-      await loadUserFromStorage();
-    };
-    initializeData();
-  }, []);
-
+  // Função para buscar alimentos cadastrados no backend
   useEffect(() => {
     const fetchData = async () => {
-      if (userId && searchTerm.length === 0) {
+      if (user?.id && searchTerm.length === 0) {
         const data = await fetchAlimentosCadastrados(quantity);
         setAlimentos(data);
         setLoading(false)
@@ -65,26 +59,14 @@ export default function SelectAlimento() {
       }
     };
     fetchData();
-  }, [userId, searchTerm]);
+  }, [user?.id, searchTerm]);
 
-  // Função para carregar o ID do usuário do AsyncStorage
-  const loadUserFromStorage = async () => {
-    try {
-      const storedUser = await AsyncStorage.getItem("user");
-      if (storedUser) {
-        const id = JSON.parse(storedUser).id;
-        setUserId(id);
-      }
-    } catch (error) {
-      console.log("Erro ao obter dados do AsyncStorage:", error);
-    }
-  };
 
   // Função para buscar alimentos cadastrados no backend
   const fetchAlimentosCadastrados = async (quantity: number): Promise<IAlimentos[]> => {
     setLoading(true)
     try {
-      const response = await axios.get(`${BACKEND_API_URL}/alimentos/${userId}/${quantity}`);
+      const response = await axios.get(`${BACKEND_API_URL}/alimentos/${user?.id}/${quantity}`);
       return response.data.map((item: IAlimentos) => ({
         Caloria: parseFloat(item.Caloria),
         Carboidrato: parseFloat(item.Carboidrato),
@@ -108,7 +90,7 @@ export default function SelectAlimento() {
   // Função para buscar alimentos cadastrados no backend
   const buscarAlimentoCadastrado = async (): Promise<IAlimentos[]> => {
     try {
-      const response = await axios.get(`${BACKEND_API_URL}/searchAlimentoByName/${userId}/${searchTerm}`)
+      const response = await axios.get(`${BACKEND_API_URL}/searchAlimentoByName/${user?.id}/${searchTerm}`)
       return response.data
     } catch (error: any) {
       console.log("Não encontrou no banco", error.message)
@@ -162,7 +144,7 @@ export default function SelectAlimento() {
   // Lógica de alternância de favoritos
   const toggleFavorite = async (food: IAlimentos) => {
     // Verifica se é um alimento da busca interna antes de prosseguir
-    if (food.idProduto && userId) {
+    if (food.idProduto && user?.id) {
       const updatedFavorites = alimentos.map((item) =>
         item.idProduto === food.idProduto
           ? { ...item, isFavorito: !item.isFavorito }
@@ -173,7 +155,7 @@ export default function SelectAlimento() {
       try {
         await axios.post(`${BACKEND_API_URL}/addFavorito`, {
           idProduto: food.idProduto,
-          idUsuario: userId,
+          idUsuario: user.id,
           isFavorito: !food.isFavorito,
         });
       } catch (error) {
@@ -300,4 +282,4 @@ export default function SelectAlimento() {
     </View>
   );
 }
-//FD 05-11-2024
+//FD 06-11-2024
