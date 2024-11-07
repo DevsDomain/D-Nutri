@@ -378,6 +378,8 @@ FROM public."Alimentos" where "nomeProduto" is not null order by "nomeProduto" ;
           }
         }
 
+        console.log(alimentosConsumidosArray, "ALIMENTOS CONSUMIDOS");
+
         return res.status(202).json(alimentosConsumidosArray);
       }
     } catch (error: any) {
@@ -491,6 +493,9 @@ FROM public."Alimentos" where "nomeProduto" is not null order by "nomeProduto" ;
       // Busca o usuário no MongoDB
       const userMongo = await User.findOne({ idUser: idUser });
 
+      console.log(userMongo, "USER MONGO");
+      console.log(idProduto, "ID PRODUTO");
+      console.log(userMongo?.consumoAlimentos, "CONSUMO ALIMENTOS");
       if (!userMongo) {
         return res.status(404).json({ message: "Usuário não encontrado." });
       }

@@ -84,6 +84,9 @@ export default function AlimentosConsumidosScreen({ navigation }: Props) {
 
   const deleteAlimento = async (idProduto: string) => {
     try {
+      console.log("idProduto", idProduto);
+      console.log("dates", dates);
+      console.log("user?.id", user?.id);
       await axios.delete(`${BACKEND_API_URL}/deleteConsumido`, {
         data: {
           idUser: user?.id,
