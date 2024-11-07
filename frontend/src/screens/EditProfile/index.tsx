@@ -35,7 +35,7 @@ const EditProfile: React.FC = () => {
     const setUserContexto = userContexto?.setUser
 
 
-
+    // Carrega o usuário do AsyncStorage
     const loadUserFromStorage = async () => {
         try {
             const storedUser = await AsyncStorage.getItem("user");
@@ -48,6 +48,7 @@ const EditProfile: React.FC = () => {
         }
     };
 
+    // Carrega os dados do usuário
     const loadUser = async (id: number) => {
         try {
             const response = await axios.get(`${BACKEND_API_URL}/users/${id}`);
@@ -65,6 +66,7 @@ const EditProfile: React.FC = () => {
         }
     };
 
+    // Carrega o usuário do AsyncStorage ao carregar a tela
     useEffect(() => {
         const fetchData = async () => {
             await loadUserFromStorage();
@@ -80,6 +82,7 @@ const EditProfile: React.FC = () => {
         }
     }, [userLogin]);
 
+    // Atualiza o AsyncStorage com os novos dados do usuário
     const updateStorage = async () => {
         if (userData && userLogin) {
             try {
@@ -101,6 +104,8 @@ const EditProfile: React.FC = () => {
             }
         }
     }
+
+    // Salva as alterações no perfil
     const handleSaveChanges = async () => {
         try {
             const url = `${BACKEND_API_URL}/edit-profile/${userLogin?.id}`;
@@ -229,3 +234,4 @@ const EditProfile: React.FC = () => {
 };
 
 export default EditProfile;
+//07/11/2024
