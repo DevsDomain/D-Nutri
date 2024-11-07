@@ -497,7 +497,7 @@ FROM public."Alimentos" where "nomeProduto" is not null order by "nomeProduto" ;
 
       // Filtra o alimento consumido que possui o idProduto informado
       const alimentoIndex = userMongo.consumoAlimentos.findIndex(
-        (alimento) => alimento.idAlimento === idProduto
+        (alimento) => alimento.idAlimento === parseInt(idProduto)
       );
 
       if (alimentoIndex === -1) {

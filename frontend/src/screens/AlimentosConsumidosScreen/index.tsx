@@ -91,13 +91,14 @@ export default function AlimentosConsumidosScreen({ navigation }: Props) {
         data: {
           idUser: user?.id,
           idProduto: idProduto,
+          date: dates,
         },
       });
       Alert.alert("Sucesso", "Alimento consumido excluído com sucesso.");
       fetchAlimentos(); // Atualiza a lista de alimentos após exclusão
-    } catch (error) {
-      console.error("Erro ao excluir alimento consumido:", error);
-      Alert.alert("Erro", "Não foi possível excluir o alimento consumido.");
+    } catch (error: any) {
+      console.error("Erro ao excluir alimento consumido:", error.message);
+      //      Alert.alert("Erro", "Não foi possível excluir o alimento consumido.");
     }
   };
 
