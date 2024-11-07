@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import styles from "./styles";
 import axios from "axios";
 import { BACKEND_API_URL } from "@env";
-import { useNavigation } from '@react-navigation/native'; // Importa o hook de navegação
+import { useNavigation } from '@react-navigation/native';
 import { UserContext } from "../../context/userContext";
 import { useSelector } from "react-redux";
 import { selectDate } from "../../dateSlice";
@@ -42,7 +42,7 @@ export default function Agua() {
         ]);
       } catch (error) {
         // Log error and show an alert if the request fails
-        console.error("Erro ao salvar a quantidade de água:", error);
+        console.log("Erro ao salvar a quantidade de água:", error);
         Alert.alert("Erro", "Não foi possível salvar a quantidade de água.");
       }
     } else {

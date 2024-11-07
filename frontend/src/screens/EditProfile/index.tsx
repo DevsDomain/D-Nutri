@@ -44,7 +44,7 @@ const EditProfile: React.FC = () => {
                 console.log("Usuário do AsyncStorage:", storedUser);
             }
         } catch (error) {
-            console.error("Erro ao obter dados do AsyncStorage:", error);
+            console.log("Erro ao obter dados do AsyncStorage:", error);
         }
     };
 
@@ -97,7 +97,7 @@ const EditProfile: React.FC = () => {
             }
 
             catch (error) {
-                console.error("Erro ao atualizar AsyncStorage:", error);
+                console.log("Erro ao atualizar AsyncStorage:", error);
             }
         }
     }
@@ -125,8 +125,7 @@ const EditProfile: React.FC = () => {
             if (response.ok) {
                 await updateStorage();
                 Alert.alert('Sucesso', data.message);
-                navigation.goBack();
-                // Salva e volta para ProfileScreen
+                navigation.navigate('Dashboard'); // Salva e volta para Dashboard
             } else {
                 Alert.alert('Erro', data.message);
             }

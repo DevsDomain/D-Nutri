@@ -9,7 +9,7 @@ export interface RootStackParamList extends ParamListBase {
   Settings: undefined;
   Login: undefined;
   Cadastro: undefined;
-  Main: {user:IuserLogin};
+  Main: undefined; //era {user: IuserLogin} mas não é mais necessário
   Onboarding: undefined;
   Agua: undefined;
   Alimentacao: undefined;
