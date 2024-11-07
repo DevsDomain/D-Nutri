@@ -7,7 +7,7 @@ import {
   Alert,
   ActivityIndicator,
 } from "react-native";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import styles from "../SelectAlimento/styles";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../../types";
@@ -16,7 +16,6 @@ import { BACKEND_API_URL } from "@env";
 import { IAlimentos } from "../../types/AlimentosPG";
 import { FlatList } from "react-native";
 import { UserContext } from "../../context/userContext";
-
 
 // Interface para os produtos externos (API OpenFoodFacts)
 interface ExternalProduct {
@@ -34,17 +33,16 @@ interface ExternalProduct {
   };
 }
 
-
 export default function SelectAlimento() {
   const [searchTerm, setSearchTerm] = useState("");
   const [showFavorites, setShowFavorites] = useState(false);
   const [alimentos, setAlimentos] = useState<IAlimentos[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [isExternalSearch, setIsExternalSearch] = useState(false);//*
+  const [isExternalSearch, setIsExternalSearch] = useState(false); //*
   const [page, setPage] = useState(1);
   const [loadingMore, setLoadingMore] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [quantity, setQuantity] = useState(25)
+  const [quantity, setQuantity] = useState(25);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const { user } = useContext(UserContext)!;
 
@@ -54,19 +52,21 @@ export default function SelectAlimento() {
       if (user?.id && searchTerm.length === 0) {
         const data = await fetchAlimentosCadastrados(quantity);
         setAlimentos(data);
-        setLoading(false)
-
+        setLoading(false);
       }
     };
     fetchData();
   }, [user?.id, searchTerm]);
 
-
   // Função para buscar alimentos cadastrados no backend
-  const fetchAlimentosCadastrados = async (quantity: number): Promise<IAlimentos[]> => {
-    setLoading(true)
+  const fetchAlimentosCadastrados = async (
+    quantity: number
+  ): Promise<IAlimentos[]> => {
+    setLoading(true);
     try {
-      const response = await axios.get(`${BACKEND_API_URL}/alimentos/${user?.id}/${quantity}`);
+      const response = await axios.get(
+        `${BACKEND_API_URL}/alimentos/${user?.id}/${quantity}`
+      );
       return response.data.map((item: IAlimentos) => ({
         Caloria: parseFloat(item.Caloria),
         Carboidrato: parseFloat(item.Carboidrato),
@@ -90,13 +90,15 @@ export default function SelectAlimento() {
   // Função para buscar alimentos cadastrados no backend
   const buscarAlimentoCadastrado = async (): Promise<IAlimentos[]> => {
     try {
-      const response = await axios.get(`${BACKEND_API_URL}/searchAlimentoByName/${user?.id}/${searchTerm}`)
-      return response.data
+      const response = await axios.get(
+        `${BACKEND_API_URL}/searchAlimentoByName/${user?.id}/${searchTerm}`
+      );
+      return response.data;
     } catch (error: any) {
-      console.log("Não encontrou no banco", error.message)
-      return []
+      console.log("Não encontrou no banco", error.message);
+      return [];
     }
-  }
+  };
 
   // Função para buscar produtos da API OpenFoodFacts
   const searchExternalProducts = async (): Promise<IAlimentos[]> => {
@@ -119,7 +121,7 @@ export default function SelectAlimento() {
         isFavorito: false,
       }));
     } catch (error) {
-      console.error("Erro ao buscar produtos externos:", error);
+      console.log("Erro ao buscar produtos externos:", error);
       Alert.alert("Erro", "Não foi possível buscar os produtos.");
       return [];
     }
@@ -134,8 +136,11 @@ export default function SelectAlimento() {
       const externalProducts = await searchExternalProducts();
       setAlimentos([...databaseProducts, ...externalProducts]);
     } catch (error) {
-      console.error("Error fetching alimentos:", error);
-      Alert.alert("Error", "An error occurred while fetching alimentos. Please try again later.");
+      console.log("Error fetching alimentos:", error);
+      Alert.alert(
+        "Error",
+        "An error occurred while fetching alimentos. Please try again later."
+      );
     } finally {
       setIsSearching(false);
     }
@@ -159,7 +164,7 @@ export default function SelectAlimento() {
           isFavorito: !food.isFavorito,
         });
       } catch (error) {
-        console.error("Erro ao adicionar favorito:", error);
+        console.log("Erro ao adicionar favorito:", error);
         Alert.alert("Erro", "Não foi possível atualizar o favorito.");
       }
     }
@@ -180,7 +185,7 @@ export default function SelectAlimento() {
       if (quantity > 100 && alimentos.length > 45) {
         return false;
       }
-      setLoading(true)
+      setLoading(true);
       setLoadingMore(true);
       const newQuantity = quantity + 10;
       setQuantity(newQuantity);
@@ -191,17 +196,14 @@ export default function SelectAlimento() {
       // Atualizar a lista de alimentos com o novo conjunto carregado
       setAlimentos(moreAlimentos);
       setLoadingMore(false);
-      setLoading(false)
+      setLoading(false);
     }
   };
 
   // Função para renderizar cada item da lista de alimentos
   const renderAlimentoItem = ({ item }: { item: IAlimentos }) => (
-    <TouchableOpacity
-      style={styles.item}
-      onPress={() => handleSelect(item)}
-    >
-      <Text style={styles.itemText}>{item.nomeProduto || ''}</Text>
+    <TouchableOpacity style={styles.item} onPress={() => handleSelect(item)}>
+      <Text style={styles.itemText}>{item.nomeProduto || ""}</Text>
       {!isSearching && item.idProduto ? ( // Usando operador ternário para renderização condicional
         <TouchableOpacity
           onPress={() => toggleFavorite(item)}

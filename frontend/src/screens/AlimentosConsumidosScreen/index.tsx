@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useContext, useCallback } from "react";
+import React, { useState, useContext, useCallback } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   ScrollView,
-  StyleSheet,
   SafeAreaView,
   ActivityIndicator,
   Alert,
@@ -12,9 +11,7 @@ import {
 import axios from "axios";
 import { BACKEND_API_URL } from "@env";
 import { IAlimentos } from "../../types/AlimentosPG";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { IuserLogin } from "../../types/user";
-import { useFocusEffect, useNavigation } from "@react-navigation/native"; // Importação da navegação
+import { useFocusEffect } from "@react-navigation/native"; // Importação da navegação
 import { RootStackParamList } from "../../../types";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useSelector } from "react-redux";
