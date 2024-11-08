@@ -10,7 +10,6 @@ import EditProfile from "../screens/EditProfile";
 import TermsOfUse from "../screens/Terms";
 import { StatusBar } from "react-native";
 import ScannerScreen from "../screens/BarcodeScreen";
-import ProductDetailsScreen from "../screens/ProductScreen";
 import React from "react";
 import ProductDetailsScreenPG from "../screens/ProductPG";
 import AlimentosConsumidosScreen from "../screens/AlimentosConsumidosScreen";
@@ -184,7 +183,6 @@ export default function StackRoutes() {
 
 
       <Stack.Screen name="scanner" component={ScannerScreen} />
-      <Stack.Screen name="ProductDetails" component={ProductDetailsScreen} />
       <Stack.Screen name="ProductDetailsScreenPG" component={ProductDetailsScreenPG} />
 
       <Stack.Screen name="Terms" component={TermsOfUse} />
