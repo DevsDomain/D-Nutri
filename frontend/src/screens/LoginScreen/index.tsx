@@ -61,9 +61,8 @@ export default function LoginScreen({ navigation }: Props) {
       const { message, user } = response.data;
       if (message === "Login realizado com sucesso!") {
         await AsyncStorage.setItem("user", JSON.stringify(user));
-        ContextUser?.setUser(user);
         // Navegar para a página inicial ou outra página após o login
-        navigation.navigate("Home");  // Substitua "Home" pela sua rota inicial
+        ContextUser?.setUser(user);
       } else {
         Alert.alert("Erro", "Credenciais inválidas.");
       }
@@ -76,7 +75,7 @@ export default function LoginScreen({ navigation }: Props) {
       } else {
         Alert.alert("Erro", errorMessage);
       }
-      console.error("Erro de login:", error.message);
+      console.log("Erro de login:", error.message);
     } finally {
       setLoading(false);
     }
