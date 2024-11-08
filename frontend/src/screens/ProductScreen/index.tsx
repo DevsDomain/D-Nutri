@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import { View, Text, TouchableOpacity, Alert } from "react-native";
 import axios from "axios";
 import { useRoute } from "@react-navigation/native";
 import { BACKEND_API_URL } from "@env";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import styles from "./styles";
 
 interface ProductDetails {
   product_name: string;
@@ -61,7 +62,7 @@ export default function ProductDetailsScreen() {
         });
       } catch (error) {
         // Tratamento de erro com alerta e log no console
-        console.error("Erro ao buscar dados do produto:", error);
+        console.log("Erro ao buscar dados do produto:", error);
         Alert.alert("Erro", "Falha ao buscar dados do produto.");
       }
     };
@@ -89,11 +90,11 @@ export default function ProductDetailsScreen() {
         sodio: calculateNutrients(product.nutriments.sodium_100g),
         acucar: calculateNutrients(product.nutriments.sugars_100g),
       });
-      console.log("Produto registrado com sucesso:", response.data);
+      //console.log("Produto registrado com sucesso:", response.data);
 
       Alert.alert("Sucesso", "Produto registrado com sucesso!");
     } catch (error) {
-      console.error("Erro ao registrar o produto:", error);
+      console.log("Erro ao registrar o produto:", error);
       Alert.alert("Erro", "Falha ao registrar o produto.");
     }
   };
@@ -194,76 +195,3 @@ export default function ProductDetailsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#EAF4E3",
-    padding: 20,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    color: "#4C956C",
-  },
-  brands: {
-    fontSize: 18,
-    marginBottom: 20,
-    color: "#4C956C",
-    fontStyle: "italic",
-  },
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    width: "100%",
-    marginBottom: 20,
-  },
-  column: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  circleButton: {
-    padding: 10,
-  },
-
-  valueText: {
-    fontSize: 16,
-    marginVertical: 10,
-    color: "#4C956C",
-  },
-  table: {
-    width: "100%",
-    backgroundColor: "#FFFFFF",
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 20,
-  },
-  rowTable: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingVertical: 5,
-    borderBottomWidth: 1,
-    borderBottomColor: "#E5E5E5",
-  },
-  headerText: {
-    fontWeight: "bold",
-    color: "#4C956C",
-  },
-  tableText: {
-    color: "#4C956C",
-  },
-  registerButton: {
-    backgroundColor: "#4C956C",
-    padding: 15,
-    borderRadius: 10,
-    width: "100%",
-    alignItems: "center",
-  },
-  registerButtonText: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-});

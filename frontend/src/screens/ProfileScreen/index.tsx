@@ -56,7 +56,7 @@ export default function ProfileScreen({ navigation }: Props) {
       if (storedUser) {
         const parsedUser = JSON.parse(storedUser);
         setUserLogin(parsedUser);
-        console.log("Usuário do AsyncStorage:", parsedUser);
+        //console.log("Usuário do AsyncStorage:", parsedUser);
 
         // Chamar loadUser diretamente após carregar o usuário do AsyncStorage
         if (parsedUser?.id) {
@@ -64,14 +64,14 @@ export default function ProfileScreen({ navigation }: Props) {
         }
       }
     } catch (error) {
-      console.error("Erro ao obter dados do AsyncStorage:", error);
+      console.log("Erro ao obter dados do AsyncStorage:", error);
     }
   };
 
   // Função para carregar os dados do usuário
   const loadUser = async (id: number) => {
     try {
-      console.log("Iniciando a função loadUser com ID:", id);
+      //console.log("Iniciando a função loadUser com ID:", id);
       const response = await axios.get(`${BACKEND_API_URL}/users/${id}`);
       const userData = response.data[0];
 
@@ -79,7 +79,7 @@ export default function ProfileScreen({ navigation }: Props) {
         setUserData(userData.nomeUsuario);
         setPassword(userData.password);
         setUser(userData); // Definir o usuário carregado
-        console.log("Dados do usuário carregados:", userData);
+        //console.log("Dados do usuário carregados:", userData);
       }
     } catch (error) {
       console.log("Erro ao buscar dados do usuário:", error);
@@ -101,9 +101,9 @@ export default function ProfileScreen({ navigation }: Props) {
     };
     try {
       await AsyncStorage.setItem("user", JSON.stringify(myUser));
-      console.log("Dados do usuário atualizados no AsyncStorage:", myUser);
+      //console.log("Dados do usuário atualizados no AsyncStorage:", myUser);
     } catch (error) {
-      console.error("Erro ao atualizar AsyncStorage:", error);
+      console.log("Erro ao atualizar AsyncStorage:", error);
     }
   };
   // Fim da função para carregar os dados do usuário
@@ -116,24 +116,24 @@ export default function ProfileScreen({ navigation }: Props) {
 
   const handlePasswordChange = async () => {
     try {
-      console.log("Iniciando a função handlePasswordChange");
+      //console.log("Iniciando a função handlePasswordChange");
 
       const userId = user?.id || userLogin?.id; // Usa o ID de userLogin se user.id estiver indefinido
 
       if (!userId) {
-        console.error("ID do usuário não está definido");
+        console.log("ID do usuário não está definido");
         Alert.alert("Erro", "ID do usuário não está definido");
         return;
       }
 
-      console.log("ID Veio?", userId);
+      //console.log("ID Veio?", userId);
       const url = `${BACKEND_API_URL}/edit-profile-password/${userId}`;
       const body = JSON.stringify({
         password: Password,
       });
 
-      console.log("URL:", url);
-      console.log("Body:", body);
+      // console.log("URL:", url);
+      // console.log("Body:", body);
 
       const response = await fetch(url, {
         method: "PUT",
@@ -143,12 +143,12 @@ export default function ProfileScreen({ navigation }: Props) {
         body: body,
       });
 
-      console.log("Resposta recebida:", response);
+      //console.log("Resposta recebida:", response);
 
       const data = await response.json();
       updateStorage();
 
-      console.log("Dados recebidos:", data);
+      //console.log("Dados recebidos:", data);
 
       if (response.ok) {
         updateStorage();
@@ -181,7 +181,7 @@ export default function ProfileScreen({ navigation }: Props) {
       
       setModalVisible(false); // Fechar modal após logout
     } catch (error) {
-      console.error("Erro ao fazer logout:", error);
+      console.log("Erro ao fazer logout:", error);
     }
   };
   
