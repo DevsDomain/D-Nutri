@@ -56,7 +56,6 @@ export default function ProfileScreen({ navigation }: Props) {
       if (storedUser) {
         const parsedUser = JSON.parse(storedUser);
         setUserLogin(parsedUser);
-        console.log("Usuário do AsyncStorage:", parsedUser);
 
         // Chamar loadUser diretamente após carregar o usuário do AsyncStorage
         if (parsedUser?.id) {
@@ -71,7 +70,6 @@ export default function ProfileScreen({ navigation }: Props) {
   // Função para carregar os dados do usuário
   const loadUser = async (id: number) => {
     try {
-      console.log("Iniciando a função loadUser com ID:", id);
       const response = await axios.get(`${BACKEND_API_URL}/users/${id}`);
       const userData = response.data[0];
 
@@ -79,7 +77,6 @@ export default function ProfileScreen({ navigation }: Props) {
         setUserData(userData.nomeUsuario);
         setPassword(userData.password);
         setUser(userData); // Definir o usuário carregado
-        console.log("Dados do usuário carregados:", userData);
       }
     } catch (error) {
       console.log("Erro ao buscar dados do usuário:", error);
@@ -93,7 +90,7 @@ export default function ProfileScreen({ navigation }: Props) {
     }
   }, []);
 
- 
+
   // Fim da função para carregar os dados do usuário
 
   const passwordReset = () => {
@@ -104,7 +101,6 @@ export default function ProfileScreen({ navigation }: Props) {
 
   const handlePasswordChange = async () => {
     try {
-      console.log("Iniciando a função handlePasswordChange");
 
       const userId = user?.id || userLogin?.id; // Usa o ID de userLogin se user.id estiver indefinido
 
@@ -114,14 +110,12 @@ export default function ProfileScreen({ navigation }: Props) {
         return;
       }
 
-      console.log("ID Veio?", userId);
       const url = `${BACKEND_API_URL}/edit-profile-password/${userId}`;
       const body = JSON.stringify({
         password: Password,
       });
 
-      console.log("URL:", url);
-      console.log("Body:", body);
+
 
       const response = await fetch(url, {
         method: "PUT",
@@ -131,11 +125,9 @@ export default function ProfileScreen({ navigation }: Props) {
         body: body,
       });
 
-      console.log("Resposta recebida:", response);
 
       const data = await response.json();
 
-      console.log("Dados recebidos:", data);
 
       if (response.ok) {
         Alert.alert("Sucesso", data.message);
@@ -154,34 +146,34 @@ export default function ProfileScreen({ navigation }: Props) {
     setModalType("logoutConfirmation");
     setModalVisible(true);
   };
-  
+
   const handleLogout = async () => {
     try {
       console.log("Saindo da conta...");
-  
+
       // Limpar AsyncStorage
       await AsyncStorage.clear();
       if (setUserContexto) {
         setUserContexto(null);
       }
-      
+
       setModalVisible(false); // Fechar modal após logout
     } catch (error) {
       console.error("Erro ao fazer logout:", error);
     }
   };
-  
+
   const handleCancel = () => {
     setModalVisible(false);
   };
-  
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="default" />
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Configurações</Text>
       </View>
-  
+
       <ScrollView>
         <ProfilePicture name={userContexto?.user?.nomeUsuario || "User"} localImage={localImage} />
         <SettingsOption
@@ -205,7 +197,7 @@ export default function ProfileScreen({ navigation }: Props) {
           onPress={logoutConfirmation} // Abre o modal de confirmação
         />
       </ScrollView>
-  
+
       {/* Modal para Redefinir Senha ou Logout */}
       <CustomModal
         visible={modalVisible}
@@ -218,7 +210,7 @@ export default function ProfileScreen({ navigation }: Props) {
               <Text style={styles.modalText}>Digite a Nova senha:</Text>
               <View style={styles.passwordContainer}>
                 <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeButton}>
-                  <Icon name={showPassword ? "eye" : "eye-slash"} size={18}/>
+                  <Icon name={showPassword ? "eye" : "eye-slash"} size={18} />
                 </TouchableOpacity>
                 <TextInput
                   style={[styles.input, { flex: 1 }]}
