@@ -1,24 +1,12 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createStackNavigator } from "@react-navigation/stack";
 import { useState, useEffect } from "react";
-import AguaScreen from "../screens/AguaScreen";
 import CadastroScreen from "../screens/CadastroScreen";
 import LoginScreen from "../screens/LoginScreen";
 import OnboardingScreen from "../screens/OnboardingScreen";
-import TabRoutes from "./tab.routes";
-import SelectAlimento from "../screens/SelectAlimento";
-import TabelaNutricional from "../screens/TabelaNutricional";
-import ProfileScreen from "../screens/ProfileScreen";
-import EditProfile from "../screens/EditProfile";
-import TermsOfUse from "../screens/Terms";
-import { StatusBar, TouchableOpacity, Text } from "react-native";
+import { TouchableOpacity, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import ScannerScreen from "../screens/BarcodeScreen";
-import ProductDetailsScreen from "../screens/ProductScreen";
 import React from "react";
-import ProductDetailsScreenPG from "../screens/ProductPG";
-import AlimentosConsumidosScreen from "../screens/AlimentosConsumidosScreen";
-import SelectRefeicao from "../screens/SelectRefeicao";
 import { IuserLogin } from "../types/user";
 
 const AuthStack = createStackNavigator();

@@ -77,7 +77,6 @@ export default function CadastroScreen({ navigation }: Props) {
 
       if (response.ok) {
         Alert.alert("Success", "Cadastro Realizado com suceeso.");
-        console.log("cadastro com sucesso", response)
         navigation.navigate("Login");
       } else {
         // Caso a resposta não seja ok, exibe a mensagem de erro vinda do backend
