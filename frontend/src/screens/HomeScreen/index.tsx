@@ -88,7 +88,7 @@ const Main = ({ navigation }: Props) => {
     }
     // Executa a verificação após 2 segundos
 
-  }, [userPG, navigation]);
+  }, [userContexto, navigation]);
 
 
 
