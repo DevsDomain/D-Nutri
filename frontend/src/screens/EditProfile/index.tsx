@@ -35,7 +35,7 @@ const EditProfile: React.FC = () => {
     const setUserContexto = userContexto?.setUser
 
 
-
+    // Carrega o usuário do AsyncStorage
     const loadUserFromStorage = async () => {
         try {
             const storedUser = await AsyncStorage.getItem("user");
@@ -44,10 +44,11 @@ const EditProfile: React.FC = () => {
                 console.log("Usuário do AsyncStorage:", storedUser);
             }
         } catch (error) {
-            console.error("Erro ao obter dados do AsyncStorage:", error);
+            console.log("Erro ao obter dados do AsyncStorage:", error);
         }
     };
 
+    // Carrega os dados do usuário
     const loadUser = async (id: number) => {
         try {
             const response = await axios.get(`${BACKEND_API_URL}/users/${id}`);
@@ -65,6 +66,7 @@ const EditProfile: React.FC = () => {
         }
     };
 
+    // Carrega o usuário do AsyncStorage ao carregar a tela
     useEffect(() => {
         const fetchData = async () => {
             await loadUserFromStorage();
@@ -80,6 +82,7 @@ const EditProfile: React.FC = () => {
         }
     }, [userLogin]);
 
+    // Atualiza o AsyncStorage com os novos dados do usuário
     const updateStorage = async () => {
         if (userData && userLogin) {
             try {
@@ -97,10 +100,12 @@ const EditProfile: React.FC = () => {
             }
 
             catch (error) {
-                console.error("Erro ao atualizar AsyncStorage:", error);
+                console.log("Erro ao atualizar AsyncStorage:", error);
             }
         }
     }
+
+    // Salva as alterações no perfil
     const handleSaveChanges = async () => {
         try {
             const url = `${BACKEND_API_URL}/edit-profile/${userLogin?.id}`;
@@ -125,8 +130,7 @@ const EditProfile: React.FC = () => {
             if (response.ok) {
                 await updateStorage();
                 Alert.alert('Sucesso', data.message);
-                navigation.goBack();
-                // Salva e volta para ProfileScreen
+                navigation.navigate('Dashboard'); // Salva e volta para Dashboard
             } else {
                 Alert.alert('Erro', data.message);
             }
@@ -230,3 +234,4 @@ const EditProfile: React.FC = () => {
 };
 
 export default EditProfile;
+//07/11/2024

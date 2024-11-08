@@ -4,7 +4,6 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
-  StyleSheet,
   SafeAreaView,
   ActivityIndicator,
   Alert,
@@ -12,9 +11,7 @@ import {
 import axios from "axios";
 import { BACKEND_API_URL } from "@env";
 import { IAlimentos } from "../../types/AlimentosPG";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { IuserLogin } from "../../types/user";
-import { useFocusEffect, useNavigation } from "@react-navigation/native"; // Importação da navegação
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../../../types";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useSelector } from "react-redux";
@@ -81,7 +78,7 @@ export default function AlimentosConsumidosScreen({ navigation }: Props) {
         sodio: totalSodio,
       });
     } catch (error) {
-      console.error("Erro ao buscar alimentos do banco de dados:", error);
+      console.log("Erro ao buscar alimentos do banco de dados:", error);
     }
   };
 
@@ -97,7 +94,7 @@ export default function AlimentosConsumidosScreen({ navigation }: Props) {
       Alert.alert("Sucesso", "Alimento consumido excluído com sucesso.");
       fetchAlimentos(); // Atualiza a lista de alimentos após exclusão
     } catch (error: any) {
-      console.error("Erro ao excluir alimento consumido:", error.message);
+      console.log("Erro ao excluir alimento consumido:", error.message);
       //      Alert.alert("Erro", "Não foi possível excluir o alimento consumido.");
     }
   };
