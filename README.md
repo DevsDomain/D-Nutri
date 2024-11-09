@@ -3,6 +3,8 @@
 ## :memo: Desafio
 O desafio proposto é especificar e construir uma aplicação mobile que permita aos usuários registrar e monitorar a ingestão diária de calorias e nutrientes, auxiliando no controle da alimentação e na manutenção da saúde.
 
+## 📱 Produto
+
 
 ### 🏁 Entregas de Sprints
 
