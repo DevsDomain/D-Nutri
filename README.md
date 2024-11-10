@@ -4,7 +4,7 @@
 O desafio proposto foi, de especificar e construir uma aplicação mobile que permitisse aos usuários registrar e monitorar a ingestão diária de calorias e nutrientes, auxiliando no controle da alimentação e na manutenção da saúde.
 
 ## 📱 Produto
-[Assista ao funcionamento do aplicativo pronto](https://youtu.be/7wADgK1EnR0)
+[Assista ao funcionamento do aplicativo!](https://youtu.be/7wADgK1EnR0)
 ![image](https://github.com/user-attachments/assets/e98f8a8d-84ef-4200-ad8a-0336d42bf908)
 
 
