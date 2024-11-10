@@ -5,6 +5,7 @@ O desafio proposto foi, de especificar e construir uma aplicação mobile que pe
 
 ## 📱 Produto
 [Assista ao funcionamento do aplicativo!](https://youtu.be/7wADgK1EnR0)
+<br><br>
 ![image](https://github.com/user-attachments/assets/e98f8a8d-84ef-4200-ad8a-0336d42bf908)
 
 
