@@ -1,4 +1,3 @@
-// app/scanner.tsx
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Button } from "react-native";
 import {
@@ -41,7 +40,7 @@ export default function ScannerScreen({ navigation }: Props) {
 
   function handleBarCodeScanned(scanningResult: BarcodeScanningResult) {
     const { data } = scanningResult;
-    navigation.navigate("ProductDetails", { barcode: data }); // Navegação com React Navigation
+    navigation.navigate("ProductDetailsScreenPG", { barcode: data, meal: "1" }); // Adiciona a propriedade 'meal' como string
   }
 
   return (

@@ -41,7 +41,7 @@ const EditProfile: React.FC = () => {
             const storedUser = await AsyncStorage.getItem("user");
             if (storedUser) {
                 setUserLogin(JSON.parse(storedUser));
-                console.log("Usuário do AsyncStorage:", storedUser);
+                //console.log("Usuário do AsyncStorage:", storedUser);
             }
         } catch (error) {
             console.log("Erro ao obter dados do AsyncStorage:", error);
@@ -52,7 +52,7 @@ const EditProfile: React.FC = () => {
     const loadUser = async (id: number) => {
         try {
             const response = await axios.get(`${BACKEND_API_URL}/users/${id}`);
-            console.log(response.data[0])
+            //console.log(response.data[0])
             const userData = response.data[0];
             setUserData(userData);
             setAltura(userData.altura?.toString() || "");
