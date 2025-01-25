@@ -3,11 +3,10 @@
 ## :memo: Desafio
 O desafio proposto foi, de especificar e construir uma aplicação mobile que permitisse aos usuários registrar e monitorar a ingestão diária de calorias e nutrientes, auxiliando no controle da alimentação e na manutenção da saúde.
 
-## 📱 Produto
+# 📱 Produto
 [Assista ao funcionamento do aplicativo!](https://youtu.be/7wADgK1EnR0)
 <br><br>
-![image](https://github.com/user-attachments/assets/e98f8a8d-84ef-4200-ad8a-0336d42bf908)
-
+<img align="center" width="50%" src="https://github.com/user-attachments/assets/e98f8a8d-84ef-4200-ad8a-0336d42bf908">
 
 ### 🏁 Entregas de Sprints
 
